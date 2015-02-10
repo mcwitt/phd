@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+  \begin{axis}[
+    height=\figurewidth,
+    xmin=\xmin, xmax=\xmax,
+    ymin=\ymin, ymax=\ymax,
+    extra x ticks={\tc},
+    extra x tick style={xticklabel=\empty, grid=major},
+    xlabel={$T$},
+    ylabel={$\sgsusc/L^{1/3}$},
+    name=mainplot
+  ]
+    \foreach \logsize in \logsizes {%
+      \def\logsizepad{\ifnum\logsize<10 0\logsize \else\logsize\fi}
+      \addplot+[data] table [
+        x=T,
+        y=mean,
+        y error=sem
+      ] {\filename};
+    }
+    \draw [gray] (axis cs: \insetxmin,\insetymin) rectangle (axis cs: \insetxmax,\insetymax);
+  \end{axis}
+  \begin{axis}[
+    at=(mainplot.north east), anchor=north east,
+    width=0.6\figurewidth, height=0.6\figurewidth,
+    xshift=-0.05\figurewidth, yshift=-0.05\figurewidth,
+    xmin=\insetxmin, xmax=\insetxmax,
+    ymin=\insetymin, ymax=\insetymax,
+    extra x ticks={\tc},
+    extra x tick style={xticklabel=\empty, grid=major},
+    ticklabel style={font=\footnotesize}
+  ]
+    \foreach \logsize in \logsizes {%
+      \addplot+[data] table [
+        x=T,
+        y=mean,
+        y error=sem
+      ] {\filename};
+    }
+  \end{axis}
+\end{tikzpicture}

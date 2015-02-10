@@ -1,0 +1,106 @@
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{commath}
+\usepackage{hyperref}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable,booktabs,array,colortbl}
+\usepackage{siunitx}
+
+\newlength{\figurewidthfull}\setlength{\figurewidthfull}{10cm}
+\newlength{\figurewidth}\setlength{\figurewidth}{8cm}
+
+\newcommand{\av}[1]{\left< #1 \right>}
+\newcommand{\dav}[1]{\sbr{#1}_{\mathrm{av}}}
+\newcommand{\davc}[1]{\sbr{#1}}
+\newcommand{\ham}{\mathcal{H}}
+\newcommand{\hamint}{\mathcal{H}_{\mathrm{int}}}
+\newcommand{\asum}[1]{\sum_{\langle #1 \rangle}}
+\newcommand{\abr}[1]{\langle #1 \rangle}
+\newcommand{\tcmf}{T_c^{\mathrm{MF}}}
+\newcommand{\tcmfsq}{\left(\tcmf\right)^2}
+\newcommand{\vect}[1]{\bm{#1}^{\mathsf{T}}}
+\newcommand{\sgsusc}{\chi_{\mathrm{SG}}}
+\newcommand{\relaxtime}{\tau}
+\newcommand{\padd}{p_{\mathrm{add}}}
+\newcommand{\scalefunc}[1]{\widetilde{#1}}
+\newcommand{\qea}{q_{\mathrm{EA}}}
+\newcommand{\sample}[1]{#1_{\mathcal{J}}}
+
+\renewcommand{\dif}{\mathop{}\!\mathrm{d}}
+\renewcommand{\del}[1]{\left(#1\right)}
+\renewcommand{\sbr}[1]{\left[#1\right]}
+
+\renewcommand{\vec}[1]{\bm{#1}}
+
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Span}{span}
+
+% FIGURES
+
+\usetikzlibrary{matrix}
+
+\usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{groupplots}
+
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+
+\pgfmathsetmacro{\tcdfive}{8.77846}
+
+\pgfplotsset{compat=1.12, every axis/.append style={width=\figurewidth}}
+
+\pgfplotsset{
+  data/.style={
+    error bars/y dir=both,
+    error bars/y explicit,
+    error bars/error bar style={solid}
+  },
+  linear fit/.style={
+    mark=none,
+    samples=2
+  },
+  schematic/.style={
+    axis lines=center,
+    axis line style={-latex},
+    xtick=\empty,ytick=\empty,
+    every axis plot post/.append style={thick,mark=none},
+    every axis x label/.style={at=(current axis.right of origin),anchor=west},
+    every axis y label/.style={at=(current axis.above origin),anchor=south},
+    clip=false
+  }
+}
+
+% code for error bars on every nth mark
+\newcounter{marknumber}
+\pgfplotsset{
+  error bars/every nth mark/.style={
+    /pgfplots/error bars/draw error bar/.prefix code={
+      \pgfmathtruncatemacro\marknumbercheck{mod(floor(\themarknumber/2),#1)}
+      \ifnum\marknumbercheck=0
+      \else
+        \begin{scope}[opacity=0]
+      \fi
+    },
+    /pgfplots/error bars/draw error bar/.append code={
+      \ifnum\marknumbercheck=0
+      \else
+        \end{scope}
+      \fi
+      \stepcounter{marknumber}
+    }
+  }
+}
+% end code for error bars every nth mark
+
+\def\round#1#2{\num[round-mode=places,round-precision=#1]{#2}}
+
+\def\storerowval#1#2#3{\pgfplotstablegetelem{#1}{#2}\of\fitparams%
+  \pgfmathsetmacro{#3}{\pgfplotsretval}}
+
+% TABLES
+
+\pgfplotstableset{
+  col sep=comma,
+  every head row/.style={before row=\toprule,after row=\midrule},
+  every last row/.style={after row=\bottomrule}
+}

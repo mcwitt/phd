@@ -1,0 +1,746 @@
+\chapter{Nonextensive spin glasses}
+\label{chap:nonextensive}
+
+\section{Motivation}
+\label{sec:nonextensive-motivation}
+
+In the study of phase transitions, it is often desirable to study models in a
+range of spatial dimensions between the lower critical dimension $d_l$, below
+which there is no finite-temperature transition, and the upper critical
+dimension $d_u$, above which the critical behavior is mean-field-like, meaning
+that the critical exponents are determined by mean-field theory.
+
+But numerical simulations with large $d$ are difficult because the number of
+spins, and hence the time and space required for the simulation, grows rapidly
+with size as $N=L^d$. For glassy systems, situation is especially difficult
+because the characteristic time scales, and thus the amount of simulation time
+required to equilibrate the system, also grows rapidly with size. Presently the
+best-known Monte Carlo methods for glassy systems are able to equilibrate up to
+about $10^4$ spins in a reasonable amount a computer time, which limits system
+sizes at $d_u=6$ to $L \lesssim 10$. For such small sizes finite-size scaling
+analysis is difficult or impossible, not only because we lose the ability to
+study a \emph{range} of $L$ from which to infer the bulk behavior, but also
+because corrections to scaling become significant for small $L$.
+
+
+\subsection{Long-range interactions}
+
+Some of these difficulties can be avoided by instead studying one-dimensional
+models with long-range interactions, as proxies for higher-dimensional models
+with short-range interactions. For example, consider the Ising
+chain with only nearest-neighbor interactions, which is below the lower
+critical dimension $d_l=2$ for the Ising ferromagnetic transition and therefore
+does not have a finite-temperature phase transition. However, with the addition
+of long-range interactions falling off as $r^{-\sigma}$, there \emph{is} a
+finite-temperature transition for $\sigma \leq 2$
+ and, furthermore, the critical behavior is mean-field-like for $\sigma < 4/3$
+% TODO: strictly < or <=?
+ \autocite{dyson1969existence}.
+Thus we establish a correspondence between the lower- and upper-critical
+dimensions $d_l=2$ and $d_u=4$ of the short range model, and the lower- and
+upper-critical \emph{ranges} $\sigma_l=2$ and $\sigma_u=4/3$ of the chain with
+long-range interactions. The \emph{continuous} parameter $\sigma$ of the chain
+plays a role analagous to the dimensionality $d$ of the short-range model
+\autocite{katzgraber2003monte}, which is plausible because both parameters
+essentially control the degree of the coupling between spins.
+
+Note that increasing $\sigma$ \emph{decreases} the range of the interactions,
+and thus plays a similar role of reducing the connectivity of the spins as
+decreasing $d$. The extreme case $\sigma=0$ is the ``infinite-range" model
+which is solved exactly by mean-field theory, while the opposite extreme
+$\sigma\to\infty$ is the short-range model. We define the ``effective
+dimension" $d_{\mathrm{eff}}(\sigma)$ such that a one-dimensional model with
+long-range interactions falling off as $r^{-\sigma}$ has the same critical
+behavior as the equivalent short-range model with $d=d_{\mathrm{eff}}$. In the
+mean-field regime (\emph{e.g.} $\sigma<4/3$ for the Ising ferromagnet) we can
+derive $d_{\mathrm{eff}}(\sigma)$ in closed form by equating the singular parts
+of the free energy density for the two models \autocite{larson2010numerical}.
+This is discussed in \cref{sec:nonextensive-lrsg}, where we compute
+$d_{\mathrm{eff}}(\sigma)$ for the one-dimensional spin glass with long-range
+interactions.
+% TODO: comment about non-MF
+
+One-dimensional models with long range interactions have the important
+advantage that, since $N=L$, there is no difficulty in studying many different
+sizes for finite-size scaling (FSS) analysis. But although we can feasibly
+study large $L$ using this method, it is important to note that finite-size
+effects are not reduced---we have traded small $L$ and short-range interactions
+for large $L$ and long-range interactions, so that the ratio of the length
+scale of fluctuations to the system size is essentially unchanged.
+% TODO: another advantage: simpler geometry than d-dimensional hypercubic?
+
+
+\subsection{Nonextensive regime}
+
+Considering the general case of a $d$-dimensional model with long-range
+interactions falling off as $r^{-\sigma}$, we note that, if $0 \leq \sigma \leq
+d$, the free energy is nonextensive, \emph{i.e.} grows faster than $N$ in the
+thermodynamic limit. We call this region of parameter space the
+\emph{nonextensive regime}.
+
+For example, the mean-field transition temperature for an Ising ferromagnet
+with long-range interactions, given by
+\begin{equation}
+  \tcmf
+  \equiv \sum_j J_{ij}
+  = c \sum_{j \neq i} r_{ij}^{-\sigma},
+  \label{eq:TcMF-ferro}
+\end{equation}
+behaves asymptotically like
+% TODO: consider specializing discussion to d=1
+\begin{equation}
+  \tcmf/J
+  \sim \int \dif^d r \, r^{-\sigma} \propto
+  \begin{cases}
+    1 + a_1 L^{d-\sigma} & \text{if } d \neq \sigma,\\
+    1 + a_2 \log L       & \text{if } d = \sigma,
+  \end{cases}
+\end{equation}
+where $a_1$ and $a_2$ are constants. Therefore if we take $c$ in
+\cref{eq:TcMF-ferro} to be independent of $N$, the mean-field transition
+temperature diverges in the thermodynamic limit unless $\sigma > d$.
+Nevertheless it is possible to define a model with $\sigma \leq d$ and a
+sensible thermodynamic limit provided we also take $c \to 0$ in such a way that
+the mean-field transition temperature remains finite \autocite{cannas1996long}.
+For $\sigma < d$ we require
+\begin{equation}
+  c = c(\sigma, N) \propto N^{\sigma/d - 1}.
+\end{equation}
+To fix the constant of proportionality we adopt the convention $\tcmf=1$, which
+for the ferromagnet gives
+\begin{equation}
+  J_{ij} = \frac{c(\sigma, N)}{r_{ij}^{\sigma}},
+  \qquad
+  c(\sigma, N) = \del{ \sum_{j \neq i} r_{ij}^{-\sigma} }^{-1}.
+  \label{eq:J-scaling-ferro}
+\end{equation}
+
+The nonextensive regime for \emph{ferromagnets} has already been explored. In
+one of the earliest studies
+% TODO: the earliest?
+of ferromagnets with long-range interactions, \textcite{hiley1965ising} showed
+that the transition temperature approaches the mean-field prediction in the
+limit $\sigma \to d$ from above. This led \textcite{cannas1996long} to
+conjecture that, for a ferromagnetic model in which the interactions are
+appropriately scaled in the nonextensive regime, the mean-field transition
+temperature is exact not only for $\sigma=0$ and $\sigma \to d^+$, but in the
+entire range $0 \leq \sigma \leq d$. This conjecture was subsequently verified
+numerically \autocite{cannas2000evidence,campa2000canonical}.
+% TODO: other refs?
+
+It is interesting to ask if the same is true for spin glasses.
+\textcite{mori2011instability} argues that this is the case; that is, the
+behavior throughout nonextensive regime is identical to that of the mean-field
+model of spin glasses, provided the couplings are appropriately scaled so that
+the mean-field transition temperature is independent of system size. Our
+motivation will be to test this conjecture using Monte Carlo simulation. First,
+we introduce a long-range spin glass model and define the corresponding
+nonextensive regime.
+
+
+\subsection{Spin glasses with long-range interactions}
+\label{sec:nonextensive-lrsg}
+
+Long-range spin glass models may be defined by taking the variance of the
+interactions to fall off with distance. Such a model was first studied by
+\textcite{kotliar1983one}, who considered a one-dimensional Ising chain with
+the Hamiltonian
+\begin{equation}
+    \ham = -\frac{1}{2} \sum_{i,j} J_{ij} S_i S_j,
+    \qquad
+    J_{ij} = \epsilon_{ij}/r_{ij}^\sigma,
+\end{equation}
+where $\epsilon_{ij}$ are independent, identically-distributed Gaussian random
+variables. For this model they found a finite-temperature phase transition for
+$\sigma<1$ and mean-field behavior for $1/2 < \sigma < 2/3$; that is,
+$\sigma_l=1$ and $\sigma_u=2/3$.
+
+The extreme case $\sigma=0$ corresponds to the Sherrington-Kirkpatrick
+mean-field model (see \cref{sec:intro-sk}), for which the transition
+temperature is exactly
+\begin{equation}
+  \tcmfsq \equiv \sum_j \dav{J_{ij}^2} = c \sum_{j \neq i} r_{ij}^{-2\sigma},
+\end{equation}
+where $\dav{\cdots}$ denotes an average over bonds. Compared with
+\cref{eq:TcMF-ferro} for the ferromagnet, note that $J_{ij}$ ($\propto
+1/r_{ij}^{\sigma}$), which is zero on average for a spin glass, is replaced by
+the variance $\dav{J_{ij}^2}$ ($\propto 1/r_{ij}^{2 \sigma}$).
+% TODO: above, define "bond average"
+% TODO: ref sk model section in intro
+
+For $0 \leq \sigma \leq 1/2$ the free energy diverges in the thermodynamic
+limit unless the interactions are scaled by an inverse power of the system
+size.
+
+Again adopting the convention $\tcmf=1$, the analog of
+\cref{eq:J-scaling-ferro} for the spin glass is
+\begin{equation}
+  \dav{J_{ij}^2} = \frac{c(\sigma, N)}{r_{ij}^{2\sigma}},
+  \qquad
+  c(\sigma, N) = \del{\sum_{j \neq i} r_{ij}^{-2\sigma}}^{-1}.
+\end{equation}
+
+In the mean-field regime ($\sigma<4/3$) we can make a precise connection
+between the power $\sigma$ of the 1-d long-range (LR) model and the
+dimensionality $d$ of the short-range (SR) model by equating the singular parts
+of the free energy density for the two models \autocite{larson2010numerical}.
+The singular part of the free energy density scales with $L$ like
+\begin{equation}
+  \frac{1}{L^d} \widetilde{f} \del{L^{y_T} t,\, L^{y_H} h,\, L^{y_u} u}
+\end{equation}
+where $\widetilde{f}$ is a scaling function, $t=(T-T_c)/T_c$ is the reduced
+temperature, and $h$ is the magnetic field. Eliminating $L$ (using $N=L$ for
+the LR model and $N=L^d$ for the SR model) and equating the resulting
+expressions for the two models gives the following relationship between the LR
+and SR exponents:
+\begin{equation}
+  y^{\mathrm{LR}}(\sigma) = y^{\mathrm{SR}}(d)/d.
+\end{equation}
+In the mean field regime, where the FSS exponents for the SR and LR models are
+given by
+\begin{equation*}
+  \begin{split}
+    y_T^{\mathrm{SR}} &= 2 \\
+    y_H^{\mathrm{SR}} &= (d+2)/2 \\
+    y_u^{\mathrm{SR}} &= (6-d)/2
+  \end{split}
+  \qquad
+  \begin{split}
+    y_T^{\mathrm{LR}} &= 2\sigma - 1 \\
+    y_H^{\mathrm{LR}} &= \sigma \\
+    y_u^{\mathrm{LR}} &= 3\sigma - 2,
+  \end{split}
+\end{equation*}
+\autocite{harris1976critical,kotliar1983one}
+we obtain the following relationship between the power $\sigma$ of the 1-d
+model and the corresponding effective dimension,
+\begin{equation}
+  d_{\mathrm{eff}} = \frac{2}{2\sigma - 1},
+\end{equation}
+consistently for each pair of exponents.
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/1dlr-phases}
+  \caption[
+    Schematic phase diagram of the one-dimensional Ising spin glass with
+    power-law interactions.
+  ]
+  {
+    \emph{Adapted from \textcite{katzgraber2003monte}}.
+    Schematic phase diagram in the $d$-$\sigma$ plane for the one-dimensional
+    Ising spin glass with power-law interactions, following
+    \textcite{fisher1988equilibrium}. In the shaded regions there is a
+    transition with $T_c>0$. The line $d=2\sigma$ separates the nonextensive
+    (NE) region from the mean-field (MF) region. The critical exponents in both
+    the NE and MF regions are those of mean-field theory. The line
+    $d=3\sigma/2$ (red) separates the mean-field region from the long-range
+    (LR) region where the critical exponents differ from mean-field theory, but
+    the dominant contribution to the energy comes from the long-range
+    interactions. On the far right are the short-range (SR) regions where the
+    energy is dominated by the short-range interactions. These are separated
+    from the long-range regions by the curve
+    $\theta_{\mathrm{LR}}=\theta_{\mathrm{SR}}$ (red), where
+    $\theta_{\mathrm{LR}}$ and $\theta_{\mathrm{SR}}$ are the stiffness
+    exponents corresponding to the long- and short-range interactions
+    respectively.
+    % TODO: reference
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/1dlr-chord}
+  \caption[
+    Representation of the 1-d Ising spin glass on a ring.
+  ]
+  {
+    Representation of the (undiluted) 1-d spin glass with $r_{ij}$ defined as
+    the chord distance when the spins are arranged on a ring. The edge widths
+    are proportional to the variance of the $J_{ij}$ with $\sigma=0.375$.
+  } \label{fig:1dlr-chord}
+\end{figure}
+
+
+\section{Models}
+\label{sec:nonextensive-models}
+
+We study the Hamiltonian
+\begin{equation}
+    \ham = -\frac{1}{2} \sum_{i,j} J_{ij} S_i S_j
+\end{equation}
+where the couplings $J_{ij}$ are sampled from a distribution with mean zero and
+variance that falls off with a power of the distance $r_{ij}$,
+\begin{equation}
+  \dav{J_{ij}} = 0,
+  \qquad
+  \dav{J_{ij}^2} \propto r_{ij}^{-2\sigma},
+  \label{eq:J-mean-variance-lr}
+\end{equation}
+where to define $r_{ij}$ we put the spins on a ring and use the chord distance,
+\begin{equation}
+  r_{ij} = \frac{L}{\pi} \sin\del{\frac{\pi\abs{i-j}}{L}}
+  \label{eq:chord-distance}
+\end{equation}
+(see \cref{fig:1dlr-chord}).
+
+We choose a particular distribution $P(J_{ij})$, introduced by
+\textcite{leuzzi2008dilute}, that satisfies \cref{eq:J-mean-variance-lr}
+asymptotically while allowing for efficient computer simulation. In the
+resulting model, which we refer to as the \emph{diluted model}, the interaction
+matrix $J_{ij}$ is sparse, with the mean number of neighbors of a given spin
+fixed to an arbitrary constant $z$ (here we choose $z=6$). The nonzero elements
+of $J_{ij}$ are drawn from a Gaussian distribution with zero mean and unit
+variance. The second part of \cref{eq:J-mean-variance-lr} is then satisfied by
+letting the \emph{probability} of an interaction between spins $i$ and $j$ fall
+off with distance like $r^{-2\sigma}$. That is, the interactions are
+distributed according to
+\begin{equation}
+  P(J_{ij})
+  = \del{1 - p_{ij}} \delta \del{J_{ij}}
+  + p_{ij} \frac{1}{\sqrt{2\pi}} e^{-J_{ij}^2/2},
+  \label{eq:dilute-dist}
+\end{equation}
+where $p_{ij} \propto r_{ij}^{-2\sigma}$.
+
+To sample from this distribution we use the following algorithm. Choose a site
+$i$ at random from a uniform distribution. Then choose a site $j$ with
+probability $\widetilde{p}_{ij}=A/r_{ij}^{2\sigma}$, where $A$ is determined by
+normalization. If there is not already a bond between $i$ and $j$, take
+$J_{ij}$ from a Gaussian distribution with zero mean and unit variance.%
+\footnote{
+  Note that if $\widetilde{p}_{ij} \ll 1$, then $p_{ij}$ in
+  \cref{eq:dilute-dist} is given by $p_{ij} = z \widetilde{p}_{ij}$. Otherwise
+  there will be corrections due to the rejection of bonds when there is already
+  a bond between $i$ and $j$.
+}
+Repeat until $Nz/2$ bonds have been generated in total, at which point the
+number of neighbors of a given spin has a Poisson distribution with mean $z$.
+% TODO: standardize bonds/interactions/connections
+% TODO: algorithm pseudocode?
+% TODO: ref discussion of diluted model
+
+The transition temperature for the diluted model with $\sigma=0$ was shown by
+\textcite{viana1985phase} to be given by the solution of
+\begin{equation}
+  \frac{1}{\sqrt{2\pi}}
+  \int_{-\infty}^{\infty} \dif x \, e^{-x^2/2} \tanh^2 \del{\frac{x}{T_c}}
+  = \frac{1}{z}.
+  \label{eq:viana-bray-Tc}
+\end{equation}
+For our chosen value $z=6$, we find
+% TODO: why 6?
+\begin{equation}
+  T_c(z=6) \approx 2.0564 \quad\text{(diluted)}.
+  \label{eq:viana-bray-Tc-z6}
+\end{equation}
+
+\section{Method}
+\label{sec:nonextensive-method}
+
+We perform Monte Carlo simulations of the models described in
+\cref{sec:nonextensive-models}. To speed up equilibration, we use the
+parallel-tempering Monte Carlo method described in
+\cref{sec:numerical-parallel-tempering}.
+
+To ensure that measurements are performed in equilibrium we use the
+equilibration test for Gaussian spin glasses described in
+\cref{sec:numerical-equilibration}. That is, we successively double the number
+of Monte Carlo sweeps, each time averaging over the last half of the sweeps,
+until (at least) the last three data points for
+$\Delta(\widetilde{U},\widetilde{q_l})$ are consistent with zero. The total
+number of sweeps used in this check is shown as $N_{\mathrm{equil}}$ in
+\cref{tab:nonextensive-params-c,tab:nonextensive-params-d}. We perform the
+equilibration test only for the largest sizes (which account for most of the
+overall simulation time) and use the same value of $N_{\mathrm{equil}}$ for the
+smaller sizes.
+
+We then do measurement runs where, after an initial $N_{\mathrm{equil}}$ sweeps
+to ensure the system has reached equilibrium, we do an additional 10 to 20
+times as many sweeps during which measurements are performed. The detailed
+parameters of the simulations are given in
+\cref{tab:nonextensive-params-c,tab:nonextensive-params-d}. To avoid bias in
+measurements with distinct thermal averages, e.g. \cref{eq:binder-ratio}, each
+thermal average is evaluated on a separate replica of the system with the same
+realization of the random couplings. Since the quantities of interest have no
+more than two distinct thermal averages, we simulate two copies of the system
+at each temperature.
+%TODO: distinct thermal averages in Numerical Methods?
+
+\pgfplotstableset{
+  nonextensive params/.style={
+    /pgf/number format/set thousands separator={},
+    columns/sigma/.style={
+      column name={$\sigma$},
+      dec sep align,
+      precision=3
+    },
+    columns/L/.style={
+      column type={r},
+      column name={$L$}},
+    columns/nsamp/.style={
+      column type={r},
+      column name={$N_{\mathrm{samp}}$}
+    },
+    columns/neq/.style={column name={$N_{\mathrm{equil}}$}},
+    columns/nmeas/.style={column name={$N_{\mathrm{meas}}$}},
+    columns/Tmin/.style={
+      column name={$T_{\mathrm{min}}$},
+      dec sep align,
+      precision=3
+    },
+    columns/Tmax/.style={
+      column name={$T_{\mathrm{max}}$},
+      dec sep align,
+      precision=3
+    },
+    columns/nT/.style={column name={$N_T$}},
+  }}
+
+\begin{table}
+  \centering
+  \pgfplotstabletypeset[nonextensive params]{data/params-c.csv}
+  \caption[%
+    Simulation parameters for 1-d long-range models with undiluted bonds.
+  ]
+  {%
+    Simulation parameters for the undiluted models. $N_{\mathrm{samp}}$ is the
+    number of samples; $N_{\mathrm{equil}}$ and $N_{\mathrm{meas}}$ are the
+    numbers of sweeps used for the equilibration and measurement phases
+    respectively. We simulate $N_T$ logarithmically-spaced temperatures between
+    $T_{\mathrm{min}}$ and $T_{\mathrm{max}}$.
+  }
+  \label{tab:nonextensive-params-c}
+\end{table}
+
+\begin{table}
+  \centering
+  \pgfplotstabletypeset[nonextensive params]{data/params-d.csv}
+  \caption[%
+    Simulation parameters for 1-d long-range models with diluted bonds.
+  ]
+  {Simulation parameters for the diluted models.}
+  \label{tab:nonextensive-params-d}
+\end{table}
+%TODO: define style for data tables in one place
+%TODO: table formatting
+
+
+We consider moments of the spin glass order parameter,
+\begin{equation}
+  q = \frac{1}{L} \sum_i S_i^{(1)} S_i^{(2)},
+\end{equation}
+where ``(1)" and ``(2)" refer to independent replicas of the system with the
+same realization of the random couplings. Of particular interest are the
+spin-glass susceptibility
+\begin{equation}
+  \sgsusc = L\av{q^2}
+  \label{eq:sgsusc}
+\end{equation}
+and the Binder ratio,
+\begin{equation}
+  g = \frac{1}{2}\del{3 - \frac{\av{q^4}}{\av{q^2}^2}},
+  \label{eq:binder-ratio}
+\end{equation}
+where $\av{\cdots}$ indicates a thermal average and an average over the disorder.
+
+Because the Binder ratio is dimensionless, its finite-size scaling behavior is
+simple (see \cref{sec:numerical-fss}). The models considered here are all in
+the mean-field regime, in which the scaling relation takes the form
+\begin{equation}
+  g \sim \widetilde{g}\sbr{L^{1/3} \del{T-T_c}}
+  \label{eq:binder-scaling}
+\end{equation}
+(where $\sim$ indicates asymptotic equivalence for large $L$).
+Although the spin-glass susceptibility is not dimensionless, its scaling form
+is also known exactly in the mean-field regime,%
+\footnote{%
+  For a discussion of how standard finite-size scaling is modified in the
+  mean-field regime, see, for example,
+  \autocite{binder1985finite, luijten1999finite, jones2005finite,
+    brezin1982investigation, brezin1985finite}
+}
+\begin{equation}
+  \sgsusc \sim L^{1/3} \widetilde{\chi}\sbr{L^{1/3} \del{T-T_c}}.
+  \label{eq:sgsusc-scaling}
+\end{equation}
+% TODO: discuss this a bit more
+
+Thus, at least asymptotically for large $L$, \emph{the Binder ratio $g$ and
+  scaled susceptibility $\sgsusc/L^{1/3}$ are independent of $L$ at $T=T_c$}.
+We can exploit this to estimate $T_c$ from the intersections of the data for
+different sizes when plotted against $T$. However, we will find that the data
+for different pairs of sizes do not intersect at a common temperature (see, for
+example, \cref{fig:binder-c}), but rather that data for each pair $(L_1,L_2)$
+intersect at a size-dependent temperature $T^*(L_1,L_2)$. This is because the
+corrections to the asymptotic scaling relations become significant for the
+range of sizes we are able to simulate.
+
+According to standard finite-size scaling the spin-glass susceptibility has
+the following expansion near the critical point:
+\begin{equation}
+    \sgsusc(t,L)
+    = L^a \sbr{f(L^b t) + L^{-\omega} g(L^y t) + \cdots}
+      + c_0 + c_1 t + \cdots
+    \label{eq:standard-fss}
+\end{equation}
+\autocite{privman1983finite},
+where $t=T-T_c$, $a=2-\eta$ ($=2\sigma-1$ here), and $b=1/\nu$.
+
+In the mean-field regime, $\sigma<2/3$, the exponents $a$ and $b$ are
+independent of $\sigma$
+\autocite{binder1985finite,luijten1999finite,jones2005finite} and take the
+value at $\sigma_c$ for all $1/2<\sigma<\sigma_c$. This is due to the presence
+of a ``dangerous irrelevant variable" which results in an $L^{1/3}$ term. This
+term dominates over $L^{2\sigma-1}$ for $\sigma<\sigma_c$, but the latter does
+not disappear and instead becomes a correction to scaling. Hence, for
+$\sigma<\sigma_c$ we replace \cref{eq:standard-fss} with
+\begin{align*}
+  \sgsusc(t,L)
+  = &L^{1/3}\sbr{f(L^{1/3}t) + L^{-\omega} g(L^{1/3}t) + \cdots}\\
+    &+ d_0 L^{2\sigma-1} h g(L^{1/3}t) + c_0 + c_1 t + \cdots.
+\end{align*}
+% TODO: understand "h g" in above eqn
+The correction exponent $\omega$ can be obtained in the mean-field regime from
+the work of \textcite{kotliar1983one} and is given by $\omega=2-3\sigma$. Thus,
+in the nonextensive regime $\sigma<1/2$, the dominant correction to scaling is
+the constant $c_0$. Including the dominant correction, \cref{eq:sgsusc-scaling}
+becomes
+\begin{equation}
+  \sgsusc \sim L^{1/3} \widetilde{\chi}\sbr{L^{1/3}\del{T-T_c}} + c_0.
+  \label{eq:sgsusc-scaling-corrected}
+\end{equation}
+Now, data for $\sgsusc/L^{1/3}$ for a pair of sizes $(L,2L)$ cross
+at a temperature $T^*(L,2L)$ such that
+\begin{equation}
+  \widetilde{\chi}\sbr{L^{1/3}(T^*-T_c)} + c_0/L^{1/3}
+  =\widetilde{\chi}\sbr{(2L)^{1/3}(T^*-T_c)} + c_0/(2L)^{1/3}.
+\end{equation}
+Expanding $\widetilde{\chi}$ to first order and solving for $T^*$, we obtain
+the correction to the intersection temperatures corresponding to the dominant
+correction to scaling,
+\begin{equation}
+  T^*(L,2L) = T_c + A/L^{2/3} + \cdots,
+  \label{eq:Tx-corrected}
+\end{equation}
+where $A$ is a constant. We expect the corresponding result for the Binder
+ratio $g$ to have the same form.
+% TODO: why?
+In the following analysis we will fit \cref{eq:Tx-corrected} to the data to
+estimate the bulk transition temperature $T_c$.
+
+
+\section{Results}
+
+We first present our results for the undiluted model. Data for the Binder ratio
+and the scaled spin glass susceptibility are shown for $\sigma=0$ (SK model)
+and $\sigma=0.25$ in \cref{fig:binder-c,fig:chi-c}. Note the large corrections
+to scaling for the Binder ratio and the relatively small corrections for the
+scaled susceptibility.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/binder-c-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/binder-c-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption[Data for the Binder ratio for the 1-d undiluted spin glass.]{
+    Data for the Binder ratio for the undiluted model. The exact value of the
+    transition temperature for the SK model, $T_c=1$, is marked with a vertical
+    line.
+  }
+  \label{fig:binder-c}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-scaled-c-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-scaled-c-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption[
+    Data for the Binder ratio and the scaled spin-glass susceptibility for the
+    1-d undiluted spin glass with $\sigma=0$ and $\sigma=0.25$.
+  ]{
+    Data for the scaled spin-glass susceptibility for the undiluted model. The
+    exact value of the transition temperature for the SK model, $T_c=1$, is
+    marked with a vertical line.
+  }
+  \label{fig:chi-c}
+\end{figure}
+
+\Cref{fig:Tx-c} shows the intersection temperatures for the undiluted models,
+determined by first fitting a cubic spline to the data and finding the
+intersections of the splines. The error bars were estimated using the bootstrap
+resampling method (discussed in \cref{sec:numerical-bootstrap}). We then fit
+\cref{eq:Tx-corrected} to the intersection temperatures to estimate $T_c$. For
+\emph{both} values of $\sigma$ we obtain a value consistent with $T_c=1$ (with
+very small errors), the exact value for the SK model. The quality of the fit,
+as quantified by the goodness of fit parameter $Q$
+\autocite{press2007numerical}, is satisfactory except for the Binder ratio data
+for the SK model. We do not have a good explanation of this, except perhaps
+that multiple corrections to scaling are significant for the range of sizes
+studied. In any case we note that the result $T_c=1$ for the SK model is
+rigorously correct. The result that $T_c=1$ also for the model with
+$\sigma=0.25$, at the midpoint of the nonextensive region, provides strong
+evidence for the claim of \textcite{mori2011instability} that all models in the
+nonextensive region are identical to the SK model.
+% PETER: While it would be useful to check this also in the space glass phase
+% below $T_c$, such simulations would be difficult because relaxation times
+% increase dramatically at low $T$, and so the range of sizes that could be
+% studied would be much more limited than in the data presented here.
+% TODO: space glass?
+% TODO: bootstrap vs. jackknife
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/Tx-c-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/Tx-c-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption[
+    Results for the intersection temperatures for the 1-d undilted model
+    with $\sigma=0$ (SK model) and $\sigma=0.25$.
+  ]
+  {
+    Results for the intersection temperatures for the undiluted model.
+  }
+  \label{fig:Tx-c}
+\end{figure}
+
+The corresponding results for the diluted models with $\sigma=0$ and $0.25$ are
+shown in \cref{fig:binder-d,fig:chi-d,fig:Tx-d}. For the diluted model we also
+performed simulations with $\sigma=0.375$ and show the resulting intersection
+temperatures in \cref{fig:Tx-d-375}. For $\sigma=0$, the Viana-Bray (VB) model,
+the transition temperature is given by \cref{eq:viana-bray-Tc}, which, for
+$z=6$ taken here, gives the result in \cref{eq:viana-bray-Tc-z6}. Here again we
+see that the corrections to scaling are larger for the Binder ratio than for
+the scaled spin glass susceptibility. Fitting \cref{eq:Tx-corrected}, we find a
+predicted value of $T_c$ consistent with the exact value for the VB model for
+\emph{all} values of $\sigma$.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/binder-d-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/binder-d-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption [
+    Data for the Binder ratio for the 1-d undiluted spin glass.
+  ]
+  {
+    Data for the Binder ratio for the diluted model. The Viana-Bray model
+    transition temperature $T_c \approx 2.056$, obtained from
+    \cref{eq:viana-bray-Tc}, is marked with a vertical line.
+  }
+  \label{fig:binder-d}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-scaled-d-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-scaled-d-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption[
+    Data for the Binder ratio and the scaled spin-glass susceptibility for the
+    1-d diluted spin glass with $\sigma=0$ and $\sigma=0.25$.
+  ]
+  {
+    Data for the scaled spin-glass susceptibility for the diluted model. The
+    Viana-Bray model transition temperature $T_c \approx 2.056$, obtained from
+    \cref{eq:viana-bray-Tc}, is marked with a vertical line.
+  }
+  \label{fig:chi-d}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/Tx-d-s00}
+    \subcaption{$\sigma=0$}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/Tx-d-s25}
+    \subcaption{$\sigma=0.25$}
+  \end{subfigure}
+  \caption[
+    Results for the intersection temperatures for the 1-d diluted model with
+    $\sigma=0$ (VB model) and $\sigma=0.25$.
+  ]
+  {
+    Results for the intersection temperatures for the diluted model.
+  }
+  \label{fig:Tx-d}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/Tx-d-s38}
+  \caption[
+    Results for the intersection temperatures for the diluted model with
+    $\sigma=0.375$.
+  ]
+  {
+    Results for the intersection temperatures for the diluted model with
+    $\sigma=0.375$.
+  }
+  \label{fig:Tx-d-375}
+\end{figure}
+
+
+\section{Conclusions}
+
+We have performed Monte Carlo simulations to investigate the transition
+temperatures of one-dimensional Ising spin glasses, both undiluted and diluted,
+for several values of $\sigma$ in the nonextensive regime $0 \leq \sigma <
+1/2$. For the undiluted model we studied two values of $\sigma$, $\sigma=0$ and
+$\sigma=0.25$. For $\sigma=0.25$, which lies in the middle of the nonextensive
+region, we find that the transition temperature agrees to high precision with
+the exact solution of the SK model. As a check, we also simulated the
+$\sigma=0$ case, obtaining results consistent with the exact SK model result,
+though there seem to be multiple corrections to FSS for some of the data.
+
+For the diluted model we studied three values of $\sigma$: $\sigma=0$, which
+corresponds to the Viana-Bray model; $\sigma=0.25$, which lies in the middle of
+the nonextensive region, and $\sigma=0.375$. In all cases we found the
+transition temperature to be consistent with the exact solution of the
+Viana-Bray model; all results were within $\sim 1.5$ standard deviations.
+
+To conclude, our results provide confirmation of the proposal
+\autocite{mori2011instability} that the behavior of (undiluted) spin glasses
+everywhere in the nonextensive regime is identical to that of the SK model. We
+have also proposed and provided evidence that an analogous result applies to
+\emph{diluted} spin glass models.

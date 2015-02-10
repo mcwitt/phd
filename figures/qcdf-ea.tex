@@ -1,0 +1,81 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\pgfplotsset{
+  all points/.style={smooth,mark=none,forget plot},
+  mark points/.style={data,only marks,each nth point=#1},
+  mean/.style={solid},
+  median/.style={solid}
+}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    width=\figurewidth,
+    ymode=log,
+    xlabel={$q$},
+    xmin=0, xmax=1.05,
+    ymin=1e-4, ymax=2,
+    cycle multi list={%
+      [5 of]color\nextlist
+      mark options={solid,fill opacity=1}\\%
+      mark options={solid,fill opacity=0}\\
+    },
+    group style={
+      group name=plots,
+      group size=2 by 2,
+      horizontal sep=2ex,
+      vertical sep=2ex,
+      x descriptions at=edge bottom,
+      y descriptions at=edge left
+    },
+  ]
+    \newcommand{\doplot}[3][4]{
+      \pgfplotstableread{data/qcdf-#2-#3.csv}\data
+      \addplot+[mean,all points] table [x=Q,y=Mean,y error=Mean_err]{\data};
+      \addplot+[mean,mark points=#1] table [x=Q,y=Mean,y error=Mean_err]{\data};
+        \label{plot:qcdf-mean-#3}
+      \addplot+[median,all points] table [x=Q,y=Median,y error=Median_err]{\data};
+      \addplot+[median,mark points=#1] table [x=Q,y=Median,y error=Median_err]{\data};
+        \label{plot:qcdf-median-#3}
+    }
+
+    \newcommand{\makepanel}[2][]{
+      \doplot[4]{#2}{n06}
+      \doplot[8]{#2}{n07}
+      \doplot[16]{#2}{n08}
+      \doplot[32]{#2}{n09}
+      \doplot[64]{#2}{n10}
+      \node [anchor=north west, align=left] at (rel axis cs: 0.03, 0.97) {#1};
+    }
+
+    \nextgroupplot
+      \makepanel[SK]{s00}
+      \addplot[smooth,black,densely dashed,mark=none] table [
+        x=Q, y expr={2*exp(-0.6931/\thisrow{Mean})},
+      ]{data/qcdf-s00-n10.csv};
+      \label{plot:qcdf-median-theory}
+
+    \nextgroupplot\makepanel[$\sigma=0.6$]{s60}
+    \nextgroupplot\makepanel[$\sigma=0.784$]{s78}
+    \nextgroupplot\makepanel[$\sigma=0.896$]{s90}
+
+  \end{groupplot}
+
+  % legend
+  \matrix[
+    matrix of nodes,
+    column 1/.style={anchor=base east},
+    anchor=south east,
+    inner sep=0.2em,
+  ] at ([yshift=2ex] plots c1r1.south east) {
+    & $I^{\mathrm{av}}(q)$ & $I^{\mathrm{med}}(q)$ \\
+    64   & \ref{plot:qcdf-mean-n06} & \ref{plot:qcdf-median-n06} \\
+    128  & \ref{plot:qcdf-mean-n07} & \ref{plot:qcdf-median-n07} \\
+    256  & \ref{plot:qcdf-mean-n08} & \ref{plot:qcdf-median-n08} \\
+    512  & \ref{plot:qcdf-mean-n09} & \ref{plot:qcdf-median-n09} \\
+    1024 & \ref{plot:qcdf-mean-n10} & \ref{plot:qcdf-median-n10} \\
+    theory & & \ref{plot:qcdf-median-theory} \\
+  };
+
+\end{tikzpicture}
+\end{document}

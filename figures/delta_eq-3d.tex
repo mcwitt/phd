@@ -1,0 +1,26 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{semilogxaxis}[
+    xmin=1, xmax=3e8,
+    xlabel={$t$},
+    ylabel={$\Delta(t)$},
+    extra y ticks={0},
+    extra y tick style={yticklabel=\empty, grid=major},
+    legend cell align=left
+  ]
+
+    \addplot+[data] table [
+      x expr=2^\thisrow{b},
+      y=mean,
+      y error=sem
+    ] {data/delta_eq-d3-T02-L08.csv};
+
+    \node [anchor=north east, align=left] at (rel axis cs: 0.97, 0.97) {%
+      $T=0.2$ \\ $L=8$
+    };
+  \end{semilogxaxis}
+\end{tikzpicture}
+\end{document}

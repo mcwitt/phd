@@ -1,0 +1,16 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}[
+  region/.style={rectangle,draw,minimum width=#1,minimum height=#1}
+]
+  \node (l) [region=5.0cm,fill=red!20] {};
+  \node (m) [region=3.5cm,fill=white] {};
+  \node (w) [region=1.5cm,fill=blue!20,align=center] {meas.\\corr.};
+  \node at (l.south) [anchor=north] {$L$};
+  \node at (m.south) [anchor=north] {$M$};
+  \node at (w.south) [anchor=north] {$W$};
+  \path (m.north) -- (l.north) node[midway] {vary bonds};
+\end{tikzpicture}
+\end{document}

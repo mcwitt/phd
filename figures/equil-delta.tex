@@ -1,0 +1,27 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\filename{data/delta_eq-s60-T07812-l\pad{\logsize}.csv}
+\def\logsizes{6,8,10,12}
+\begin{tikzpicture}
+  \begin{semilogxaxis}[
+    xmin=1, xmax=10^6,
+    xlabel={$t$},
+    ylabel={$\Delta(t)$},
+    extra y ticks={0},
+    extra y tick style={yticklabel=\empty, grid=major},
+    legend cell align=left
+  ]
+
+    \foreach \logsize in \logsizes {%
+      \addplot+[error bars/.cd, y dir=both, y explicit] table [
+        x expr=2^\thisrow{b},
+        y=mean,
+        y error=sem
+      ] {\filename};
+      \addlegendentryexpanded{$N=2^{\logsize}$}
+    }
+  \end{semilogxaxis}
+\end{tikzpicture}
+\end{document}

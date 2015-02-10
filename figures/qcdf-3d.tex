@@ -1,0 +1,48 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{semilogyaxis}[
+    name=plot,
+    width=\figurewidth,
+    xlabel={$q$},
+    xmin=0, xmax=1.05,
+    ymin=1e-6, ymax=2,
+    every axis plot post/.append style={mark=none},
+    cycle multi list={%
+      [5 of]color list\nextlist
+      densely dashed\\%
+      solid\\
+    },
+  ]
+    \newcommand{\doplot}[2][4]{
+      \pgfplotstableread{data/qcdf-d3-#2.csv}\data
+      \addplot+[each nth point=#1] table [x=Q,y=Av]{\data};\label{plot:qcdf-mean-#2}
+      \addplot+[each nth point=#1] table [x=Q,y=Median]{\data};\label{plot:qcdf-median-#2}
+    }
+    \pgfmathtruncatemacro\every{4^3/100}\doplot[\every]{L04}
+    \pgfmathtruncatemacro\every{6^3/100}\doplot[\every]{L06}
+    \pgfmathtruncatemacro\every{8^3/100}\doplot[\every]{L08}
+    \pgfmathtruncatemacro\every{10^3/100}\doplot[\every]{L10}
+    \pgfmathtruncatemacro\every{12^3/100}\doplot[\every]{L12}
+  \end{semilogyaxis}
+
+  % legend
+  \matrix[
+    draw,
+    matrix of nodes,
+    anchor=south east,
+    inner sep=0.2em,
+  ] at ([xshift=-2ex,yshift=2ex]plot.south east) {%
+    $N$ & $I^{\mathrm{av}}$ & $I^{\mathrm{med}}$ \\
+    $4^3$  & \ref{plot:qcdf-mean-L04} & \ref{plot:qcdf-median-L04} \\
+    $6^3$  & \ref{plot:qcdf-mean-L06} & \ref{plot:qcdf-median-L06} \\
+    $8^3$  & \ref{plot:qcdf-mean-L08} & \ref{plot:qcdf-median-L08} \\
+    $10^3$ & \ref{plot:qcdf-mean-L10} & \ref{plot:qcdf-median-L10} \\
+    $12^3$ & \ref{plot:qcdf-mean-L12} & \ref{plot:qcdf-median-L12} \\
+  };
+
+
+\end{tikzpicture}
+\end{document}

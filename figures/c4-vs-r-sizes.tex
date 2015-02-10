@@ -1,0 +1,39 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\filename{data/c4-vs-r-n\pad{\logsize}.csv}
+\def\logsizes{10,14,18,22,24,26}
+
+\begin{tikzpicture}
+  \begin{loglogaxis}[
+    width=\figurewidthfull,
+    xmin=1,xmax=10^5, ymin=10^-5,
+    xlabel={$r$},
+    ylabel={$C_4(r,t)$},
+    legend pos=south west,
+    legend cell align=left
+  ]
+    \foreach \logsize in \logsizes {%
+      \addplot+[
+        error bars/.cd,
+        y dir=both,
+        y explicit
+      ] table [
+        x=r,
+        y=mean,
+        y error=sem
+      ] {\filename};
+      \addlegendentryexpanded{$N=2^{\logsize}$}
+    }
+
+    \node [draw, anchor=north east] at (rel axis cs: 0.97,0.97){%
+      $\begin{aligned}
+        \sigma &= 5/8 \\
+        t &= 2^{14}
+      \end{aligned}$};
+
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{document}

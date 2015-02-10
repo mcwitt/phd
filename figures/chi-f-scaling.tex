@@ -1,0 +1,37 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\filename{data/chi_TL-f-L\pad{\size}.csv}
+\def\sizes{12,16,20,28,36}
+\begin{tikzpicture}
+  \begin{semilogyaxis}[
+    width=\figurewidthfull,
+    xmin=-5, xmax=45,
+    ymin=0.02, ymax=5,
+    xlabel={$L^{d/2}\del{T-T_L}/T_L$},
+    ylabel={$\chi(T)/\chi(T_L)$},
+    legend cell align=left
+  ]
+
+    \foreach \size in \sizes {%
+      \addplot+[
+        data,
+        mark options={fill opacity=0.3},
+      ] table [
+        x expr=\thisrow{L}^2.5*(\thisrow{Temp}-\thisrow{TL_mean})/\thisrow{TL_mean},
+        y expr=\thisrow{mean}/\thisrow{chiTL_mean},
+        y error expr=\thisrow{sem}/\thisrow{chiTL_mean}
+      ] {\filename};
+      \addlegendentryexpanded{$\size$}
+    }
+
+    \addplot+[thick, only marks, mark=otimes, mark size=3] table [
+        x expr=\thisrow{L}^2.5*(\thisrow{Temp}-\thisrow{TL_mean})/\thisrow{TL_mean},
+        y expr=\thisrow{mean}/\thisrow{chiTL_mean},
+        y error expr=\thisrow{sem}/\thisrow{chiTL_mean}
+    ] {data/chi_TL-f-Tc.csv};
+    \addlegendentry{$T_c$}
+  \end{semilogyaxis}
+\end{tikzpicture}
+\end{document}

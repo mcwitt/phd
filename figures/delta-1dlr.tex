@@ -1,0 +1,69 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    width=0.7\figurewidth,
+    xmode=log,
+    log basis x=2,
+    xlabel={$N$},
+    ylabel={$\Delta$},
+    scaled ticks=false,
+    yticklabel={\pgfmathprintnumber[fixed,precision=2]{\tick}},
+    group style={
+      group name=plots,
+      group size=3 by 3,
+      horizontal sep=2ex,
+      vertical sep=2ex,
+      x descriptions at=edge bottom,
+      y descriptions at=edge left
+    },
+  ]
+    \newcommand{\plotpanel}[2][]{
+      \addplot+[data] table
+        [x=N,y=Delta,y error=Delta_err]
+        {data/delta-s00-#2.csv};
+      \label{plot:delta-sk}
+      \addplot+[data] table
+        [x=N,y=Delta,y error=Delta_err]
+        {data/delta-s60-#2.csv};
+      \label{plot:delta-s60}
+      \addplot+[data] table
+        [x=N,y=Delta,y error=Delta_err]
+        {data/delta-s78-#2.csv};
+      \label{plot:delta-s78}
+      \addplot+[data] table
+        [x=N,y=Delta,y error=Delta_err]
+        {data/delta-s90-#2.csv};
+      \label{plot:delta-s90}
+      \node [anchor=north west, align=left] at (rel axis cs: 0.03, 0.97) {#1};
+    }
+
+    \nextgroupplot[ymax=0.08]
+      \plotpanel[$q_0=0.1$\\$\kappa=2$]{q1-k20}
+    \nextgroupplot[ymax=0.08]\plotpanel[$q_0=0.2$]{q2-k20}
+    \nextgroupplot[ymax=0.08]\plotpanel[$q_0=0.4$]{q4-k20}
+    \nextgroupplot[ymax=0.37]\plotpanel[$\kappa=1$]{q1-k10}
+    \nextgroupplot[ymax=0.37]\plotpanel{q2-k10}
+    \nextgroupplot[ymax=0.37]\plotpanel{q4-k10}
+    \nextgroupplot[ymin=0,ymax=0.55]\plotpanel[$\kappa=0.5$]{q1-k05}
+    \nextgroupplot[ymin=0,ymax=0.55]\plotpanel{q2-k05}
+    \nextgroupplot[ymin=0,ymax=0.55]\plotpanel{q4-k05}
+
+  \end{groupplot}
+
+  % legend
+  \matrix[
+      matrix of nodes,
+      anchor=south,
+      inner sep=0.2em,
+    ] at ([yshift=2ex] plots c2r1.north) {
+      \ref{plot:delta-sk}  & SK & [5pt]
+      \ref{plot:delta-s60} & $\sigma=0.6$   & [5pt]
+      \ref{plot:delta-s78} & $\sigma=0.784$ & [5pt]
+      \ref{plot:delta-s90} & $\sigma=0.896$ \\
+    };
+
+\end{tikzpicture}
+\end{document}

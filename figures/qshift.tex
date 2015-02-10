@@ -1,0 +1,45 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    xmin=0, xmax=0.15,
+    ymin=-2.025, ymax=-1.675,
+    xtick={0,0.02,...,0.15},
+    xticklabel={\pgfmathprintnumber[fixed,precision=2]{\tick}},
+    xlabel={$1/L$},
+    ylabel={$Q_{s,L}\sbr{\Delta T}$},
+    legend pos=north west,
+    legend cell align=left
+  ]
+    \foreach \sval/\slab in {{3/2}/15,2/20}{
+      \addplot+[data, only marks] table [
+        x expr=1/\thisrow{L},
+        y=mean,
+        y error=std
+      ]{data/qshift-s\slab.csv};
+      \addlegendentryexpanded{$s=\sval$}
+    }
+
+    \pgfplotstableread{data/qshift.fit.csv}\fitparams
+
+    \storerowval{0}{lambda}{\lm}
+    \storerowval{0}{omega}{\om}
+    \storerowval{0}{lambda_err}{\lmerr}
+    \storerowval{0}{omega_err}{\omerr}
+    \storerowval{0}{C15}{\A}
+    \storerowval{0}{C20}{\B}
+
+    \addplot+[mark=none, domain=0:0.15] { -\lm + \A*x^\om };
+    \addplot+[mark=none, domain=0:0.15] { -\lm + \B*x^\om };
+
+    \node [anchor=south east] at (rel axis cs: 0.97, 0.03) {$
+      \begin{aligned}
+        \lambda &= \round{3}{\lm}\pm\round{3}{\lmerr} \\
+        \omega  &= \round{2}{\om}\pm\round{2}{\omerr}
+      \end{aligned}
+    $};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

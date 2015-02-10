@@ -1,0 +1,29 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\pgfplotstableread{data/eq-s60-T07812-l10.csv}\data
+\begin{tikzpicture}
+  \begin{semilogxaxis}[
+    xmin=1, xmax=10^5,
+    xlabel={$t$},
+    legend entries={$U(t)$, $U[q_l(t)]$},
+    legend pos=south east,
+    legend cell align=left,
+    title={$N=1024$},
+    every axis plot post/.append style={data},
+  ]
+    \addplot table [
+      x expr=2^\thisrow{b},
+      y=U_mean,
+      y error=U_sem
+    ] {\data};
+
+    \addplot table [
+      x expr=2^\thisrow{b},
+      y=Ueq_mean,
+      y error=Ueq_sem
+    ] {\data};
+  \end{semilogxaxis}
+\end{tikzpicture}
+\end{document}

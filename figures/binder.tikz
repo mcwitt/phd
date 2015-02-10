@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+  \begin{axis}[
+    height=\figurewidth,
+    xmin=\xmin,xmax=\xmax,ymin=\ymin,ymax=\ymax,
+    xlabel={$T$},
+    ylabel={$g$},
+    extra x ticks={\tc},
+    extra x tick style={xticklabel=\empty, grid=major},
+    legend cell align=left,
+    legend style={font=\footnotesize}
+  ]
+    \foreach \logsize in \logsizes {%
+      \addplot+[data] table [
+        x=T,
+        y=mean,
+        y error=sem
+      ] {\filename};
+      \addlegendentryexpanded{$2^{\logsize}$}
+    }
+  \end{axis}
+\end{tikzpicture}

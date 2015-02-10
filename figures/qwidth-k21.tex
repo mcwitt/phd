@@ -1,0 +1,39 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    xmin=0, xmax=0.15,
+    ymin=-2.05, ymax=-1.65,
+    xticklabel={\pgfmathprintnumber[fixed,precision=2]{\tick}},
+    xlabel={$1/L$},
+    ylabel={$Q_{s,L}\sbr{\delta T_{21}}$},
+    legend pos=north west,
+    legend cell align=left
+  ]
+    \foreach \sval/\slab in {{3/2}/15,2/20}{
+      \addplot+[data, only marks] table [
+        x expr=1/\thisrow{L},
+        y=mean,
+        y error=std
+      ]{data/qwidth-k21-s\slab.csv};
+      \addlegendentryexpanded{$s=\sval$}
+    }
+
+    \pgfplotstableread{data/qwidth-k21.fit.csv}\fitparams
+
+    \storerowval{0}{yt}{\yt}
+    \storerowval{0}{yt_err}{\yterr}
+    \storerowval{0}{C15}{\A}
+    \storerowval{0}{C20}{\B}
+
+    \addplot+[mark=none, domain=0:0.15] { -\yt + \A*x };
+    \addplot+[mark=none, domain=0:0.15] { -\yt + \B*x };
+
+    \node [anchor=south east] at (rel axis cs: 0.97, 0.03) {%
+        $y_t^* = \round{2}{\yt}\pm\round{2}{\yterr}$
+    };
+  \end{axis}
+\end{tikzpicture}
+\end{document}

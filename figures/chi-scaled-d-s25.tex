@@ -1,0 +1,20 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\sig{25}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\filename{data/chi-scaled-d-s\sig-l\pad{\logsize}.csv}
+\def\logsizes{8,9,10,11,12,13,14}
+\def\xmin{1.9}
+\def\xmax{2.4}
+\def\ymin{0.2}
+\def\ymax{2.5}
+\def\insetxmin{2.01}
+\def\insetxmax{2.07}
+\def\insetymin{1.0}
+\def\insetymax{1.3}
+\def\tc{2.056}
+\input{figures/chi-scaled.tikz}
+\end{document}
+

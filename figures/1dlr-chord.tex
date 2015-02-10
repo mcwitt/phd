@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\pgfmathsetmacro{\N}{16}
+\pgfmathsetmacro{\sig}{0.375}
+\newcommand{\spinup}{\tikz\draw[spin] (0,-1) -- (0, 1);}
+
+\begin{tikzpicture}[
+  scale=3,
+  spin/.style={-latex, thick, scale=0.33},
+  bond/.style={very thin, gray},
+  declare function={
+    chord(\a,\b) = sin(180*abs(\a-\b)/\N);
+  }]
+  \foreach \s in {1,...,\N}
+    \coordinate (\s) at (360/\N*\s:1);
+
+  % draw bonds
+  \pgfmathsetmacro{\Nm}{\N-1}
+  \foreach \a [evaluate=\a as \ap using \a+1] in {1,...,\Nm} {
+    \foreach \b [evaluate=\b as \d using {chord(\a,\b)}] in {\ap,...,\N} {
+      \pgfmathsetmacro{\J}{(\N/pi*\d)^(-2*\sig)}
+      \pgfmathsetmacro{\c}{100*(1-\d)}
+      \draw [color=blue!\c!gray, line width=\J] (\a) -- (\b);
+    }
+  }
+
+  % draw spins
+  \foreach \s in {1,...,\N}
+    \node at (\s) {\spinup};
+
+\end{tikzpicture}
+\end{document}
+

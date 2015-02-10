@@ -1,0 +1,23 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{semilogxaxis}[
+    name=plot,
+    width=0.7\figurewidth,
+    height=0.7\figurewidth,
+    xlabel={$t$},
+    log basis x=2,
+    yticklabel={\pgfmathprintnumber[fixed,precision=2]{\tick}}
+  ]
+    \foreach \s/\slab in {0.6/60,0.784/78,0.896/90}{
+      \addplot+[data] table [
+        x expr=2^\thisrow{LogSweeps},
+        y=Mean,
+        y error=Mean_err,
+      ] {data/qcdf-s\slab-q2-n10.csv};
+    }
+  \end{semilogxaxis}
+\end{tikzpicture}
+\end{document}

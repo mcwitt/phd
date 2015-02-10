@@ -1,0 +1,34 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\sizes{8,12,16,20,28,36}
+\begin{tikzpicture}
+  \pgfmathsetmacro{\sqrttwo}{sqrt(2)}
+  \begin{loglogaxis}[
+    xmin=0.8, xmax=2.2,
+    ymin=0.04, ymax=0.3,
+    xtick={1,\sqrttwo,2},
+    xticklabels={1,$\sqrt{2}$,2},
+    ytickten={-1},
+    minor ytick={0.04,0.05,...,0.1,0.2},
+    xlabel={$kL/(2\pi)$},
+    ylabel={$\chi\del{k,L,T_c}/L^2$},
+    legend pos=north east,
+    legend cell align=left
+  ]
+    \foreach \size [count=\n] in \sizes {
+      \addplot+[data, only marks] table [
+        x expr=\thisrow{knorm}*(1 + 0.03*(\n-3)),
+        y expr=\thisrow{mean}/\thisrow{L}^2,
+        y error expr=\thisrow{sem}/\thisrow{L}^2
+      ]{data/chi-modes-p-Tc-L\pad{\size}.csv};
+      \addlegendentryexpanded{$\size$}
+    }
+
+    \addplot [dashed, domain=0.8:2.2, samples=2] {0.21/x^2};
+    \node [anchor=south west] at (rel axis cs: 0.03, 0.03) {periodic};
+
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{document}

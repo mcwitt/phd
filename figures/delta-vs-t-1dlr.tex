@@ -1,0 +1,33 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{semilogxaxis}[
+    name=plot,
+    width=0.7\figurewidth,
+    height=0.7\figurewidth,
+    xlabel={$t$},
+    log basis x=2,
+    yticklabel={\pgfmathprintnumber[fixed,precision=2]{\tick}}
+  ]
+    \foreach \s/\slab in {0.6/60,0.784/78,0.896/90}{
+      \addplot+[data] table [
+        x expr=2^\thisrow{LogSweeps},
+        y=Delta,
+        y error=Delta_err
+      ] {data/delta-s\slab-q2-k10-n10.csv};
+      \label{plot:delta-vs-t-1dlr-s\slab}
+    }
+  \end{semilogxaxis}
+  \matrix[
+    matrix of nodes,
+    anchor=south,
+    inner sep=0.2em
+  ] at (plot.north) {
+    \ref{plot:delta-vs-t-1dlr-s60} & 0.6 &[1ex]
+    \ref{plot:delta-vs-t-1dlr-s78} & 0.784 &[1ex]
+    \ref{plot:delta-vs-t-1dlr-s90} & 0.896 \\
+  };
+\end{tikzpicture}
+\end{document}

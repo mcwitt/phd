@@ -1,0 +1,37 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    xmin=0, xmax=0.4,
+    ymin=0.4, ymax=0.48,
+    xlabel={$L^{-1/2}$},
+    ylabel={$g(T_c)$},
+    extra y ticks={0.406},
+    extra y tick style={yticklabel=\empty, grid=major},
+    legend pos=north west,
+    legend cell align=left
+  ]
+    \addplot+[data, only marks] table [
+      x expr=\thisrow{L}^(-1/2),
+      y=mean,
+      y error=std
+    ]{data/gx.csv};
+    \addlegendentry{data}
+
+    % plot fit
+
+    \pgfplotstableread{data/gx.fit.csv}\fitparams
+
+    \storerowval{0}{gx}{\gx}
+    \storerowval{0}{gx_err}{\gxerr}
+    \storerowval{0}{slope}{\slope}
+    \storerowval{0}{slope_err}{\slopeerr}
+
+    \addplot[linear fit, red]{ \gx + \slope*x };
+    \addlegendentry{$g^*=\round{3}{\gx}\pm\round{3}{\gxerr}$}
+
+  \end{axis}
+\end{tikzpicture}
+\end{document}

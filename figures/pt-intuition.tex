@@ -1,0 +1,41 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\pgfmathsetmacro\xa{2.5}
+\pgfmathsetmacro\xb{7.5}
+\pgfmathsetmacro\ya{1}
+\pgfmathsetmacro\yb{3}
+\pgfmathsetmacro\dy{\yb-\ya}
+\begin{tikzpicture}[
+  config/.style={circle, anchor=south},
+  declare function={
+    gauss(\x,\pos) = exp(-(\x-\pos)^2/2);
+    energy(\x) = -(\ya*gauss(\x,\xa) + \yb*gauss(\x,\xb));
+  }
+]
+\begin{axis}[
+  width=\figurewidthfull,
+  height=0.5\figurewidthfull,
+  xtick=\empty,
+  ytick={-1.38, -2.5},
+  yticklabels={$T_2$, $T_1$},
+  grid=major,
+  xlabel=configuration, ylabel={$E$},
+  axis lines=left,
+  enlarge y limits=true,
+  every axis y label/.style={at=(current axis.above origin),anchor=south},
+]
+
+  \addplot[domain=0:5,  samples=50, smooth, thick] {energy(x)}
+    node (T1) [config, ball color=blue!33, pos=0.5] {\phantom{1}};
+  \addplot[domain=5:10, samples=50, smooth, thick] {energy(x)}
+    node (T2)  [config, pos=0.25, ball color=red!33, sloped] {\phantom{2}}
+    node [config, pos=0.75, ball color=red!33, sloped, fill opacity=0.3] {\phantom{2}};
+
+  % unrotated labels
+  \node at (T1) {1};
+  \node at (T2) {2};
+\end{axis}
+\end{tikzpicture}
+\end{document}

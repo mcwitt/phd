@@ -1,0 +1,21 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{loglogaxis}[
+    xmin=0.1, xmax=10,
+    xlabel={$\pi_m/\pi_l$},
+    ylabel={$w_{l \to m}$},
+    legend entries={Metropolis, heat bath},
+    legend pos=south east,
+    legend cell align=left,
+    every axis plot/.append style={thick}
+  ]
+
+    \addplot [color=red] coordinates { (0.1, 0.1) (1, 1) (10,1) };
+    \addplot [color=blue,domain=0.1:10] { x/(1+x) };
+
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{document}

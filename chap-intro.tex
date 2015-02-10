@@ -1,0 +1,1163 @@
+\chapter{Introduction}
+
+\setlength\epigraphwidth{0.4\textwidth}
+{
+  \SingleSpacing
+  \epigraph{
+    The behavior of large and complex aggregates of elementary particles, it
+    turns out, is not to be understood in terms of a simple extrapolation of the
+    properties of a few particles.
+%   Instead, at each level of complexity entirely new properties appear, and the
+%   understanding of the new behaviors requires research which I think is as
+%   fundamental in its nature as any other.
+  }{Philip W. Anderson \\ \textit{More is Different} (1972)}
+}
+
+
+\section{Motivation}
+
+With the widespread adoption and rapid advancement of the digital computer in
+the mid-20th century have come new, powerful approaches to modeling systems
+using numerical simulations. Before the advent of computers, models of physical
+systems were restricted to those that could be solved analytically, or at least
+those for which a suitable approximation, or expansion in some small parameter,
+can be made while retaining the essential physics. Numerical simulations expand
+the space of practical models significantly, while simultaneously bringing a
+different set of challenges and limitations. With the present technology
+numerical simulations of \emph{classical} systems are limited to sizes many
+orders of magnitude below the macroscopic scale. For \emph{quantum} systems the
+situation is much more difficult, as the computational resources required
+expand exponentially in the size of the system; furthermore, simulations of
+fermionic systems suffer from the ``sign problem" in evaluating oscillatory
+integrals which also induces an exponential penalty in the size of the system.
+Nevertheless, numerical simulations have become a crucial complement to
+traditional theory and experiment as computing technology has advanced,
+allowing the simulation of progressively larger systems, and techniques such as
+finite-size scaling analysis (described in \cref{sec:numerical-fss}) have been
+developed to extrapolate results for finite systems into the thermodynamic
+(infinite-size) limit. It is hoped that an eventual practical \emph{quantum
+  computer} could efficiently simulate quantum systems.
+
+Numerical simulations have been especially useful in the study of ``complex
+systems," systems consisting of a large number of \emph{strongly-interacting}
+parts whose aggregate behavior is strongly nonlinear, meaning (roughly) that
+the overall behavior cannot be approximated simply as the sum of its parts.
+Examples of such systems in science are numerous, including models of
+high-temperature superconductivity in many-body physics, the behavior of ant
+colonies and the interaction of cells in the immune system in biology, and
+neural networks in neuroscience and machine learning. In this thesis we focus
+on models of magnetism in statistical physics, which are among the simplest
+examples of complex systems to study from an analytical and numerical
+perspective.
+
+
+\section{Ising model of ferromagnetism}
+\label{sec:intro-ising}
+
+In the early 1920s, William Lenz gave his student Ernst Ising a simple
+mathematical model of ferromagnetism, now known as the \emph{Ising model},
+which was to be the topic of Ising's dissertation. The model consists of
+discrete variables, ``spins," which can take one of two values, $+1$ or $-1$,
+and are arranged on a regular lattice with pairwise nearest-neighbor
+interactions. In addition to the nearest-neighbor interactions, the spins also
+interact with an externally-applied field $h_i$, which in general can be
+nonuniform. The Hamiltonian is given by
+\begin{equation}
+  \ham = -\frac{1}{2} \sum_{i,j} J_{ij} S_i S_j - \sum_i h_i S_i,
+  \label{eq:ising-ham}
+\end{equation}
+where the first sum is over all pairs of spins, and $J_{ij}=J$, a positive
+constant, if $i$ and $j$ are nearest neighbors on the lattice and 0 otherwise.
+
+As the temperature is decreased through the Curie temperature $T_c$, a
+ferromagnet in zero external field undergoes a continuous phase transition from
+the \emph{paramagnetic} phase, in which the magnetization is zero, to the
+\emph{ferromagnetic} phase, in which the magnetization is finite and can be
+either positive or negative. This is an example of spontaneous symmetry
+breaking, where a symmetry, in this case time-reversal symmetry $S_i \to -S_i$,
+is ``broken" as the system undergoes a transition into a phase with lower
+symmetry. In his 1924 dissertation, Ising solved the one-dimensional version
+of the model that now bears his name and showed that it did \emph{not} have a
+ferromagnetic phase at any positive temperature. From this he (incorrectly)
+concluded that the model does not admit a finite-temperature phase transition
+in any number of dimensions, and thus was not a suitable model of
+ferromagnetism \autocite{ising1925beitrag}.
+
+This assumption was proven incorrect by \textcite{peierls1936ising}, who gave
+an argument based on the free energy of \emph{domain walls} (the boundaries
+separating regions of positive and negative magnetization) showing that phase
+transitions \emph{do} occur in the model for dimensions greater than two. The
+argument goes as follow. In one dimension, the energy cost of a domain wall is
+$2J$ since the energy of a pair of spins has magnitude $J$ and changes sign
+when one of them is flipped. But the entropy added by the domain wall goes like
+the logarithm of the number of spins $L$, since there are $L$ places%
+\footnote{assuming periodic boundary conditions} where it could go. Thus, in
+one dimension, the \emph{free energy cost} of a domain wall is negative for any
+positive temperature in the infinite-size limit, so the system will form domain
+walls on all scales, destroying the ferromagnetic order. However, in two
+dimensions, the energy cost of a domain wall is $2 J n$, where $n$ is the
+number of spins on the boundary. An upper bound on the number of ways to form a
+closed loop is $(z-1)^n$, where $z$ is the coordination number of the lattice.
+This is an upper bound because it allows for self-intersections, which are not
+possible for a real domain wall. The free-energy cost $\Delta F_n$ to form a
+domain wall of length $n$ is then bounded from below as
+\begin{equation}
+  \Delta F_n > \sbr{2J - T \log(z-1)} n.
+\end{equation}
+Thus, for small positive $T$ the formation of domain walls of any size is
+suppressed, and the system will develop ferromagnetic order. This also gives a
+lower bound on the transition temperature $T_c$ at which the system transitions
+to ferromagnetic order, $T_c > 2J/\log(z-1) \approx 1.82 J$ in two dimensions.
+A similar argument can be made for all dimensions $d \geq 2$.
+
+It turns out that it is a general feature of phase transitions in diverse
+systems that there is a number of dimensions $d_l$, called the \emph{lower
+  critical dimension}, below which a transition does not occur at finite
+temperature, so the above result can be stated as $d_l=2$ for the ferromagnetic
+Ising model. In fact, this result holds for all systems in the Ising
+universality class, which includes systems with a scalar order parameter near a
+continuous phase transition, from ferromagnets to liquids. The phenomenon of
+universality will be discussed in \cref{sec:intro-critical}.
+
+Two decades after the introduction of the Ising model, in a remarkable
+mathematical achievement, \textcite{onsager1944crystal} gave an analytic
+solution of the two-dimensional Ising model in zero field. The exact
+transition temperature is given by%
+\begin{equation}
+  T_c = \frac{2J}{\log(1 + \sqrt{2})} \approx 2.269 J.
+\end{equation}
+% TODO: exact T_c was found earlier
+Onsager's solution is very complicated and the techniques do not generalize
+well. Subsequent attempts at an analytical solution in two dimensions with a
+field or in three and higher dimensions have been unsuccessful, and in fact
+recently arguments have been made from computational complexity theory that
+these problems are intractable.%
+\footnote{%
+  \textcite{istrail2000statistical} shows that computing the partition function
+  for $d=2$ with a field or for $d>2$ belongs to the class of NP-complete
+  problems, which are unlikely to have closed-form solutions.
+}
+
+The Ising model is ubiquitous in the literature of statistical mechanics
+because it is a relatively uncomplicated model which, thanks to the phenomemon
+of \emph{universality}, exhibits critical behavior \emph{identical} to other
+systems in the same number of dimensions and with \emph{scalar} order
+parameters, and thus provides a convenient setting for the study of phase
+transitions in a wide variety of systems.
+
+
+\subsection{Mean-field theory}
+
+Despite the apparent simplicity of Ising model, exact solutions do not appear
+to be possible in dimensions $d>2$. The source of the difficulty is the
+spin-spin interactions, which preclude a solution by factorizing the partition
+function as a product of single-site factors. This is a general problem in
+many-body statistical physics; as a result, exact analytical solutions are few
+and far between.
+
+\emph{Mean-field theory} (MFT) is the simplest possible approximation of an
+interacting system aside from ignoring the interactions altogether. The
+resulting model is usually straightforward to solve analytically, although
+there are exceptions (for example, the Sherrington-Kirkpatrick model discussed
+in \cref{sec:intro-sk}.) There are many equivalent ways to generate a
+mean-field theory for a given system, but all are based on the same essential
+approximation of ignoring the interaction of \emph{fluctuations}.
+
+For example, following \textcite{cardy1996scaling}, we can generate a mean-field
+theory of the Ising ferromagnet as follows. We write for the interacting part
+of the Hamiltonian
+\begin{align*}
+  \ham_{\mathrm{int}}
+  &\equiv -\frac{1}{2} \sum_{ij} J_{ij} S_i S_j \\
+  &= -\frac{1}{2} \sum_{ij} J_{ij} \sbr{M + (S_i - M)}\sbr{M + (S_j - M)} \\
+  &\approx -\frac{1}{2} \sum_{ij} J_{ij} \sbr{-M^2 + M(S_i + S_j)} \\
+  &= \frac{1}{2} N J M^2 - J M \sum_i S_i,
+\end{align*}
+where $M \equiv \av{S}$ is the magnetization and $J=\sum_j J_{ij}$. The
+mean-field approximation comes in third step, where we have discarded the term
+which is quadratic in the fluctuations, \textit{i.e.} $(S_i - M)(S_j - M)$.
+Thus we have decoupled the spin degrees of freedom and can solve the problem by
+factorizing the partition function,
+\begin{align*}
+  Z
+  &= \Tr\exp\sbr{-\frac{1}{2} \beta N J M^2 - \beta(h + J M) \sum_i S_i} \\
+  &= e^{-\frac{1}{2} \beta N J M^2} \sbr{2 \cosh \beta(h + J M)}^N.
+\end{align*}
+The free energy per spin is then
+\begin{equation}
+  f = \frac{1}{2} J M^2 - \beta^{-1}\log\cosh\beta(h + JM),
+  \label{eq:mf-fe}
+\end{equation}
+dropping the constant which vanishes in the thermodynamic limit. This
+expression depends on the magnetization $M$, which we have not yet specified.
+But since $M = -\partial f / \partial h$, we have the following
+\emph{self-consistency condition}
+\begin{equation}
+  M = \tanh\beta(h + J M).
+  \label{eq:mf-scc}
+\end{equation}
+Note that this has the same form as the Curie law, which we would expect to
+obtain had we set the spin-spin couplings $J=0$, but with the external field
+$h$ replaced by $h + J M$. The additional term $J M$ has the simple
+interpretation as the ``molecular field" generated by a spin's neighbors,
+neglecting fluctuations about the the mean $M$. Note that for $h=0$ and high
+temperature (small $\beta$), \cref{eq:mf-scc} has only a single solution at
+$M=0$, corresponding to the paramagnetic state, while at low temperatures two
+additional solutions appear at $M=\pm M_0$ corresponding to the two pure states
+of the paramagnetic phase. Thus the mean field model demonstrates a continuous
+phase transition with spontaneous symmetry breaking. The (mean-field)
+transition temperature $\tcmf$ is given by the limit $M \to 0^+$ in
+\cref{eq:mf-scc}, from which we obtain $M = J M / \tcmf$, or
+\begin{equation}
+  \tcmf = J = \sum_j J_{ij}.
+\end{equation}
+
+To understand the nature of the broken symmetry it is helpful to consider the
+behavior of the mean-field free energy near the transition. In zero field,
+\cref{eq:mf-fe} has the expansion
+\begin{equation}
+  f = \frac{1}{2} J (1 - \beta J) M^2 + \mathcal{O}(M^4),
+  \label{eq:mf-fe-trunc}
+\end{equation}
+where the coefficient of the $M^4$ term is positive. As shown in
+\cref{fig:mf-fe}, for temperatures above $T_c$ the coefficient of the
+quadratic term is positive and there is a single minimum at $M=0$,
+corresponding to the paramagnetic state. As the temperature is lowered through
+$T_c$, the $M=0$ solution of the minimum equation becomes unstable and is
+replaced by two new minima at $\pm M_0(t)$ which shift continuously from $M=0$
+as the temperature is lowered. The system will choose one of these minima,
+which correspond to the ``up" and ``down" pure states of the ferromagnetic
+phase. This situation describes a continuous phase transition with spontaneous
+symmetry breaking. Now consider what happens when a nonzero external field $h$
+is applied. For $T<T_c$, as $h$ passes through zero from negative to positive,
+the global minimum of the free energy shifts discontinuosly from $-M_0$ to
+$M_0$. This exemplifies a first-order phase transition.
+
+Phase transitions are characterized by a set of \emph{critical exponents},
+which describe how various quantities vary asymptotically near the critical
+point. For example, in magnetic systems, the critical exponent $\beta$
+is defined as
+\begin{equation}
+  M \propto (T_c - T)^{\beta}
+\end{equation}
+in the limit $T \to T_c^-$.
+We can estimate this exponent from the mean-field theory developed above.
+Expanding \cref{eq:mf-fe} in $M$, we find the form
+\begin{equation}
+  f \propto a t M^2 + \frac{1}{2} b M^4 - h M,
+  \label{eq:mf-fe-form}
+\end{equation}
+where $a$, $b$, and $c$ are constants which depend only weakly on the reduced
+temperature $t=(T-T_c)/T_c$ \autocite{cardy1996scaling}. Minimizing with
+respect to $M$ we find that, near $T_c$, $M^2=(a/2b)t$, from which we read off
+the mean-field value of the critical exponent $\beta=1/2$. This is not all that
+accurate compared with values measured in experiment, $\beta \approx 0.32$, but
+this is not surprising given the seemingly crude approximation that led to this
+result.
+
+What \emph{is} surprising is that the determination of the critical exponents
+from mean-field theory seems not to rely on any details of the model,
+\textit{e.g.} the coefficients in \cref{eq:mf-fe-form}, but only on the form
+of the expansion. In fact, Landau showed that such a form follows for systems
+with a scalar order parameter undergoing a continuous phase transition, from
+only simple symmetry arguments and assumptions of analyticity. Thus the
+disagreement between the critical exponents predicted by Landau theory and
+those observed in experiment was at first considered paradoxical, seemingly a
+violation of dimensional analysis \autocite{goldenfeld1992lectures}. These
+observed ``anomalous dimensions," the difference between critical exponents
+observed in experiment and those predicted by Landau theory, was to be
+explained by the renormalization group. In the next section we will give a
+brief review of Landau theory and discuss how it breaks down near the critical
+point.
+
+Finally, we emphasize that there are many ways to generate equivalent
+mean-field theories for a given system. For example, we could have arrived at
+\cref{eq:mf-scc} by supposing that each spin behaves as an isolated spin in an
+external field equal to $h + J M$, where, ignoring fluctuations, we approximate
+the contribution of the neighbors as $J M$. Note that this is \emph{equivalent}
+to an (infinite-size) model where \emph{every} pair of spins is coupled by an
+interaction $J/N$, because the thermal average $M$ is equivalent to the average
+over an infinite number of neighbors in the latter case.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        schematic,
+        width=0.7\figurewidth,
+        domain=-1.2:1.2,
+        ymin=-1.2,ymax=1.2,
+        xlabel={$M$},ylabel={$y$},
+      ]
+        \addplot+[black,dashed,name path=M] {x}
+          node[above] {$y=M$};
+        \addplot+[thick,red] {tanh(4*x/7)}
+          node[right] {$T>T_c$};
+        \addplot+[thick,blue,name path=RHS] {tanh(7*x/4)}
+          node[right] {$T<T_c$};
+        \path[name intersections={of=M and RHS}];
+        \fill
+          (intersection-1) circle (2pt)
+          (intersection-3) circle (2pt);
+        \draw[thick] (intersection-2) circle (2pt);
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{}\label{fig:mf-scc}
+  \end{subfigure}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        schematic,
+        width=0.7\figurewidth,
+        domain=-2.5:2.5,
+        xlabel={$M$},ylabel={$f$}
+      ]
+        \addplot+[brown] {x^4}
+          node[above right] {$T=T_c$};
+        \addplot+[blue] {-4*x^2 + x^4}
+          node[above right] {$T<T_c$};
+        \addplot+[red] {+4*x^2 + x^4}
+          node[above right] {$T>T_c$};
+        \draw[thick] (0,0) circle (2pt);
+        \fill
+          ({-2^(1/2)},-4) circle (2pt)
+          ({+2^(1/2)},-4) circle (2pt);
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{}\label{fig:mf-fe}
+  \end{subfigure}
+  \caption[
+    Plots of the mean-field self-consistency condition and the mean-field free
+    energy for the Ising model.
+  ]
+  {
+    Panel \subref{fig:mf-scc} shows the right-hand side of the self-consistency
+    condition, \cref{eq:mf-scc}, as a function of the magnetization $M$ for $h
+    =0$. Above the critical temperature $T_c$ there is a single self-consistent
+    solution corresponding to zero magnetization, while below $T_c$ there are
+    two solutions with nonvanishing magnetization $M=\pm M_0$ in addition to
+    the solution at $M=0$. Panel \subref{fig:mf-fe} shows the free energy as a
+    function of $M$, showing that for $T<T_c$, the solution with $M=0$ is
+    \emph{unstable}.
+  }
+\end{figure}
+
+
+\subsection{Landau theory}
+
+The Landau theory of phase transitions is a phenomenological theory based on
+a few simple assumptions about the behavior of the relevant order parameter
+$\eta$ in the vicinity of a phase transition. We define a function $L(\eta)$,
+called the Landau free energy, whose global minimum is supposed to give the
+equilibrium state of the system, and postulate that
+\begin{enumerate}
+  \item The order parameter $\eta=0$ in the disordered phase; $\eta$ is small
+    and nonzero in the ordered phase close to the transition.
+    \label{itm:eta}
+  \item $L$ respects the symmetries of the underlying Hamiltonian.
+  \item $L$ is an analytic function of both $\eta$ and the set of couplings
+    $\cbr{K}$ describing the interactions; thus it can be expanded as a power
+    series in $\eta$ near the critical point.
+  \item $L$ is a local function of $\eta$, \textit{i.e.} it only involves
+    derivatives to a finite order.
+\end{enumerate}
+
+For the Ising model an appropriate choice of order parameter is $\eta=M$, the
+magnetization. Because of the time-reversal ($S_i \to -S_i$) symmetry of the
+Hamiltonian, we require that the Landau free energy $\mathcal{L}(\eta)$ be
+symmetric about $\eta=0$ in the absence of an external field. Expanding
+$\mathcal{L}(\eta)$ in powers of $\eta$ near the critical point, we obtain the
+form
+\begin{equation}
+  L = a t \eta^2 + \frac{1}{2} b \eta^4 - H \eta,
+  \label{eq:landau-fe}
+\end{equation}
+where the last term is the leading-order contribution to the energy in a field
+$H$ and, as can be seen from \cref{itm:eta}, $a$ and $b$ are independent of the
+reduced temperature $t$ to leading order. Note that this is the same form as
+\cref{eq:mf-fe-form}, which we derived before by solving a mean-field model of
+Ising model Hamiltonian. Here, we arrive at the same form using only the
+postulates of Landau theory. The only details of the Ising model that were
+relevant to the derivation are the fact that the order parameter is a scalar,
+and that the Hamiltonian obeys time-reversal symmetry in zero field.
+
+To calculate correlation functions in Landau theory, we allow $\eta$ to vary in
+space. We may define a spatially-varying order parameter for the Ising model by
+using a coarse-graining procedure whereby $\eta(\vec{r})$ is defined to be the
+average of the spins in a block of size $\Lambda^{-1}$ centered at $\vec{r}$.
+Choosing $\Lambda^{-1} \sim \xi$, the correlation length, ensures that spins
+within a given block have similar values. We can then postulate that the
+contribution to the Landau free energy due to the interaction of adjacent
+blocks has the simplest-possible \emph{analytic} form,
+$\sbr{\eta(\vec{r}) - \eta(\vec{r} + \vec{\delta})}^2/\Lambda^{-2}$,
+where $\vec{\delta}$ is the vector from the center of one block to the other,
+and $\abs{\vec{\delta}}=\Lambda^{-1}$. Taking the continuum limit,
+\textit{i.e.} the lattice spacing $a \to 0$, and noting that $\eta(\vec{r})$ is
+slowly-varying in space, we define coarse-grained Landau free energy
+\begin{equation}
+  L\sbr{\eta(\vec{r})}
+  = \int\dif^d \vec{r}
+  \cbr{\frac{\gamma}{2}\del{
+      \nabla\eta}^2 + a t \eta^2 + \frac{1}{2} b \eta^4 - H(\vec{r}) \eta(\vec{r})},
+  \label{eq:landau-cg}
+\end{equation}
+where $\gamma$ is a constant describing the strength of the interaction between
+neighboring blocks. Note that $\eta(\vec{r})$ and $L\sbr{\eta(\vec{r})}$ both
+depend on the length scale $\Lambda^{-1}$ over which the coarse graining is
+performed. To make a connection between the coarse-grained Landau free energy
+and the thermodynamic free energy, we note that
+\begin{equation}
+  e^{-\beta L \sbr{\eta(\vec{r})}} = \Tr^{\prime} e^{-\beta H \cbr{S_i}},
+\end{equation}
+where $\Tr^{\prime}$ indicates that the trace is to be taken over only those
+microscopic configurations which are compatible with the coarse-grained order
+parameter $\eta(\vec{r})$. Thus the relationship between the coarse-grained
+free energy and the partition function (near the critical point, where $\eta$
+is small) is
+\begin{equation}
+  Z = \int\mathcal{D}\eta \, e^{-\beta L \sbr{\eta(\vec{r})}}.
+  \label{eq:part-functional}
+\end{equation}
+If we drop the quartic term in \cref{eq:landau-cg}, then
+\cref{eq:part-functional} can be solved straightforwardly by (functional)
+Gaussian integration.
+The resulting \emph{Gaussian approximation} corresponds to the assumption that
+the fluctuations of the order parameter are distributed as Gaussian random
+variables about the mean value. From the resulting approximation of the free
+energy we obtain critical exponents characterizing the phase transition, which
+we refer to hereafter as the \emph{mean-field exponents}.
+
+In principle we should be able to improve on the Gaussian approximation by
+perturbatively including the quartic term in \cref{eq:landau-cg}. First, we
+need to find a small, dimensionless parameter in which to expand. From
+\cref{eq:landau-cg} we can define a zero-field ``effective Hamiltonian,"
+\begin{equation}
+  \ham_{\mathrm{eff}}\sbr{\phi} \equiv \beta L
+  = \int \dif^d \vec{r} \sbr{
+    \frac{1}{2}(\nabla\phi)^2 +
+    \frac{1}{2} r_0 \phi^2 +
+    \frac{1}{4} u_0 \phi^4}
+  \label{eq:heff}
+\end{equation}
+where we have rescaled the order parameter
+$\phi \equiv (\beta\gamma)^{1/2}\eta$
+so that the coefficient of the derivative term is just $1/2$, and
+$r_0/2 \equiv a t/\gamma$,
+$u_0/4 \equiv b/(2 \beta \gamma^2)$
+\autocite{goldenfeld1992lectures}.
+Because $\ham_{\mathrm{eff}}$ is dimensionless, we find from the first term in
+\cref{eq:heff} that $\phi$ must have dimensions $L^{1-d/2}$, where $L$ is a
+unit of length. Hence we find that $r_0$ has dimensions of $L^{-2}$ and $u_0$
+has dimensions of $L^{d-4}$. To write this in terms of dimensionless variables
+we use as a length scale $L \equiv r_0^{-1/2}$, which is proportional to the
+correlation length in the Gaussian approximation since $\xi \propto t^{-1/2}$.
+Thus,
+\begin{equation}
+  \ham_{\mathrm{eff}}\sbr{\phi}
+  = \int \dif^d \vec{x}
+    \sbr{
+      \frac{1}{2}
+      (\nabla\varphi)^2 +
+      \frac{1}{2} \varphi^2 +
+      \frac{1}{4} \overline{u}_0 \varphi^4}
+\end{equation}
+where
+\begin{equation}
+  \vec{x}\equiv\vec{r}/L\qquad
+  \varphi = \phi/L^{1-d/2}\qquad
+  \overline{u}_0 = u_0/L^{d-4}.
+\end{equation}
+Now, to perturbatively include the quartic term, we define
+\begin{align}
+  \ham_0  &\equiv \int\dif^d\vec{r}\sbr{\frac{1}{2}(\nabla\varphi)^2 + \frac{1}{2} \varphi^2}, \\
+  \hamint &\equiv \int\dif^d\vec{r}\sbr{\frac{1}{4} \overline{u}_0 \varphi^4},
+  \label{eq:ham-int}
+\end{align}
+where $\ham_0$ is corresponds to the Gaussian approximation, and expand the
+partition function in powers of $\hamint$,
+\begin{align*}
+  Z
+  &= \int\mathcal{D}\phi \, e^{-\ham_{\mathrm{eff}}} \\
+  &= \int\mathcal{D}\phi \, e^{-\ham_0} e^{-\hamint} \\
+  &= \int\mathcal{D}\phi \, e^{-\ham_0} \del{1 - \hamint + \frac{1}{2} \hamint^2 - \cdots}.
+\end{align*}
+Such an expansion is reasonable when the coefficient of the quartic term,
+$\overline{u}_0$, is small. However, by dimensional analysis we have shown that
+$\overline{u}_0 \propto t^{(d-4)/2}$. This means that, in dimensions $d<4$, the
+``perturbation" actually diverges as we approach the critical point;
+consequently, mean-field theory, including the Gaussian approximation and any
+method based on keeping a finite number of terms in the perturbation series,
+fails to describe the physics near the critical point. On the other hand, for
+$d>4$, the perturbation vanishes in the limit $t \to 0$, and hence including
+additional terms in the perturbation series has no effect on the asymptotic
+form of the solution. The conclusion is that the mean-field critical exponents
+are \emph{exact} in dimensions $d>4$ for systems described by the same Landau
+theory as the Ising model (\textit{i.e.}, the Ising universality class). For a
+given universality class, we define the \emph{upper critical dimension} $d_u$
+to be the dimension above which the mean-field critical exponents are exact.
+Hence this result corresponds to $d_u=4$ for the Ising universality class.
+
+
+\section{Disorder and spin glasses}
+
+Historically, much progress has been made in the theory of condensed matter
+physics by studying idealized models in which atoms lie on a regular crystal
+lattice. For example, the theory of electronic band structures, which
+successfully explains many physical properties of solids, arises from Bloch
+waves in a periodic potential.
+
+However, real crystals have some degree of \emph{disorder} in the form of
+distortions, impurities, and, at finite temperature, thermal fluctuations of
+the atoms about their mean positions. One manifestation of this which is
+observed in experiment is a small positive correction to the resistivity of
+metals and semiconductors relative to the prediction of band theory. However,
+the effect of disorder can be drastic in some cases. In a seminal paper,
+\textcite{anderson1958absence} demonstrated the phenomenon now known as
+\emph{Anderson localization}, in which the diffusion of electrons is
+\emph{entirely} suppressed in three-dimensional (and higher) systems when the
+amount of disorder exceeds a certain threshold. Furthermore, in one and two
+dimensions, diffusion is suppressed for \emph{any} amount of disorder. The
+realization that the presence of disorder may result not just in quantitative
+corrections to an idealized theory, but in entirely new qualitative behavior,
+motivates the study of disordered systems.
+
+In the early 1970s, experimental studies of magnetic ordering in a class of
+materials called ``dilute magnetic alloys" found surprising results. The
+materials in question consist of a nonmagnetic ``host" metal (\textit{e.g.} Au,
+Ag, Cu, Pt) with a low concentration of magnetic impurities (\textit{e.g.} Fe
+or Mn) occupying random sites. One historically-important result concerns the
+behavior of such a material at low temperature subjected to an oscillating
+magnetic field. Measuring the (ac) susceptibilty, defined as the time average
+of $\chi = \partial M / \partial h$, \textcite{cannella1972magnetic} found that
+a cusp occured at a specific temperature which depended strongly on the
+concentration of impurities. Below the cusp they found no evidence of
+ferromagnetic order, excluding the possibility of a ferromagnetic transition.
+Neither was this consistent with emergence of \emph{anti}ferromagnetic order,
+where we would expect a peak in the susceptibility at the transition
+temperature, but this temperature should not to depend strongly on the
+concentration of impurities.
+
+A unique feature of the ``classical spin glasses" described above is the
+RKKY-type%
+\footnote{%
+  named for Ruderman, Kittel, Kasuya, and Yosida
+}
+interaction between the dilute magnetic impurities, mediated by conduction
+electrons. Thus, the effective exchange coupling $J(r)$ between two impurity
+atoms separated by a distance $r$ has the form
+\begin{equation}
+  J(r) \sim \frac{\cos(2 k_F r)}{r^3},
+\end{equation}
+where $k_F$ is the Fermi wavenumber of the host metal
+\autocite{binder1986spin}. The important feature here is the oscillation of the
+\emph{sign} of the interaction with distance which, when combined with the
+spatial disorder of the impurity atoms, leads to interactions between each pair
+of impurity atoms which are randomly ferromagnetic or antiferromagnetic. In a
+seminal paper which initiated the modern theory of spin glasses,
+\textcite{edwards1975theory} identified this competition between ferromagnetic
+and antiferromagnetic interactions as the essential physics responsible for the
+surprising behavior of spin glasses.
+
+
+\subsection{Edwards-Anderson model}
+\label{sec:intro-ea}
+
+\textcite{edwards1975theory} proposed the following simple-looking model of a
+spin glass, whose Hamiltonian has the same form as that of the Ising model,
+\begin{equation}
+  \ham = \frac{1}{2} \sum_{i,j} J_{ij} S_i S_j + \sum_i h_i S_i,
+\end{equation}
+but where the nearest-neighbor couplings $J_{ij}$ are independent, Gaussian
+random variables with mean zero and variance $\sigma^2$, which is usually taken
+to be unity. As for the Ising model, the spins take values $\pm 1$ and are
+arranged on a hypercubic lattice in $d$ dimensions.
+
+The Edwards-Anderson (EA) model captures the two essential features of spin
+glasses, \emph{frustration} and \emph{quenched disorder}. Frustration means
+that there is no configuration of the system which \emph{simultaneously}
+minimizes all terms in the energy. A simple example of this is an Ising
+antiferromagnet (\textit{i.e.} the Ising model with coupling $J<0$) defined on
+a lattice with odd cycle lengths, for example on a hexagonal lattice as shown
+in \cref{fig:frust-afm}. Quenched disorder means that the interactions are
+random and expected to be independent of time, at least on experimental time
+scales. \Cref{fig:frust-disorder} shows how the random interactions in EA model
+lead to frustration.
+
+Within the framework of the EA model, we now return to the mystery of the
+apparent spin-glass phase transition observed in experiment. In
+(anti)ferromagnetism, the broken symmetry is characterized by a scalar order
+parameter, the (staggered) magnetization, but this is identically zero in the
+EA model. It is not at all obvious what is the nature of the broken symmetry in
+the spin glass phase and what is an appropriate order parameter to describe it.
+\textcite{edwards1975theory} proposed to use the sum of the squared thermal
+averages of the spins,
+\begin{equation}
+  \qea = \frac{1}{N} \sum_{i=1}^N \av{S_i}^2,
+\end{equation}
+which vanishes at high temperature, where the behavior is paramagnetic, but is
+certainly finite at zero temperature, where the spin settle into some (not
+necessarily unique) energy-minimizing configuration. It is now known that, in
+dimensions $d>2$, there is a finite-temperature transition to a ``spin-glass
+phase" accompanied by a finite value of $\qea$.
+
+
+It is important to note that it is still unsettled issue whether this
+\emph{scalar} order parameter fully characterizes the broken symmetry of the
+spin-glass phase. In fact, there are several competing theories which make
+quite different predictions as to the nature of the broken symmetry. For
+example, ``replica symmetry breaking" (RSB) theory predicts that there are
+infinitely many ``pure" states,%
+\footnote{%
+  That is, states analogous to the ``up" or ``down" states observed in an Ising
+  ferromagnet below the transition temperature. See \cref{sec:connection-intro}
+  for a discussion of this idea.
+}
+unrelated by any symmetry, and thus an infinite number of order parameters are
+necessary to describe the broken symmetry. In contrast, the ``droplet picture"
+predicts that there is only a single pair of pure states, as for the
+ferromagnet, and thus a scalar order parameter is sufficient to describe the
+broken symmetry. These two theories will be discussed in more detail in
+\cref{sec:intro-theories}.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/frust-afm}
+    \subcaption{frustration}\label{fig:frust-afm}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/frust-disorder}
+    \subcaption{frustration and disorder}\label{fig:frust-disorder}
+  \end{subfigure}
+  \caption[Examples of frustrated Ising systems.]
+  {
+    Examples of frustrated Ising systems. On the left \subref{fig:frust-afm} is
+    an antiferromagnet on a lattice with odd cycles. On the right
+    \subref{fig:frust-disorder} is the EA model on a lattice which does not
+    necessarily have odd cycles, but will in general have cycles with an odd
+    number of antiferromagnetic bonds. In each example there is no assignment
+    of ``?" which simultaneously minimizes all terms of the Hamiltonian.
+  }
+\end{figure}
+
+As alluded to above, despite its apparent simplicity and decades of study, the
+EA model remains poorly understood. In contrast to the Ising ferromagnet, which
+is found to have a (finite-temperature) phase transition in dimensions $d \geq
+2$, the EA model has a finite-temperature transition only for $d>2$.%
+\footnote{%
+  actually between $d=2$ and 3 (CITE)
+}
+But computing spin glass partition function in any number of dimensions appears
+to be intractable, and has in fact been shown to be NP-hard by
+\textcite{barahona1982computational}, suggesting that an eventual closed-form
+solution unlikely. Even defining a mean-field theory for spin glasses in the
+way discussed previously does not seem at first straightforward, since it is
+not clear how to deal with the quenched disorder.
+\textcite{sherrington1975solvable} made an important contribution to the theory
+of spin glasses by proposing a solvable mean-field model of a spin glass. The
+solution they provided successfully explained some features observed in
+experiment, such as the susceptibility cusp, but opened new important questions
+and deepened the mystery in some ways.
+
+
+\subsection{Sherrington-Kirkpatrick mean-field model}
+\label{sec:intro-sk}
+
+As noted above, one way to generate a mean-field theory is to extend
+interactions to be infinite-range, so that every degree of freedom interacts
+equally with all others, while rescaling the interactions with the inverse
+system size to preserve a sensible thermodynamic limit. In this way the model
+of \textcite{sherrington1975solvable} is the mean-field counterpart of the EA
+model. That is, the Sherrington-Kirkpatrick (SK) model differs from the EA
+model in that all pairs of spins interact, with the variance of the couplings
+given by $\sigma^2 \propto 1/N$ regardless of distance (by convention the
+constant of proportionality is taken to be one).
+% TODO: noted above?
+% TODO: (equivalent way)
+
+While the analogous mean-field model has a straightforward solution for the
+case of the ferromagnet, the introduction of disorder makes the solution of the
+SK model much more difficult. The difficulty arises in carrying out the average
+over the quenched disorder to obtain a result which does not depend on the
+particular realization of the random couplings. To obtain the disorder-averaged
+free energy, formally
+\newcommand{\JJ}{\mathcal{J}}
+\begin{equation}
+  \davc{F} \equiv \int \mathcal{D}\JJ \, P(\JJ) F(\JJ)
+\end{equation}
+(where $\JJ \equiv \cbr{J_{ij}}$ denotes a set of couplings) we need to carry
+out a disorder average of the logarithm of the partition function.
+\textcite{sherrington1975solvable} did this in clever way, using the so-called
+``replica trick," which is based on the identity
+\begin{equation}
+  \log Z = \lim_{n \to 0} \frac{Z^n-1}{n}.
+\end{equation}
+Using this to write
+\begin{equation}
+  -\beta \davc{F}
+  = \davc{\log Z}
+  = \lim_{n \to 0} \frac{\davc{Z^n}-1}{n},
+\end{equation}
+we have reduced the problem to computing
+\begin{align*}
+  \davc{Z^n}
+  &=\davc{\prod_{\alpha=1}^n \Tr_{S^{\alpha}}
+    e^{-\beta\ham\del{\cbr{S^{\alpha}},\JJ}}} \\
+  &=\davc{\Tr_{S^{1}} \cdots \Tr_{S^{n}}
+    e^{-\beta\sum_{\alpha=1}^n
+    \ham\del{\cbr{S^{\alpha}},\JJ}}} \\
+  &=\Tr_{S^{1}} \cdots \Tr_{S^{n}}
+    \davc{e^{-\beta\sum_{\alpha=1}^n
+    \ham\del{\cbr{S^{\alpha}},\JJ}}},
+\end{align*}
+for which the disorder average can be computed analytically. Finally, we take
+the limit $n \to 0$ to obtain the disorder-averaged free energy. The replica
+trick gets its name because the disorder average is done over a compound system
+of $n$ replicas, all with the same realization of the disorder $\JJ$, described
+by the partition function $Z^n$. Interestingly, the effective Hamiltonian of
+the disorder-averaged replica system, defined by
+\begin{equation}
+  e^{-\beta\ham_n} =
+  \davc{e^{-\beta\sum_{\alpha=1}^n
+  \ham\del{\cbr{S^{\alpha}},\JJ}}},
+\end{equation}
+is not just the sum of the Hamiltonians of the individual replicas; therefore,
+the disorder average \emph{couples} the replicas. Because the effective
+Hamiltonian is symmetric under the permutation of replicas (after all the
+``replicas" were only introduced as a mathematical trick), the solution of
+Sherrington and Kirkpatrick makes the (reasonable) assumption that replicas may
+be treated on equal footing; theirs is a \emph{replica-symmetric} solution.
+
+The solution given by Sherrington and Kirkpatrick predicts a transition
+temperature
+\begin{equation}
+  \tcmf = \sum_j \davc{J_{ij}^2} \equiv 1,
+\end{equation}
+and successfully explains some of the features observed in experiment, for
+example the cusp in ac susceptibility. However, it soon became clear that it
+could not be a correct description of the low-temperature phase, where it was
+found to be at odds with simulation results and furthermore predicted an
+unphysical \emph{negative} entropy at zero temperature
+\autocite{kirkpatrick1978infinite}. An important piece of the puzzle was
+provided by \textcite{dealmeida1978stability}, who showed that the
+replica-symmetric solution of the SK model becomes unstable for $T<1$ in zero
+field.%
+\footnote{
+  In fact, they show that the replica-symmetric solution is unstable in a
+  region of the $T$-$H$ plane for $T<1$ and small fields, thus predicting
+  a line of transitions known as the \emph{de Almeida-Thouless line}.
+}
+The replica-symmetric solution is therefore not observed, just as the
+paramagnetic solution of the mean-field Ising model is not observed in the
+ordered phase. Instead, the replica symmetry is spontaneously broken.
+
+
+\subsection{Replica symmetry breaking}
+\label{sec:intro-rsb}
+
+The correct \emph{stable} solution of the SK model in the low-temperature phase
+was discovered and developed by Giorgio Parisi in a series of seminal papers.%
+\footnote{%
+  \textcite{%
+    parisi1979infinite,
+    parisi1980magnetic,
+    parisi1980order,
+    parisi1983order,
+  }
+}
+The breakthrough idea was that, to find a stable solution in the
+low-temperature phase, the replicas can no longer be considered to be
+equivalent; although the effective Hamiltonian is symmetric under the
+permutation of replicas, this symmetry is spontaneously broken in the
+spin-glass phase. More precisely, Parisi considered the \emph{overlap} between
+the configurations of two replicas $\alpha$ and $\beta$, defined as
+\begin{equation}
+  q_{\alpha\beta} = \frac{1}{N} \sum_i \av{S_i^{\alpha} S_i^{\beta}}_n,
+\end{equation}
+where the average is taken with respect to the $n$-replica effective
+Hamiltonian. The replica-symmetric solution of Sherrington and Kirkpatrick
+assumes that $q_{\alpha\beta}$ is independent of which replicas $\alpha$ and
+$\beta$ are chosen, and is just equal to the Edwards-Anderson order parameter
+$\qea$. By contrast, in Parisi's \emph{replica symmetry breaking} (RSB)
+solution, the replicas are \emph{not} equivalent; instead, each corresponds to
+one of an infinite number of distinct pure states%
+\footnote{%
+  That is, thermodynamic states in which connected correlations vanish in the
+  limit of large distance; the ``up" and ``down" states of the ferromagnetic
+  phase are examples of pure states.
+}
+in the thermodynamic limit; thus $q_{\alpha\beta}$ depends on which $\alpha$
+and $\beta$ are chosen, giving the overlap between the corresponding pure
+states. The self-overlap of a replica with itself $q_{\alpha\alpha}=\qea$, but
+in general $-\qea < q_{\alpha\beta} < \qea$. Note that pure states come in
+symmetry-related pairs, so for states $\alpha$, $\beta$, the time-reversed
+versions $\overline{\alpha}$, $\overline{\beta}$ are also pure states, and
+$q_{\alpha\beta}=-q_{\overline{\alpha}\beta}=q_{\alpha\overline{\beta}}$. Thus
+the distribution of the overlap $q$ between two independent equilibrium spin
+configurations is an even function, consisting of a superposition of
+$\delta$-functions with weights and positions which depend on the disorder
+realization $\JJ$,
+\begin{equation}
+  P_\JJ(q) = \sum_{\alpha\beta} W_{\alpha} W_{\beta} \delta(q - q_{\alpha\beta}),
+\end{equation}
+where $W_{\alpha}$ and $W_{\beta}$ are the probabilities (``weights") of the
+states $\alpha$ and $\beta$ respectively. Now we consider what this looks like
+at low temperature, where presumably only a few of the (infinite number of)
+pure states have significant weight. The distribution is bimodal, with the
+largest weights occurring at $\pm\qea$; these correspond to self-overlaps, and
+thus have weight $\sum_{\alpha} W_{\alpha}^2$. Between $-\qea$ and $\qea$ are
+smaller peaks corresponding to overlaps of distinct pairs of pure states
+$\alpha$, $\beta$ with weights $W_{\alpha} W_{\beta}$. This is sketched in
+\cref{fig:pq-rsb-sample}.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \pgfmathsetmacro{\x}{0.6}
+      \pgfmathsetmacro{\y}{0.9}
+      \begin{axis}[
+        schematic,
+        width=\figurewidth,
+        height=0.6\figurewidth,
+        xmin=-1,xmax=1,
+        ymin=0,ymax=1,
+        xtick={-\x,\x},
+        xticklabels={$-\qea$,$+\qea$},
+        xtick align=outside,
+        xlabel={$q$}, ylabel={$P_{\JJ}(q)$},
+        enlarge y limits=false,
+      ]
+        \def\deltapair#1#2{(-#1*\x, #2*\y) (#1*\x, #2*\y)}
+        \addplot+[ycomb] coordinates {
+          \deltapair{1}{1}
+          \deltapair{0.7}{0.4}
+          \deltapair{0.3}{0.5}
+          \deltapair{0.1}{0.2}
+        };
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{single sample}
+    \label{fig:pq-rsb-sample}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \pgfmathsetmacro{\x}{0.6}
+      \pgfmathsetmacro{\y}{0.9}
+      \pgfmathsetmacro{\a}{0.1}
+      \pgfmathsetmacro{\b}{0.6}
+      \begin{axis}[
+        schematic,
+        width=\figurewidth,
+        height=0.6\figurewidth,
+        xmin=-1,xmax=1,
+        ymin=0,ymax=1,
+        xtick={-\x,\x},
+        xticklabels={$-\qea$,$+\qea$},
+        xtick align=outside,
+        xlabel={$q$}, ylabel={$P(q)$},
+        enlarge y limits=false,
+      ]
+        \addplot+[ycomb,forget plot] coordinates {(-\x,\y) (\x,\y)};
+        \addplot+[domain=-\x:\x] {\a + \b*x^2};
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{disorder average}
+    \label{fig:pq-rsb-dav}
+  \end{subfigure}
+  \caption[
+    Sketches of the overlap distribution for a single sample and the sample
+    average, according to replica symmetry breaking (RSB) theory.
+  ]
+  {
+    Sketches of the overlap distribution for \subref{fig:pq-rsb-sample} a
+    single sample and \subref{fig:pq-rsb-dav} the sample average, according to
+    replica symmetry breaking (RSB) theory. The support in the region
+    $-\qea<q<\qea$ in the disorder-averaged $P(q)$ in \subref{fig:pq-rsb-dav}
+    comes from the many pairs of pure states for each sample, \textit{e.g.} in
+    \subref{fig:pq-rsb-sample}.
+  }
+\end{figure}
+
+One surprising result of RSB theory is that the overlap distribution for a
+single disorder realization $P_\JJ(q)$ is non-self-averaging, meaning that it
+depends on $\JJ$ even in the thermodynamic limit. This is at first a little
+unsettling, because the whole procedure of carrying out the disorder average is
+justified by the thermodynamic assumption that we can determine the properties
+of a macroscopic system as an average over subsystems. But this turns out not
+to be contradictory, as all \emph{observable} properties are self-averaging
+within the RSB framework \autocite{stein2013spin}. Carrying out the disorder
+average, we obtain an overlap distribution that has two $\delta$-function peaks
+at $\pm\qea$ and is finite everywhere in between. This is sketched in
+\cref{fig:pq-rsb-dav}. The weight of the sample-averaged distribution at $q=0$
+is found to be a constant independent of system size for large $L$.
+
+The RSB solution appears to be the correct description of the low-temperature
+phase of the SK model, and several of its predictions (although notably not the
+non-self-averaging of the overlap distribution) have more recently been proven
+rigorously for the SK model \autocite{talagrand2003spin}. This has led Parisi
+and others to conjecture that RSB also provides an accurate description
+spin-glass phase in more realistic, short-range models such as the
+Edwards-Anderson model. This is at odds with other competing theories of the
+spin-glass phase in short-range models.
+
+
+\subsection{Theories of short-range spin glasses}
+\label{sec:intro-theories}
+
+The RSB solution of the Sherrington-Kirkpatrick mean-field model predicts
+several surprising features, such as non-self-averaging of the order parameter
+distribution and the existence of a line of transitions in nonzero field
+(\textit{i.e.} the de Almeida-Thouless line), that are not observed in systems
+without disorder. It has been a controversial issue whether these exotic
+features, which certainly exist in the SK model, persist in more realistic
+models with short-range interactions, or whether they are artifacts of the
+infinite-range interactions, and the nature of the spin-glass phase in
+short-range models can be explained by a simpler phenomenological picture.
+
+One well-known alternate scenario is the ``droplet picture" (DP) introduced by
+Fisher and Huse
+\autocite{fisher1986ordered,fisher1987absence,fisher1988equilibrium},
+based on the phenomenological scaling arguments of
+\textcite{mcmillan1984scaling}. The central \textit{ansatz} is that
+lowest-energy excitations of a ground state which have spatial extent $L$ have
+an energy cost which scales as $L^{\theta}$, where $\theta$ is a positive
+(``stiffness") exponent. Consequently, in the thermodynamic limit, excitations
+which flip a finite fraction of the spins cost an infinite amount of energy.
+Additionally, the excitations are predicted to have a fractal surface, with
+dimension $d_s<d$. Both of these statements are at odds with the predictions of
+RSB, according to which excitations have an energy which is independent of $L$
+and hence excitations which flip a finite fraction of spins can have
+\emph{finite} energy cost in the thermodynamic limit; also, excitations in RSB
+are predicted to be space-filling, \textit{i.e.} to have a dimension $d_s=d$.
+
+Further analysis reveals that, in the droplet picture, there can be only a
+single time-reversed pair of pure states in the thermodynamic limit, in
+contrast to the infinitely-many predicted by RSB theory. Hence the droplet
+picture predicts an overlap distribution which is sharply different from the
+prediction of RSB in the thermodynamic limit. As discussed previously, RSB
+theory predicts finite probability everywhere between $-\qea$ and $\qea$. In
+contrast, the droplet picture predicts finite probability in the region
+$-\qea<q<\qea$ only for finite systems; $P(q)$ in this region is expected to
+vanish as $L^{-\theta}$ \autocite{moore1998evidence} in the thermodynamic
+limit, leaving a trivial distribution with two delta functions at $\pm\qea$ and
+vanishing weight in between. Both distributions are sketched in
+\cref{fig:pq-droplet-rsb}.
+
+Because $P(q)$ is relatively easy to measure in simulations, many numerical
+studies%
+\footnote{%
+  \textit{e.g.}
+  \textcite{%
+    marinari2000replica,
+    reger1990monte,
+    katzgraber2001monte,
+    katzgraber2003monte,
+  }
+}
+have attempted to find evidence for one picture or the other by studying the
+overlap distribution near $q=0$ for a range of system sizes $L$ and looking for
+a $L^{-\theta}$ decay as predicted by the droplet picture. The results appear
+consistent with RSB in that $P(0)$ varies only very slowly with $L$; however,
+it has been argued that the sizes accessible to simulation are too small to
+observe the asymptotic behavior, and the droplet picture cannot be ruled out
+\autocite{moore1998evidence,middleton2013extracting}. In \cref{chap:overlap}
+of this thesis we study alternate statistics of the overlap distributions
+of individual samples, $P_{\JJ}(q)$, in an attempt to distinguish the behavior
+as RSB-like or droplet-like.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \pgfmathsetmacro{\x}{0.6}
+    \pgfmathsetmacro{\y}{0.9}
+    \begin{tikzpicture}
+      \begin{axis}[
+        schematic,
+        width=\figurewidth,
+        height=0.6\figurewidth,
+        xmin=-1, xmax=1,
+        ymin=0, ymax=1,
+        xtick={-\x,\x},
+        xticklabels={$-\qea$,$+\qea$},
+        xtick align=outside,
+        ytick=\empty,
+        xlabel={$q$}, ylabel={$P(q)$},
+      ]
+        \addplot+ [ycomb] coordinates {(-\x,\y) (\x,\y)};
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{droplet picture}
+    \label{fig:pq-droplet}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \pgfmathsetmacro{\x}{0.6}
+      \pgfmathsetmacro{\y}{0.9}
+      \pgfmathsetmacro{\a}{0.1}
+      \pgfmathsetmacro{\b}{0.6}
+      \begin{axis}[
+        schematic,
+        width=\figurewidth,
+        height=0.6\figurewidth,
+        xmin=-1,xmax=1,
+        ymin=0,ymax=1,
+        xtick={-\x,\x},
+        xticklabels={$-\qea$,$+\qea$},
+        xtick align=outside,
+        xlabel={$q$}, ylabel={$P(q)$},
+        enlarge y limits=false,
+      ]
+        \addplot+[ycomb,forget plot] coordinates {(-\x,\y) (\x,\y)};
+        \addplot+[domain=-\x:\x] {\a + \b*x^2};
+      \end{axis}
+    \end{tikzpicture}
+    \subcaption{RSB picture}
+    \label{fig:pq-rsb}
+  \end{subfigure}
+  \caption[
+    Comparison of disorder-averaged overlap distributions in the thermodynamic
+    limit for the droplet picture and the RSB picture.
+  ]
+  {
+    Comparison of disorder-averaged overlap distributions in the thermodynamic
+    limit for \subref{fig:pq-droplet} the droplet picture and
+    \subref{fig:pq-rsb} the RSB picture. The droplet $P(q)$ is trivial in the
+    thermodynamic limit, with two delta functions at $\pm\qea$. In contrast,
+    the RSB $P(q)$ has finite weight everywhere in the region $-\qea<q<\qea$.
+  }
+  \label{fig:pq-droplet-rsb}
+\end{figure}
+
+\textcite{newman1996non} lend some support for the argument that RSB is not a
+realistic description of short-range spin glasses with a proof that
+non-self-averaging \emph{cannot} occur based on simple symmetry considerations.
+Thus the ``standard" RSB scenario, in which the single-sample overlap
+distribution is non-self-averaging, cannot be correct for short-range spin
+glasses. Newman and Stein (NS) argue that a flaw lies in the assumption of
+convergence to a unique mixed state [\textit{i.e.} a unique distribution
+$P_{\JJ}(q)$] in the thermodynamic limit; instead, they argue, the mixed state
+which is observed has the property of \emph{chaotic size dependence}
+\autocite{newman1992multiple}, meaning that it wanders continually with
+increasing $L$, sampling from all possible mixed states. The fundamental
+object, then, is the probability distribution which is sampled, called the
+``metastate." In \cref{chap:connection} we investigate the connection between
+the metastate and the sampling of pure states generated by nonequilibrium
+dynamics.
+
+Within the metastate description, \textcite{newman1997metastate} show that it
+is possible to recover the many-states picture of RSB, \textit{i.e.} an overlap
+distribution $P(q)$ like that shown in \cref{fig:pq-rsb}. In this
+``non-standard RSB" (which is actually the only viable form of RSB for
+short-range spin glasses), the disorder-averaged overlap distribution of
+standard RSB theory is instead obtained from a metastate average for a
+\emph{single} disorder realization. Thus the NS description avoids the property
+of non-self-averaging which is the downfall of the standard RSB picture applied
+to short-range spin glasses.
+
+While NS have provided an interpretation of RSB which is viable for short-range
+spin glasses, results concerning the invariance of the metastate under a change
+of boundary conditions strongly suggest that it cannot occur in realistic spin
+glasses, and instead a simpler picture (which is still consistent with chaotic
+size dependence) holds \autocite{newman1998simplicity}. One such proposal is
+the \emph{chaotic pairs} picture \autocite{newman1996non} which, like the
+droplet picture, predicts a trivial structure for the sample-averaged overlap
+distribution, with a pair of delta function peaks at $\pm\qea$ (\textit{i.e.}
+the same as \cref{fig:pq-droplet}). However, in contrast to the droplet
+picture, in the chaotic pairs picture this distribution arises from a pair of
+pure states which exhibit chaotic size dependence but whose \emph{overlaps}
+converge to $\pm\qea$ in the thermodynamic limit.
+
+\section{Organization of the dissertation}
+
+  In \cref{chap:numerical} we give an overview of the numerical methods used in
+  the research.
+
+  In \cref{chap:nonextensive}, we study one-dimensional long-range (1DLR) spin
+  glass models to fill in a previously unexplored region of parameter space in
+  which the interactions become sufficiently long-range that they must be
+  rescaled with the system size to maintain the thermodynamic limit. We find
+  strong evidence that detailed behavior of the 1DLR models everywhere in this
+  ``nonextensive regime" is identical to that of the Sherrington-Kirkpatrick
+  model, lending support to a recent conjecture.
+
+  In \cref{chap:overlap} we attempt to distinguish the RSB and droplet pictures
+  by studying recently-proposed observables based on the statistics of
+  individual disorder samples, rather than simply averaging over the disorder
+  as is most frequently done in previous studies. We compare Monte Carlo
+  results for 1DLR models which are proxies for short-range models in 3, 4, and
+  10 dimensions with previously-obtained data for the 3D and 4D short-range
+  models and the SK model. For one statistic, which is expected to sharply
+  distinguish between the two pictures in the thermodynamic limit, we find that
+  larger system sizes than those currently feasible to simulate are needed to
+  obtain an unambiguous result. We also find that two other recently-proposed
+  statistics, the median of the cumulative overlap distribution and the
+  ``typical" overlap distribution, are not particularly helpful in
+  distinguishing between the RSB and droplet pictures.
+
+  In \cref{chap:connection} we study the evolution of dynamical correlations in
+  a 1DLR model which is a proxy for a short-range model in $d=8$ dimensions. We
+  find that the spatial decay of the correlations at distances less than the
+  dynamical correlation length $\xi(t)$ agrees quantitatively with the
+  predictions of the metastate theory, evaluated according to the RSB picture.
+  We also compute the dynamic exponent defined by $\xi(t) \propto t^{1/z(T)}$
+  and find that it is compatible with the mean-field value of the critical
+  dynamical exponent for short-range spin glasses.
+
+  Finally, in \cref{chap:fss} we present a unified view of finite-size scaling
+  (FSS) in dimensions $d$ above the upper critical dimension $d_u$, for both
+  free and periodic boundary conditions. For $d>d_u$, a dangerous irrelevant
+  variable is responsible for both the violation of hyperscaling and the
+  violation of ``standard" FSS. We find that the modified hyperscaling proposed
+  to allow for this applies only to $\vec{k}=\vec{0}$ fluctuations, while
+  standard FSS applies to $\vec{k}\neq\vec{0}$ fluctuations. Hence the exponent
+  $\eta$ describing the power-law decay of correlations at criticality is
+  unambiguously $\eta=0$. With free boundary conditions, the finite-size
+  ``shift" is greater than the rounding. Nonetheless, using $T-T_L$, where
+  $T_L$ is the finite-size pseudocritical temperature, as the scaling variable,
+  the data do collapse onto a scaling form that includes the behavior both at
+  $T_L$, where the susceptibility $\chi$ diverges like $L^{d/2}$, and the bulk
+  $T_c$, where it diverges like $L^2$. We support these claims with data from
+  large-scale simulations of the five-dimensional Ising model.
+
+%Trivial-nontrivial \autocite{krzakala2000spin,palassini1999triviality}
+
+%In the vicinity of a continuous phase transition it is found experimentally
+%that various measurable quantities depend as a power law on the distance from
+%the critical point. For example, from Onsager's exact solution of the
+%two-dimensional Ising model, the magnetization $M \propto (T_c-T)^{1/8}$ as we
+%approach $T_c$ from below, and the correlation length diverges like $\xi \propto
+%(T-T_c)^{-7/4}$ as we approach $T_c$ from above.
+
+%\begin{table}
+%  \centering
+%  \begin{tabular}{>{$}r<{$}l>{$}r<{$}>{$}r<{$}>{$}r<{$}>{$}r<{$}}
+%    \toprule
+%    \text{Exponent} & \text{Related quantity} & \text{MFT} & \text{Experiment} &
+%    \text{Ising ($d=2$)} & \text{Ising ($d=3$)} \\
+%    \midrule
+%    \alpha & specific heat         & 0   & 0.110 \text{--} 0.116 & 0   & 0.110(5) \\
+%    \beta  & order parameter       & 1/2 & 0.316 \text{--} 0.327 & 1/8 & 0.325  \pm 0.0015 \\
+%    \gamma & susceptibility        & 1   & 1.23  \text{--} 1.25  & 7/4 & 1.2405 \pm 0.0015 \\
+%    \delta & critical isotherm     & 3   & 4.6   \text{--} 4.9   & 15  & 4.82(4) \\
+%    \nu    & correlation length    & 1/2 & 0.625 \pm 0.010       & 1   & 0.630(2) \\
+%    \eta   & critical correlations & 0   & 0.016 \text{--} 0.06  & 1/4 & 0.032  \pm 0.003 \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption[Summary of critical exponents for the Ising universality class.]
+%  {
+%    \textit{Adapted from \textcite{goldenfeld1992lectures}.} Summary of
+%    critical exponents for the Ising universality class. The experimental
+%    values quoted are obtained from experiments on fluid systems, yet are
+%    consistent with numerical results for the three-dimensional Ising model.
+%  }
+%\end{table}
+

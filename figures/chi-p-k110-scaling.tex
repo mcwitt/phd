@@ -1,0 +1,70 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\filename{data/chi-p-k110-wide-L\pad{\size}.csv}
+\def\sizes{8,12,16,20,28}
+\def\insetxmin{-5}
+\def\insetxmax{5}
+\def\insetymin{0.1000}
+\def\insetymax{0.1125}
+\begin{tikzpicture}
+
+  \pgfplotsset{every axis post/.style={%
+      yticklabel={$\pgfmathprintnumber[fixed,precision=2]{\tick}$}}}
+
+  \begin{axis}[
+    name=mainplot,
+    xmin=-40, xmax=40,
+    ymin=0.04, ymax=0.12,
+    xlabel={$L^2(T-T_c)$},
+    ylabel={$\chi_{110}/L^2$},
+    legend pos=north west,
+    legend cell align=left,
+    legend style={font=\scriptsize}
+  ]
+    \foreach \size in \sizes {
+      \addplot+[
+        mark size=1,
+        mark options={solid, fill opacity=0.3}
+      ] table [
+        x expr=\thisrow{L}^2*(\thisrow{Temp} - \tcdfive),
+        y expr=\thisrow{mean}/\thisrow{L}^2,
+        y error expr=\thisrow{sem}/\thisrow{L}^2
+      ]{\filename};
+
+      \addlegendentryexpanded{$\size$}
+    }
+
+    \draw [gray] (axis cs: \insetxmin,\insetymin) rectangle (axis cs: \insetxmax,\insetymax);
+    \node [anchor=north east] at (rel axis cs: 0.97, 0.97) {periodic};
+  \end{axis}
+  \begin{axis}[
+    at=(mainplot.south east), anchor=south east,
+    xshift=-0.12\figurewidth, yshift=0.03\figurewidth,
+    width=0.55\figurewidth, height=0.52\figurewidth,
+    xmin=\insetxmin, xmax=\insetxmax,
+    ymin=\insetymin, ymax=\insetymax,
+    ytick={0.10,0.11},
+    xticklabel pos=upper,
+    ticklabel style={font=\footnotesize},
+    extra x ticks={0},
+    extra x tick style={xticklabel=\empty, grid=major}
+  ]
+    \foreach \size in \sizes {
+      \addplot+[
+        data,
+        only marks,
+        mark size=1,
+        mark options={solid, fill opacity=0.3},
+        each nth point=2,
+      ] table [
+        x expr=\thisrow{L}^2*(\thisrow{Temp} - \tcdfive),
+        y expr=\thisrow{mean}/\thisrow{L}^2,
+        y error expr=\thisrow{sem}/\thisrow{L}^2
+      ]{\filename};
+    }
+  \end{axis}
+\end{tikzpicture}
+\end{document}

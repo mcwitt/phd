@@ -1,0 +1,1072 @@
+\chapter{Finite-size scaling above the upper critical dimension}
+\label{chap:fss}
+
+\section{Introduction}
+\label{sec:fss-intro}
+
+The theory of finite-size scaling (FSS) bridges the gap between the critical
+behavior of \emph{finite} systems and that of infinite (or effectively
+infinite) systems which are commonly studied in analytical theory and
+experiment. As such, FSS is ubiquitous in the literature of computational
+physics, where it is used extensively to extrapolate \emph{bulk} (\emph{i.e.}
+$L\to\infty$) behavior, which can be compared with analytical or experimental
+results, from the results of numerical simulation of finite systems
+\autocite{binder2001monte}.
+% TODO: awkward ^
+
+As discussed in \cref{sec:numerical-fss}, the central assumption of
+\emph{standard} FSS is that finite-size corrections only involve the ratio of
+the system size $L$ to the bulk (\emph{i.e.} infinite system size) correlation
+length $\xi$.
+% TODO: ref for this?
+While this assumption turns out to be correct in dimensions $d$ less than the
+upper critical dimension $d_u$, the situation is more complicated \emph{above}
+the upper critical dimension, $d>d_u$. This is a bit surprising since for
+$d>d_u$ the critical exponents are independent of $d$ and are predicted exactly
+by mean-field theory. Thus, we might naively expect from
+\cref{eq:standard-fss-susc} that, for $d>d_u$, the susceptibility scales with
+$L$ like
+\begin{equation}
+  \chi(L,T) \sim L^2 \scalefunc{\chi}\sbr{L^2 \del{T-T_c}},
+  \label{eq:fss-above-naive}
+\end{equation}
+where $\scalefunc{\chi}$ is a scaling function and we have inserted the
+mean-field exponents $\gamma=1$ and $\nu=1/2$. Unfortunately, it is not that
+simple, and instead it turns out that the basic assumption of FSS, that $L$
+dependence enters only through the ratio $L/\xi$, is invalid for $d>d_u$. The
+trouble is related to the observation that, for $d>d_u$, ``hyperscaling"
+relations such as $d \nu = \gamma - 2\beta$ are necessarily violated, since the
+critical exponents ``stick" at their mean-field values for all values of
+$d>d_u$. It turns out that a ``dangerous irrelevant variable" is responsible
+for both effects. To understand this we need a more sophisticated approach
+based on the renormalization group (RG).
+
+According to renormalization-group derivations of FSS
+\autocite{privman1983finite}, the singular part of the free energy $f_L$ and
+the correlation length $\xi_L$ have the form
+\begin{align}
+  f_L &= L^{-d} \scalefunc{f}\del{t L^{y_t}, h L^{y_h}, u L^{y_u}}, \\
+  \xi_L &= L \scalefunc{\xi}\del{t L^{y_t}, h L^{y_h}, u L^{y_u}},
+\end{align}
+where $t\equiv(T-T_c)/T_c$ is the reduced temperature, $h$ is the magnetic
+field, and $u$ is the quartic coupling of the Landau theory (see \cref{sec:intro-landau}).
+is an irrelevant variable, corresponding$y_u<0$. For $d < d_u$, we obtain
+% TODO: how?
+\begin{subequations}
+\begin{align}
+  \chi(L,t) &= L^{\gamma y_t} \scalefunc{\chi}\del{t L^{y_t}},
+  \label{eq:fss-standard-susc} \\
+  g(L,t) &= \scalefunc{\chi}\del{t L^{y_t}},
+\end{align}
+\label{eq:fss-standard}
+\end{subequations}
+% TODO: define/ref Binder ratio
+where
+\begin{equation*}
+  y_t = 1/\nu.
+\end{equation*}
+
+For $d > d_u$ !!EXPLAIN WHAT HAPPENS!!
+% TODO
+The reason for the complication is the presence of a ``dangerous irrelevant"
+variable which causes scaling functions to have additional singularities.
+% TODO: dangerous irrelevant variable is quartic coupling, dangerous because
+% scaling functions develop singularity as u -> 0
+
+
+\subsection{Periodic boundary conditions}
+
+For $k=0$ fluctuations%
+\footnote{%
+  \emph{i.e.}, fluctuations in the $k=0$ mode of the order parameter, for
+  example in the (uniform) magnetization, $\sum_i S_i$.
+}
+in systems with periodic boundary conditions, \textcite{binder1985finite} show
+that, for $d>d_u$, the thermal exponent $y_t$ is replaced by $y_t^*$,
+\begin{subequations}
+\begin{align}
+  \chi(L,t) &= L^{y_t^*} \scalefunc{\chi}\del{L^{y_t^*} t},
+  \label{eq:fss-above-susc} \\
+  g(L,t) &= \scalefunc{\chi}\del{L^{y_t^*} t},
+  \label{eq:fss-above-binder}
+\end{align}
+\label{eq:fss-above}
+\end{subequations}
+where
+\begin{equation}
+  y_t^*=d/2.
+  \label{eq:fss-above-yt}
+\end{equation}
+% TODO: underlying assumption gives correct bulk behavior in all limiting cases
+This is a surprising result because it predicts that finite-size corrections
+appear not when $\xi \sim L$, as is assumed in standard FSS, but rather only
+when $\xi \sim L^{d/4}$, a length scale larger than the size of the system.%
+\footnote{
+  To see this, note that for $d > d_u$, $t \sim \xi^{-1/\nu} = \xi^{-2}$, so
+  the argument of the scaling function $L^{y_t^*} t = L^{d/2} \xi^{-2}$ is of
+  order unity when $\xi \sim L^{d/4}$.
+}
+Consequently, the finite-size transition is ``rounded out" over a temperature
+range which scales like $L^{-d/2}$, smaller than $L^{-2}$ predicted by standard
+FSS.
+
+An extensive set of works%
+\footnote{%
+  For example,
+  \textcite{
+    luijten1996finite,
+    parisi1996scaling,
+    blote1997universality,
+    luijten1999finite,
+    binder2001monte,
+  }
+}
+have shown the validity of \cref{eq:fss-above}, though it required large system
+sizes, good statistics, and appreciation that \emph{corrections} to FSS are
+large and slowly decaying for the range of sizes that can feasibly be
+simulated.
+%The (universal) value $\scalefunc{g}(0)$, computed by
+%\textcite{brezin1985finite} (who showed it to be simply that obtained by
+%including \emph{only} the $k=0$ mode with $T_c$ adjusted to the correct value)
+%has been confirmed.
+% TODO: wording/correctness ^
+% TODO: understand this ^
+
+
+\subsection{Free boundary conditions}
+
+As stated above, \cref{eq:fss-above} makes the rather surprising prediction
+that, for $d>d_u$ and periodic boundary conditions, finite-size effects set in
+not when $\xi \sim L$, but even closer to criticality, when $\xi \sim L^{d/4}$.
+It is therefore interesting to ask what is the corresponding behavior for free
+boundary conditions, where we expect that \emph{something} must happen when the
+correlation length $\xi \sim L$ \autocite{jones2005finite}. In fact,
+\textcite{rudnick1985effect} have argued analytically that a temperature
+\emph{shift} of order $L^{-2}$ has to be included with free boundary
+conditions, in addition to the rounding of order $L^{-d/2}$.
+
+To explain this, note that the exponents $y_t$ in \cref{eq:fss-standard} and
+$y_t^*$ in \cref{eq:fss-above} are ``rounding" exponents since they control the
+temperature range over which a singularity is rounded out. To define the
+``shift" exponent, we first define, for each size $L$, a ``finite-size
+pseudocritical temperature" $T_L$ by, for example, the location of the peak in
+some susceptibility, or the temperature at which the Binder ratio [defined in
+\cref{eq:binder}] has a particular value. The difference $T_c-T_L$ goes to zero
+for $L\to\infty$ like
+\begin{equation}
+  T_c - T_L = \frac{A}{L^{\lambda}},
+  \label{eq:TL-scaling}
+\end{equation}
+defining the shift exponent $\lambda$. The precise value of $T_L$ depends on
+which criterion is used to define it, but the exponent $\lambda$ is expected to
+be independent of the definition. Whether or not the amplitude $A$ depends on
+the quantity used to define the shift will be discussed in
+\cref{sec:fss-results-fbc}.
+% TODO: redundant/contradictory? ^
+
+If $\lambda$ is less than the rounding exponent, which will turn out to be the
+case for free boundary conditions, then the shift is \emph{larger} than the
+rounding, so we need to modify \cref{eq:fss-above} to
+\begin{subequations}
+\begin{align}
+  \chi(L,t) &= L^{y_t^*} \scalefunc{\chi}\sbr{L^{y_t^*}\del{T-T_L}},
+  \label{eq:fss-above-shift-susc} \\
+  g(L,t) &= \scalefunc{\chi}\sbr{L^{y_t^*}\del{T-T_L}},
+  \label{eq:fss-above-shift-binder}
+\end{align}
+\label{eq:fss-above-shift}
+\end{subequations}
+in which the argument of the scaling function involves the difference between
+$T$ and the pseudocritical temperature $T_L$. We verify
+\cref{eq:fss-above-shift} in
+\cref{fig:qshift,fig:qwidth,fig:qchiTL,fig:chi-f-scaling} below.
+
+The criterion that the shift is given by the (standard FSS) condition $\xi \sim
+L$ yields $\lambda=2$, as proposed by \textcite{rudnick1985effect} and
+confirmed in simulations by \textcite{berche2012hyperscaling,kenna2013new}. As
+with \cref{eq:fss-standard-susc} we must have $\scalefunc{\chi}(x) \propto
+x^{-1}$ for $x \to \infty$ in order to recover the correct bulk behavior above
+$T_c$. Setting $T=T_c$, we have
+\begin{equation}
+  \chi(L,T_c) = L^{d/2}\scalefunc{\chi}(A L^{d/2-2}),
+\end{equation}
+and therefore, asymptotically for large $L$,
+\begin{equation}
+  \chi(L,T_c) \propto L^2
+  \quad\text{(free, $k=0$)},
+  \label{eq:rounding-k0-Tc}
+\end{equation}
+a result that has been shown rigorously.
+% TODO: reference
+Hence, in contrast to \textcite{berche2012hyperscaling}, we propose that the
+region at the bulk $T_c$ is part of the scaling function.
+% TODO: explain "part of"
+Similarly, for the Binder ratio, $\scalefunc{g}(x) \propto x^{-2}$
+% TODO: why?
+for $x\to\infty$, which gives
+\begin{equation}
+  g(L,T_c) \propto \frac{1}{L^{d-4}}
+  \quad\text{(free, $k=0$)}.
+  \label{eq:binder-scaling-Tc}
+\end{equation}
+With periodic boundary conditions, the intersection of the data for $g$ for
+different sizes provides a convenient estimate of $T_c$, but, as
+\cref{eq:binder-scaling-Tc} shows, this method cannot be used for free boundary
+conditions because $g$ vanishes at $T_c$ for $L\to\infty$. In fact, we will see
+from the data in \cref{sec:fss-results-fbc} that there are no intersections at
+all. However, we will not be able to verify the precise form in
+\cref{eq:binder-scaling-Tc} because the values of $g$ at $T_c$ are very small,
+below the noise threshold of our simulations.
+
+So far we have discussed only $k=0$ fluctuations. However, it is also necessary
+to discuss fluctuations at $\vec{k}\neq\vec{0}$, since we need these to
+determine the spatial decay of the correlation functions.
+% TODO: explain
+Of particular importance is the decay of the correlations at $T_c$, which fall
+off with distance like $1/r^{d-2+\eta}$, where the mean-field value of the
+$\eta$ exponent is zero.
+% TODO: mention anomalous dimension?
+In the mean-field regime ($d>d_u$), the fluctuations of the $k=0$ modes are
+Gaussian, so the Binder ratio is always zero.
+% TODO: explain
+For the wavevector-dependent susceptibility, we will argue that \emph{standard}
+FSS, \cref{eq:fss-standard-susc}, holds for both boundary conditions (BCs),
+\emph{i.e.}
+\begin{equation}
+  \chi(\vec{k},L,T) =
+  L^2 \scalefunc{\chi}\sbr{L^2 \del{T-T_c}, kL}
+  \quad\text{(both BCs, $\vec{k}\neq\vec{0}$)},
+  \label{eq:susc-kn-scaling}
+\end{equation}
+where we have put the explicit $k$ dependence in a natural way as a second
+argument of the scaling function. We note that \cref{eq:susc-kn-scaling} holds
+for the spherical model%
+\footnote{%
+  Eq.~(22) of \textcite{shapiro1986fully} and Eq.~(37) of
+  \textcite{brezin1982investigation} correspond to
+  \cref{eq:susc-kn-scaling} with
+  $\scalefunc{\chi}(x,y)=\del{x^2+y^2}^{-1}$, at least above $T_c$.
+}
+with periodic boundary conditions.%
+\footnote{%
+  The spherical model, in which the length constraint $S_i^2=1$ on each spin is
+  replaced by a \emph{single} global average constraint, is equivalent to an
+  $n$-component vector model in the limit of $n\to\infty$ for the case of
+  periodic boundary conditions. For free boundary conditions, however, the
+  correspondence does not hold. In that case, due to a lack of translational
+  invariance, one would need a \emph{different} average constraint on each spin
+  to reproduce the results of the vector model with an infinite number of
+  components.
+}
+For free boundary conditions, the Fourier modes are not plane waves (see
+\cref{sec:fss-model}), and, by $\vec{k}\neq\vec{0}$, we really mean modes that
+are orthogonal to the uniform ($k=0$) magnetization and thus do not develop a
+nonzero expectation value below $T_c$.
+
+If we fix $T=T_c$ in \cref{eq:susc-kn-scaling} and consider $k L \gg 1$, then
+the size dependence must drop out, so $\scalefunc{\chi}(0,y) \propto y^{-2}$
+and therefore
+\begin{equation}
+  \chi(\vec{k},L,T_c) \propto \frac{1}{k^2}
+  \quad\text{($k L \gg 1$)}.
+  \label{eq:susc-kn-Tc-scaling}
+\end{equation}
+How, then, do correlations fall off in real space at criticality? To fully
+understand this, we have to consider separately the contribution from the $k=0$
+mode, as in Bose-Einstein condensation.
+% TODO: explain
+If $C(\vec{r})$ is the spin-spin correlation function at displacement $\vec{r}$
+and $\widetilde{C}(\vec{k})$ is the Fourier transform (FT), then, as shown in
+\cref{eq:susc-kn-scaling},
+\begin{equation}
+  \widetilde{C}(\vec{k}) \propto \frac{1}{k^2}
+  \label{eq:ft-corr-kn}
+\end{equation}
+for $k \to 0$. However, for $k=0$ we note that $\widetilde{C}(k=0) =
+\chi(L,T)/L^d$, see \cref{eq:susc-k0} below, and from \cref{eq:fss-above-susc}
+this gives
+\begin{equation}
+  \widetilde{C}(k=0) \propto \frac{1}{L^{d/2}}.
+\end{equation}
+The real-space correlation function at distance $L/2$ is then given by the FT
+\begin{equation}
+  C(\vec{\hat{z}}L/2) =
+  \del{\frac{L}{2\pi}}^d
+  \int_{\vec{k}\neq\vec{0}}\dif^d k\,
+  \widetilde{C}(\vec{k})\exp\del{i\vec{k} \cdot L\vec{\hat{z}}/2}
+  + \widetilde{C}(k=0).
+  \label{eq:rs-corr}
+\end{equation}
+% TODO: what is zhat?
+Using \cref{eq:ft-corr-kn}, which correctly gives the FT at large $r$, the
+first term in \cref{eq:rs-corr} is proportional, on dimensional grounds, to
+$1/L^{d-2}$. This is smaller than the second term, which is proportional to
+$1/L^{d/2}$. Thus, $C(\vec{\hat{z}}L/2) \propto 1/L^{d/2}$, in agreement with
+Fig.~1 of \textcite{kenna2014fisher}. Nonetheless, correlations fall off with
+distance like $1/r^{d-2}$. The resolution of this apparent discrepancy is that
+the $k=0$ mode has to be treated separately and gives the dominant contribution
+to $C(\vec{\hat{z}}L/2)$. We therefore do not see the need for the second
+$\eta$-like exponent proposed by \textcite{kenna2014fisher}.
+% TODO: reword/expand on this paragraph ^
+
+While \cref{eq:susc-kn-scaling} does not seem to have been stated in the
+literature before, to our knowledge, it is actually quite natural. The
+dangerous irrelevant variable, which is the quartic coupling in the
+Ginzburg-Landau-Wilson effective Hamiltonian, is needed to control the
+expectation value of the ($k=0$) order parameter, which leads to nonstandard
+FSS for $k=0$ fluctuations. However $\vec{k}\neq\vec{0}$ fluctuations (more
+precisely, fluctuations that do not acquire a nonzero expectation value) are
+not directly affected by the dangerous irrelevant variable, and consequently
+they have standard FSS.
+
+% TODO: plan of paper?
+
+\section{Model}
+\label{sec:fss-model}
+
+We consider an Ising model in $d=5$ dimensions with Hamiltonian
+\begin{equation}
+  \ham = -\asum{i,j} J_{ij} S_i S_j,
+\end{equation}
+where the sum is over all pairs of nearest neighbors and the spins $S_i$ take
+values $\pm 1$.
+% TODO: refer to intro on Ising model here?
+Previous simulations have determined the transition temperature very precisely,
+finding
+\begin{equation}
+  T_c = 8.77846(3)
+  \label{eq:Tc-d5}
+\end{equation}
+\autocite{luijten1999finite}. We simulate the model efficiently using the Wolff
+cluster algorithm described in \cref{sec:numerical-cluster}, with which we can
+study sizes up to $L=64$ (which has about a billion spins).
+% TODO: L=64 results included?
+
+We calculate various moments of the uniform magnetization per spin,
+\begin{equation}
+  m = \frac{1}{L^d} \sum_{i=1}^N S_i,
+  \label{eq:mag-k0}
+\end{equation}
+including the uniform susceptibility%
+\footnote{%
+  This expression differs from the standard expression for the susceptibility
+  $\chi=\beta L^d \del{\av{m^2}-\av{m}^2}$ in two ways. The first is that we
+  omit the factor of $\beta$, which is conventional in studies of critical
+  phenomena. Secondly, and less trivially, we ignore the subtracted term, which
+  is hard to compute reliably in Monte Carlo simulations since one would have
+  to apply a field $h$ (to break the symmetry) and take the limit $h \to 0$
+  \emph{after} the limit $L\to\infty$. Thus the quantity we call $\chi$ is
+  really only the susceptibility for $T>T_c$. It is, nonetheless, a convenient
+  quantity to study, and it has the claimed scaling behavior.
+}
+\begin{equation}
+  \chi = L^d \av{m^2}
+  \label{eq:susc-k0}
+\end{equation}
+and the Binder ratio
+% TODO: ref intro description of Binder ratio?
+\begin{equation}
+  g = \frac{1}{2}\del{3 - \frac{\av{m^4}}{\av{m^2}^2}}.
+  \label{eq:binder}
+\end{equation}
+In addition, we compute the wavevector-dependent susceptibilities
+\begin{equation}
+  \chi(\vec{k}) = L^d \av{\abs{m(\vec{k})}^2},
+\end{equation}
+in which the wavevector-dependent magnetization, $m(\vec{k})$, is defined
+differently for periodic and free boundary conditions as follows.
+
+For periodic boundary conditions, the Fourier modes are plane waves,
+so we have
+\begin{equation}
+  m(\vec{k}) = \frac{1}{N} \sum_i e^{i\vec{k}\cdot\vec{r}} S_i
+  \quad\text{(periodic)},
+\end{equation}
+where
+\begin{equation}
+  k_{\alpha} = 2\pi n_{\alpha}/L
+  \quad\text{(periodic)},
+\end{equation}
+where $n_{\alpha}\in\cbr{0,1,\dots,L-1}$ and $\alpha$ denotes a Cartesian
+coordinate.
+
+For free boundary conditions, the Fourier modes are sine waves,
+\begin{equation}
+  m(\vec{k}) = \frac{1}{N} \sum_i
+  \sbr{\prod_{\alpha=1}^d \sin\del{k_{\alpha},r_{i,\alpha}}} S_i
+  \quad\text{(free)},
+  \label{eq:modes-free}
+\end{equation}
+where
+\begin{equation}
+  k_{\alpha} = \pi n_{\alpha}/(L+1)
+  \quad\text{(free)},
+  \label{eq:allowed-free}
+\end{equation}
+where $n_{\alpha}\in\cbr{1,2,\dots,L}$ and the components of the lattice
+position $r_{i,\alpha}$ also take values between 1 and $L$. There is zero
+contribution to the sum in \cref{eq:modes-free} if we set $r_{i,\alpha}=0$ or
+$L+1$, so \cref{eq:modes-free,eq:allowed-free} correctly incorporate free
+boundary conditions.
+
+Note that $k=0$ is not an allowed mode with free boundary conditions, so the
+uniform magnetization in \cref{eq:mag-k0} does not correspond to a single
+Fourier mode in this case. Note also that modes with \emph{all} $n_{\alpha}$
+odd have a projection onto the uniform magnetization and so will acquire a
+nonzero expectation value below $T_c$ in the thermodynamic limit. Such modes
+will therefore be subject to the nonstandard FSS in \cref{eq:fss-above}.
+However, if any of the $n_{\alpha}$ are even, there is no projection onto the
+uniform magnetization, so they will not acquire an expectation value below
+$T_c$ and will therefore be subject to the standard FSS in
+\cref{eq:susc-kn-scaling}.
+
+
+\section{The quotient method}
+\label{sec:fss-quotient}
+
+The discussion in \cref{sec:fss-intro} assumed that the sizes are
+sufficiently large and $T$ sufficiently close to $T_c$ that corrections to FSS
+are negligible. For free boundary conditions, however, a substantial fraction
+of the spins lie on the surface, so \emph{corrections} to FSS are quite large
+and need to be included in the analysis. In this section, we describe the
+method we used to include the \emph{leading} corrections to FSS.
+
+A convenient way to extract the leading scaling behavior from the data, in the
+presence of corrections, is the quotient method
+\autocite{ballesteros1996finite}, based on the phenomenological scaling of
+\textcite{nightingale1976scaling}. As an example, consider the deviation of the
+pseudocritical temperature $T_L$ from $T_c$ for which the FSS form is given in
+\cref{eq:TL-scaling}. Including the \emph{leading} correction to scaling, which
+involves a universal exponent $\omega$, we have
+\begin{equation}
+  \Delta T(L) \equiv T_c - T_L =
+  \frac{A}{L^{\lambda}}\del{1 + \frac{B}{L^{\omega}}}.
+  \label{eq:shift}
+\end{equation}
+We determine the quotient $Q\sbr{\Delta T}$ by taking the logarithm of the
+ratio of the result for sizes $L$ and $s L$, where $s$ is a simple rational
+fraction such as $2$ or $3/2$,
+\begin{equation}
+  Q_{s,L}\sbr{\Delta T}
+  = \frac{1}{\log s} \log\del{\frac{\Delta T(s L)}{\Delta T(L)}}.
+  \label{eq:qshift}
+\end{equation}
+According to \cref{eq:shift} we have, for large $L$,
+\begin{equation}
+  Q_{s,L}\sbr{\Delta T} = -\lambda + \frac{C_s}{L^{\omega}}
+  \label{eq:qshift-scaling}
+\end{equation}
+where
+\begin{equation}
+  C_s = \frac{s^{-\omega} - 1}{\log s} B.
+\end{equation}
+If the data are of sufficient quality, we can fit all of the unknown
+parameters. In \cref{eq:qshift-scaling}, these are the exponents $\lambda$,
+$\omega$, and the amplitude $C_s$. In most cases, however, we will need to
+assume the predicted value for the correction exponent $\omega$ (see below) to
+obtain an unambiguous fit for the remaining parameters.
+
+According to the renormalization group, for $d > d_u = 4$, the leading
+irrelevant variable has scaling dimension
+\begin{equation}
+  \omega = d - 4.
+\end{equation}
+% TODO: understand this
+However, for $k=0$ fluctuations and periodic boundary conditions, it was shown
+by \textcite{brezin1985finite} that there is an additional, and larger,
+correction for finite-size effects with an exponent given by
+\begin{equation}
+  \omega^{\prime} = \frac{d-4}{2}.
+  \label{eq:correction-k0}
+\end{equation}
+An intuitive way to see this is to note that the ``naive" variation of $\chi$
+with $L$ at the critical point, $\chi \propto L^2$ [see
+\cref{eq:fss-above-naive}], although not the dominant contribution [which is
+$L^{d/2}$ as shown in \cref{eq:fss-above-susc}], is nonetheless still present
+as a correction. This correction is down by a factor of $L^{2-d/2}$
+($=L^{-\omega^{\prime}}$) relative to the dominant term. We will therefore use
+$\omega^{\prime}$ rather than $\omega$ in considering corrections to scaling
+for susceptibilities that scale with $L$ to the power $d/2$ rather than 2.
+% TODO: understand this
+
+For some of our data, we will also need subleading corrections to FSS for which
+there are several contributions. One of these is the square of the leading
+contribution. To avoid having too many fit parameters, this is the form we will
+assume, \emph{i.e.}, when we include subleading corrections to scaling we will
+do a parabolic fit in $1/L^{\omega}$ (or $1/L^{\omega^{\prime}}$ as the case
+may be).
+
+A subtlety arises in doing fits to data for quotients, for example to determine
+the parameters $\lambda$, $\omega$, and $C_s$ in \cref{eq:qshift-scaling}. The
+reason is that the same set of simulation data may be used to determine more
+than one data point in the fit. For example, with $s=2$ the data for $L=16$ is
+used in the computation of quotients for pairs (8, 16) and (16, 32).
+Furthermore, we will fit the exponents $\lambda$ and $\omega$ simultaneously to
+quotients for two different values of $s$ ($s=2$ and 3/2),%
+\footnote{%
+  This is justified since the exponents are universal. The amplitude $C_s$ is,
+  however, nonuniversal, so we include a separate amplitude for each value of
+  $s$.
+}
+so for example we also use the data for $L=16$ to compute the quotient for the
+pair (16, 24). This has the advantage of increasing the number of data points
+in the fit by more than the number of parameters. However, in this case the
+data being fitted are \emph{not statistically independent}, and therefore the
+best estimate of the fitting parameters should account for the correlations.
+\autocite{ballesteros1996finite,ballesteros1998critical,weigel2009cross}. In
+other words, if a data point is $(x_i,y_i)$ and the fitting function is $u(x)$,
+which depends on certain fitting parameters, those parameters should be
+determined by minimizing
+\begin{equation}
+  \chi^2 = \sum_{i,j}
+  \sbr{y_i - u(x_i)}
+  \del{\vec{\Sigma}^{-1}}_{ij}
+  \sbr{y_j - u(x_j)},
+  \label{eq:chi2-correlated}
+\end{equation}
+where
+\begin{equation}
+  \Sigma_{ij} = \av{y_i y_j} - \av{y_i}\av{y_j}
+\end{equation}
+is the covariance matrix of the data. We determine the elements of the
+covariance matrix by a bootstrap analysis (see
+\cref{sec:numerical-bootstrap}). If there are substantial correlations, the
+covariance matrix can become singular, and where this happens we replace
+$\vec{\Sigma}^{-1}$ in \cref{eq:chi2-correlated} with the ``pseudoinverse"
+$\vec{\Sigma}^+$.%
+\footnote{%
+  This corresponds to projecting the covariance matrix onto the eigenvectors
+  whose eigenvalues are not (close to) zero and inverting the resulting matrix.
+}
+The effective number of independent data points is then the rank of the
+covariance matrix (the number of non-zero eigenvalues).
+
+
+\section{Results: periodic boundary conditions}
+\label{sec:fss-results-pbc}
+
+
+\subsection{$k=0$ fluctuations}
+
+Here we show results for completeness, as there is no doubt that the FSS form
+of \cref{eq:fss-above} is correct for periodic boundary conditions.
+
+\Cref{fig:binder-p} shows an overview of our data for the Binder ratio $g$,
+showing intersections at, or near, the transition temperature $T_c$ given in
+\cref{eq:Tc-d5}. The right-hand panel is an expanded view near $T_c$, where it
+is clear that intersections for different sizes do not occur at exactly the
+same point, indicating corrections to scaling. In fact, the data for smaller
+sizes intersect at a value larger than the exact, universal value
+\begin{equation}
+  g_c =
+  \frac{1}{2}\del{3 - \frac{\Gamma^4(\frac{1}{4})}{8\pi^2}} \approx
+  0.40578
+  \label{eq:binderTc}
+\end{equation}
+found by \textcite{brezin1985finite}. However, for larger sizes the
+intersections occur at smaller values of $g$.
+\begin{figure}
+  \centering
+  \includestandalone{figures/binder-p}
+  \includestandalone{figures/binder-p-zoom}
+  \caption[
+    Data for the Binder ratio $g$ for the five-dimensional Ising model with
+    periodic boundary conditions.
+  ]
+  {
+    The left panel shows an overview of our results for the Binder ratio $g$
+    for periodic boundary conditions. The right panel is an expanded view near
+    the transition. The transition temperature $T_c$ is marked with a
+    horizontal line, and the universal value of the Binder ratio at the
+    transition temperature, $g_c$, given by \cref{eq:binderTc}, is marked with
+    a vertical line.
+  } \label{fig:binder-p}
+\end{figure}
+\Cref{fig:gx} shows estimates of the value of $g$ at $T_c$, plotted against
+$L^{-\omega^{\prime}}$ with the correction exponent given by
+$\omega^{\prime}=1/2$ as discussed in \cref{sec:fss-quotient}. The data
+decrease to a value consistent with \cref{eq:binderTc} as $L\to\infty$.
+%The effect of a fairly slow correction to scaling exponent
+%$\omega^{\prime}=1/2$, combined with a fairly large correction amplitude, has
+%made it difficult to obtain the known exact result for $g_c$ from numerics.
+%This should serve as a cautionary tale when applying FSS to other problems
+%where the exact answer is not known.
+\begin{figure}
+  \centering
+  \includestandalone{figures/gx}
+  \caption[
+    Data for the Binder ratio $g$ at the transition temperature $T_c$ for the
+    five-dimensional Ising model with periodic boundary conditions.
+  ]
+  {
+    Estimates of the Binder ratio $g$ at $T_c$, plotted against
+    $L^{-\omega^{\prime}}$ with $\omega^{\prime}=1/2$, see
+    \cref{eq:correction-k0}, and a linear fit indicating an extrapolated
+    value for $L\to\infty$ consistent with the exact result, $g_c \approx
+    0.406$ (marked with a horizontal line in the figure), see
+    \cref{eq:binderTc}. The estimates were obtained from a cubic smoothing
+    spline fit to data at and near $T_c$, and the error bars were estimated
+    using the bootstrap procedure. The quality of the fit is good, $Q=0.22$.
+  } \label{fig:gx}
+\end{figure}
+
+
+\subsection{$k \neq 0$ fluctuations}
+
+The data for $\chi(\vec{k})$ for $\vec{k}L/(2\pi)=(1,0,0,0,0)$ are shown in
+\cref{fig:chi-p-k10}. Note that the Fourier components at nonzero wave vector
+vanish even in the ordered state below $T_c$, and so what we define as
+$\chi(\vec{k})$ really is the susceptibility below $T_c$ as well as above
+[unlike the $k=0$ susceptibility defined in \cref{eq:susc-k0}]. Consequently
+the data have a peak, whereas the uniform ``susceptibility" plotted in
+\cref{fig:data-f-susc} (for free boundary conditions) continues to increase
+below $T_c$.
+
+A scaling plot of the data according to standard FSS of
+\cref{eq:susc-kn-scaling} is shown in \cref{fig:chi-k10-scaling}. Except for
+the smallest size, $L=8$, near $T_c$ the data scale very well. Further from
+$T_c$ on the low-$T$ side, we see bigger corrections. However, this is
+unsurprising since FSS is only expected to work for $T$ close to $T_c$.
+
+For larger $k$ values we get a similar picture, albeit with bigger corrections
+to scaling, as shown in \cref{fig:chi-k110-scaling} for
+$\vec{k}L/(2\pi)=(1,1,0,0,0)$. It is expected that corrections to scaling
+become \emph{relatively} bigger for larger $k$ because the signal is less
+divergent in this case, and so it is more easily affected by corrections.
+% TODO: explain
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/chi-p-k10}
+  \caption [
+    Wavevector-dependent susceptibility $\chi(\vec{k})$ for $\vec{k} L/(2\pi) =
+    (1,0,0,0,0)$ for the five-dimensional Ising model with periodic boundary
+    conditions.
+  ]
+  {
+    Susceptibility $\chi(\vec{k})$ for $\vec{k} L = (1,0,0,0,0)$, which we
+    abbreviate to $\chi_{10}$, for periodic boundary conditions.
+  }
+  \label{fig:chi-p-k10}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-p-k10-scaling}
+    \subcaption{$\vec{k}L/(2\pi)=(1,0,0,0,0)$}
+    \label{fig:chi-k10-scaling}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-p-k110-scaling}
+    \subcaption{$\vec{k}L/(2\pi)=(1,1,0,0,0)$}
+    \label{fig:chi-k110-scaling}
+  \end{subfigure}
+  \caption[
+    Scaling plots of the susceptibility of the $d=5$ periodic Ising model for
+    two nonzero wavevectors.
+  ]
+  {
+    Scaling plots of the susceptibility for two nonzero wavevectors. Panel
+    \subref{fig:chi-k10-scaling} shows the scaled data of \cref{fig:chi-p-k10}.
+  } \label{fig:chi-p-modes-scaling}
+\end{figure}
+
+\Cref{fig:chi-modes-p-Tc} shows the behavior of $\chi(\vec{k})/L^2$ at $T_c$
+showing that it is a function of the product $k L$ as expected; see
+\cref{eq:susc-kn-scaling}. The dashed line has slope $-2$ indicating that the
+expected $k^{-2}$ behavior of \cref{eq:susc-kn-Tc-scaling} sets in even for
+small values of $k L$.
+\begin{figure}
+  \centering
+  \includestandalone{figures/chi-modes-p-Tc}
+  \caption[Values of $\chi(\vec{k})/L^2$ at $T_c$ for periodic boundary conditions.]
+  {
+    Values of $\chi(\vec{k})/L^2$ at $T_c$ for periodic boundary conditions.
+    Each group of points has the same $x$ coordinate (1, $\sqrt{2}$, or 2), but
+    the points are displaced slightly horizontally so that they can be
+    distinguished. There are two different wavevectors shown for $k
+    L/(2\pi)=2$, namely $\vec{k}L/(2\pi)=(2,0,0,0,0)$ and $(1,1,1,1,0)$. These
+    two agree well except for the smaller sizes, showing that the fluctuations
+    are isotropic at long wavelength. The dashed line has slope $-2$,
+    indicating that the expected $k^{-2}$ behavior in
+    \cref{eq:susc-kn-Tc-scaling} sets in even for small values of $k L$.
+  } \label{fig:chi-modes-p-Tc}
+\end{figure}
+
+
+\section{Results: free boundary conditions}
+\label{sec:fss-results-fbc}
+
+Because corrections to scaling are larger for free boundary conditions than for
+periodic boundary conditions, in this section we make extensive use of the
+quotient method described in \cref{sec:fss-quotient} to incorporate the
+leading corrections to scaling.
+
+
+\subsection{$k=0$ fluctuations}
+
+An overview of our results for the Binder ratio is shown in
+\cref{fig:data-f-binder}.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/binder-f}
+    \subcaption{}\label{fig:data-f-binder}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/chi-f}
+    \subcaption{}\label{fig:data-f-susc}
+  \end{subfigure}
+  \caption[
+    Data for the Binder ratio $g$ and the susceptibility $\chi$ for the
+    five-dimensional Ising model with free boundary conditions.
+  ]
+  {
+    Overview of data for \subref{fig:data-f-binder} the Binder ratio $g$ and
+    \subref{fig:data-f-susc} the susceptibility $\chi$, for free boundary
+    conditions. Note the large shift to lower temperatures for the smaller
+    sizes and lack of any apparent intersections of the data for different
+    sizes in \subref{fig:data-f-binder}.
+  } \label{fig:data-f}
+\end{figure}
+We do not find any intersections, and the data are shifted considerably to
+lower temperatures for smaller sizes.
+
+To determine the shift exponent, we define the pseudocritical temperature $T_L$
+to be the temperature at which $g$ takes the value 1/2, halfway between its
+limiting values of 0 and 1. We subtract $T_c$, given in \cref{eq:binderTc},
+and determine the resulting quotients for $\Delta T(L) \equiv T_c - T_L$
+according to \cref{eq:qshift}. We then fit \cref{eq:qshift-scaling}
+to the quotients, as shown in \cref{fig:qshift}.
+\begin{figure}
+  \centering
+  \includestandalone{figures/qshift}
+  \caption[
+    Quotient estimation of the shift exponent $\lambda$ for the
+    five-dimensional Ising model with free boundary conditions.
+  ]
+  {
+    Quotients for $\Delta T(L)$, defined in \cref{eq:shift}, used to
+    determine the shift exponent $\lambda$ for free boundary conditions. The
+    parameter $s$ is the ratio of the two sizes used to compute the quotient.
+    We fit \cref{eq:qshift-scaling} to the data using as parameters $\lambda$,
+    $\omega$ (the same for both values of $s$), and separate amplitudes
+    $C_{3/2}$ and $C_2$. The quality of the fit is very good, $Q=0.96$.
+  } \label{fig:qshift}
+\end{figure}
+The quality of the data is very good and we are able to fit all four
+parameters, $\lambda$, $\omega$, and the two amplitudes $C_s$. We find the
+values
+\begin{equation}
+  \lambda = 2.003(3),\quad
+  \omega = 1.01(3).
+\end{equation}
+The value for the shift exponent is in precise agreement with the value
+$\lambda=2$ proposed analytically by \textcite{rudnick1985effect} and found
+numerically by \textcite{berche2012hyperscaling}. There is also excellent
+agreement between our value of the correction exponent $\omega$ and the RG
+value of 1.
+
+We estimate the rounding by the range in temperature $\delta T(L)$ over which
+$g$ varies between 0.25 and 0.75, \emph{i.e.}
+\begin{equation}
+  \delta T(L) = T(g=0.25) - T(g=0.75).
+  \label{eq:width}
+\end{equation}
+Computing the quotients and fitting the form
+\begin{equation}
+  Q_{s,L}\sbr{\delta T} = -y_t^* + A_s/L^{\omega},
+  \label{eq:qwidth}
+\end{equation}
+we find that the data are insufficient to determine the three parameters, but
+if we assume the RG value for the correction exponent, $\omega=1$, then we get
+a good fit that extrapolates to
+\begin{equation}
+  y_t^* = 2.50(3),
+  \label{eq:fss-above-yt-fit}
+\end{equation}
+% TODO: update with result of new analysis
+see \cref{fig:qwidth}, in precise agreement with the prediction $d/2$, see
+\cref{eq:fss-above-yt}.
+\begin{figure}
+  \centering
+  \includestandalone{figures/qwidth}
+  \caption[
+    Quotient estimation of the width exponent $y_t^*$ for $k=0$ modes of the
+    five-dimensional Ising model with free boundary conditions.
+  ]
+  {
+    Quotients for $\delta T(L)$, defined in \cref{eq:width}, used to
+    determine the rounding exponent $y_t^*$ for free boundary conditions. We fit
+    \cref{eq:qwidth} to the data using as parameters $y_t^*$, (the same
+    for both values of $s$) and separate amplitudes. The value of the
+    correction exponent is fixed to $\omega=1$.
+  } \label{fig:qwidth}
+\end{figure}
+We note that the quoted error bar \emph{assumes} that the data can be described
+by \cref{eq:fss-above-yt-fit}; in other words, that \emph{subleading}
+corrections do not affect the fitted data significantly. If this is the case,
+we have established the values of the shift and rounding exponents in
+\cref{eq:fss-above-shift-binder}.
+
+Now we consider the scaling of $\chi$ in \cref{eq:fss-above-shift-susc}. The
+data for $\chi$ are shown in \cref{fig:data-f-susc}. From this we estimate the
+value of $\chi$ at $T_L$ (where $T_L$ is determined, as before, from where $g$
+takes the value 1/2) and do a quotient analysis, shown in \cref{fig:qchiTL}.
+\begin{figure}
+  \centering
+  \includestandalone{figures/qchiTL}
+  \caption[
+    Quotients for the value of the susceptibility $\chi$ at the finite-size
+    pseudocritical temperature for the five-dimensional Ising model with free
+    boundary conditions.
+  ]
+  {
+    Quotients for the value of $\chi$ at $T_L$ for free boundary conditions
+    plotted against $L^{-\omega^{\prime}}$, where the correction to scaling
+    exponent $\omega^{\prime}$ is fixed to the value $1/2$. According to
+    \cref{eq:fss-above-susc}, the quotients should extrapolate to the value
+    $y_t^*$ ($=5/2$) for $L\to\infty$. The linear fit omits the right-hand
+    point for each of the two data sets. There are three fitting parameters:
+    $y_t$ and two amplitudes for the correction, one for each value of $s$. The
+    quality of fit is good, $Q=0.21$.
+  }
+  \label{fig:qchiTL}
+\end{figure}
+The data are insufficient to determine the correction to the scaling exponent,
+so we fixed it to the expected value $\omega^{\prime}=1/2$, see
+\cref{eq:correction-k0}. The amplitude of the correction term is large, but the
+data extrapolate to a value 2.51(1),
+% TODO: update with final value
+consistent with the value of $y_t^*=5/2$ expected from
+\cref{eq:fss-above-shift-susc}, and which was found in earlier simulations by
+\textcite{berche2012hyperscaling,kenna2013new}.
+
+We also measure $\chi$ at the bulk $T_c$. As shown in \cref{eq:rounding-k0-Tc},
+this is proportional to $L^2$, not $L^{d/2}$, and so, as discussed in
+\cref{sec:fss-quotient}, we expect that the correction to scaling exponent will
+be $\omega$ ($=1$) rather than $\omega^{\prime}$ ($=1/2$). Quotients of the
+results are plotted in
+\cref{fig:qchiTc}.
+\begin{figure}
+  \centering
+  \includestandalone{figures/qchiTc}
+  \caption[
+    Quotient estimation of the width exponent $y_t$ for $\vec{k}\neq\vec{0}$
+    modes of the five-dimensional Ising model with free boundary conditions.
+  ]
+  {
+    Quadratic fit to the quotients for the value of $\chi$ at the bulk $T_c$
+    for free boundary conditions against $1/L^{\omega}$ where the correction
+    to scaling exponent $\omega$ is fixed to the value 1.
+    According to \cref{eq:rounding-k0-Tc}, the quotients should extrapolate
+    to the value of $y_t$ ($=2$). There are five fitting parameters:
+    $y_t$ and the amplitudes of the linear and quadratic corrections for
+    each $s$ value. The quality of fit is good, $Q=0.43$.
+    % TODO: update with latest value
+  }
+  \label{fig:qchiTc}
+\end{figure}
+There are clearly subleading corrections to scaling, so we use a quadratic fit.
+The result, $y_t=1.97(6)$,
+% TODO: update
+agrees well with the expected value of 2. We note that the corrections to
+scaling are quite large, which is not surprising since the values of $\chi$ at
+$T_c$ are small, and thus are more influenced by corrections to scaling than
+the data at $T_L$, where $\chi$ is larger.
+% TODO: why?
+We also tried a linear fit omitting the smallest size for each value of $s$,
+finding 1.89(2) with $Q=0.3$, which differs by more than the error bar from the
+value 2. Nonetheless, the quadratic fit shows that, although we have not
+determined the exponent with which $\chi$ diverges at $T_c$ with great
+accuracy, our result is at least \emph{consistent} with the value of 2 expected
+according to \cref{eq:rounding-k0-Tc}. An $L^2$ divergence in the
+susceptibility has also been found recently by \textcite{lundow2014finite}, who
+were able to study larger sizes than those studied here, up to $L=160$.
+% TODO: how is L=160 possible?
+
+\Cref{fig:chi-f-scaling} shows a scaling plot of $\chi(T)/\chi(T_L)$ against
+$L^{d/2}(T-T_L)/T_L$.
+\begin{figure}
+  \centering
+  \includestandalone{figures/chi-f-scaling}
+  \caption[
+    Scaling plot of the susceptibility $\chi$ for the five-dimensional Ising
+    model with free boundary conditions.
+  ]
+  {
+    Scaling plot of the data for $\chi$ for free boundary conditions according
+    to \cref{eq:fss-above-susc}. Also shown are the data at $T_c$, which
+    are seen to lie on the scaling function (within some small corrections).
+  }
+  \label{fig:chi-f-scaling}
+\end{figure}
+We have seen in \cref{fig:qchiTL} that there are corrections to the expected
+$L^{d/2}$ behavior of $\chi$ at $T_L$ for the range of sizes studied. Thus we
+divide $\chi(T)$ by $\chi(T_L)$ rather than by $L^{d/2}$, which appears in
+\cref{eq:fss-above-shift-susc}, to eliminate the corrections seen in
+\cref{fig:qchiTL}. According to \cref{eq:fss-above-shift-susc}, the data in
+\cref{fig:chi-f-scaling} should collapse. There are some corrections to this,
+which is not surprising since we are probing the scaling function over a large
+region, but overall the data scale fairly well. Also shown are data at $T_c$,
+which appear at different points for different sizes because $T_L$ is, of
+course, size-dependent. The larger the size, the further to the right is the
+data point for $T_c$. This figure supports our claim that the data at $T_c$ are
+included in the scaling function in \cref{eq:fss-above-shift-susc}.
+
+We have defined the pseudocritical temperatures $T_L$ and the resulting shift
+exponent $\lambda$ in \cref{eq:shift} by the temperature where the Binder ratio
+takes the value 1/2. Suppose we took a different criterion for $T_L$, such as
+the temperature at which the Binder ratio has some other value, or where there
+is a peak in some $\vec{k}\neq\vec{0}$ susceptibility, such as that shown in
+\cref{fig:chi-p-k10}. We note that the finite-size width varies as $1/L^{d/2}$,
+so temperatures at which the Binder ratio has a value between 0 and 1 would lie
+in this range, and so they would only give a \emph{subleading} contribution to
+the shift, the coefficient of $1/L^2$ remaining the same. We expect that the
+\emph{same} shift amplitude would be obtained no matter what quantity is used
+to define the shift for the following reason. Suppose we have a shift amplitude
+$A$ and pseudocritical temperatures $T_L$ determined from where the Binder
+ratio is 1/2 and a different amplitude $A^{\prime}$, and correspondingly
+different temperatures $T_L^{\prime}$, determined by some other criteria. Then
+the Binder ratio has a scaling form in \cref{eq:fss-above-shift-binder}, but if
+we try to define it in terms of the alternative shift temperatures
+$T_L^{\prime}$, we have
+\begin{align}
+  g(L,T)
+  &= \scalefunc{g}\sbr{L^{d/2}\del{T-T_L}} \\
+  &= \scalefunc{g}\sbr{L^{d/2}\del{T-T_L^{\prime}} +
+     \del{A^{\prime}-A}L^{d/2-2}}.
+\end{align}
+Thus, if different quantities have different shift amplitudes, the argument of
+the scaling function would be shifted by an \emph{infinite} amount (for
+$L\to\infty$) if we use the shift obtained from a different quantity, a clear
+violation of scaling. We therefore postulate that this does not happen and that
+there is a \emph{unique} shift amplitude for a given system.
+
+Note, however, that we cannot rule out subleading corrections to the shift of
+order $1/L^{d/2}$. As a result, the value of $g$ at $T_L$ according to
+\cref{eq:fss-above-shift-binder} will depend on the precise definition of $T_L$
+and therefore will \emph{not} be universal, unlike the situation with periodic
+boundary conditions; see \cref{eq:fss-above-binder}. Thus one can view the
+replacement of \cref{eq:fss-above} by \cref{eq:fss-above-shift} as a violoation
+of the standard finite-size scaling \autocite{rudnick1985effect}.
+% TODO: why?
+However, since the behavior of $\chi$, for example, is described by a single
+function both at $T_c$ and $T_L$, we view \cref{eq:fss-above-shift} as
+representing a \emph{modified FSS}, distinct from standard FSS, in that it has
+different shift and scaling exponents.
+
+
+\subsection{$k \neq 0$ fluctuations}
+
+With free boundary conditions, the Fourier modes are sine waves given by
+\cref{eq:allowed-free}. Modes in which all the integers $n_{\alpha}$ are odd
+have a projection onto the uniform magnetization (\emph{i.e.} the $k=0$ mode)
+and therefore will acquire a nonzero magnetization in the ordered phase. Such
+modes will therefore be affected by the dangerous irrelevant variable, and so
+have the same scaling as fluctuations of the uniform magnetization, given in
+\cref{eq:fss-above-shift-susc}. We therefore take the smallest wave vector with
+an even $n_{\alpha}$, namely $\vec{n}=(2,1,1,1,1)$, since this will not acquire
+a nonzero magnetization, so we expect it to be governed by the FSS in
+\cref{eq:susc-kn-scaling}, \emph{i.e.}, with exponent 2 rather than $d/2$ which
+appears in \cref{eq:fss-above-shift-susc}. We present the data in
+\cref{fig:chi-f-k21}.
+\begin{figure}
+  \centering
+  \includestandalone{figures/chi-f-k21}
+  \caption[
+    Wavevector-dependent susceptibility $\chi(\vec{k})$ for
+    $(L+1)\vec{k}/\pi=(2,1,1,1,1)$ for the five-dimensional Ising model with
+    free boundary conditions.
+  ]
+  {
+    Data for $\chi(\vec{k})$ for $(L+1)\vec{k}/\pi=(2,1,1,1,1)$ for free
+    boundary conditions.
+  }
+  \label{fig:chi-f-k21}
+\end{figure}
+
+According to \cref{eq:susc-kn-scaling}, the height of the peaks in
+\cref{fig:chi-f-k21} should scale as $L^2$ and the width should scale as
+$L^{-2}$. We define the width to be the difference between the two temperatures
+where the susceptibility is 3/4 of the maximum. Quotient analyses for the
+height and width are shown in \cref{fig:quots-k21}. For the height, the
+(quadratic) fit gives an extrapolated value of 2.008(10), consistent with the
+expected value of $y_t=2$ As discussed in the caption of \cref{fig:qchiTL-k21},
+a linear fit gave a value 1.950(2), close but slightly different from 2.
+However, in this case the quality of fit $Q=0.02$ was unacceptably low, which
+is why we went to a quadratic fit. For the data of the width in
+\cref{fig:qwidth-k21}, the amplitudes of the corrections are small and we find
+an extrapolated value of $-1.97(4)$, consistent with the expected value of
+$-y_t$ ($=-2$).
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/qchiTL-k21}
+    \subcaption{}\label{fig:qchiTL-k21}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/qwidth-k21}
+    \subcaption{}\label{fig:qwidth-k21}
+  \end{subfigure}
+  \caption[
+    Quotient estimates of the rounding exponent $y_t$ for $\vec{k}\neq\vec{0}$
+    modes of the five-dimensional Ising model with free boundary conditions.
+  ]
+  {
+    Quotients for the height \subref{fig:qchiTL-k21} and width
+    \subref{fig:qwidth-k21} of the peak in $\chi(\vec{k})$ for
+    $(L+1)\vec{k}/\pi=(2,1,1,1,1)$ for free boundary conditions. According to
+    \cref{eq:susc-kn-scaling}, the quotients of the peak height should
+    tend to the value $y_t$ ($=2$) and the quotients for the width should tend
+    to $-y_t$ ($=-2$) as $L\to\infty$. The estimates of $y_t$ obtained by
+    extrapolation for both fits are consistent with 2. For both fits we fix the
+    value of the correction exponent to $\omega=1$. In \subref{fig:qchiTL-k21}
+    the correction amplitude is large, but the data are of good quality and a
+    quadratic fit works well, $Q=0.53$. A linear fit to these data gave an
+    extrapolated value of 1.950(2) but with a poor quality of fit, $Q=0.02$. In
+    \subref{fig:qwidth-k21}, the amplitude of the leading correction is seen to
+    be quite small, and we use a linear fit which works well, $Q=0.67$.
+    % TODO: update values
+  }
+  \label{fig:quots-k21}
+\end{figure}
+
+Thus, we have found strong evidence to suppert our claim that
+\cref{eq:susc-kn-scaling} applies to free boundary conditions. Note that
+since this FSS form uses $y_t$ ($=2$) and the deviation of $T_L$ from $T_c$ is
+proportional to $1/L^2$, asymptotically we can use eigher $T_c$ or $T_L$ in
+\cref{eq:susc-kn-scaling}.
+
+
+\section{Conclusions}
+
+Our main conclusions have already been discussed in \cref{sec:fss-intro}, so
+here we summarize our main results:
+
+(i) The \emph{modified} FSS form with exponents $d/2$ rather than 2 only
+applies to $k=0$ fluctuations. (For free boundaries it applies to Fourier modes
+that have a projection onto the uniform magnetization.) For all other
+wavevectors, standard FSS with an exponent 2 applies. Consequently, the
+exponent $\eta$ describing the power-law decay of correlations at $T_c$ is
+unambiguously $\eta=0$.
+(See \cref{fig:chi-p-modes-scaling,fig:chi-modes-p-Tc,fig:quots-k21}.)
+
+(ii) For free boundary conditions and $k=0$, the shift, with an exponent 2, is
+larger than the rounding, which has an exponent $d/2$. Using $T-T_L$, where
+$T_L$ is the finite-size pseudocritical temperature, rather than $T-T_c$ as a
+scaling variable, the data have a scalng form that incorporates both the
+behavior at $T_L$, where $\chi \propto L^{d/2}$, and at the bulk $T_c$, where
+$\chi \propto L^2$.
+(See \cref{fig:qshift,fig:qwidth,fig:qchiTL,fig:qchiTc,fig:chi-f-scaling}.)
+
+
+
+\label{sec:fss-conclusions}

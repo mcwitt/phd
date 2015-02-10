@@ -1,0 +1,15 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\sig{00}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\filename{data/binder-d-s\sig-l\pad{\logsize}.csv}
+\def\logsizes{8,9,10,11,12,13,14}
+\def\xmin{1.9}
+\def\xmax{2.2}
+\def\ymin{0}
+\def\ymax{0.4}
+\def\tc{2.056}
+\input{figures/binder.tikz}
+\end{document}

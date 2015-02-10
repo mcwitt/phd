@@ -1,0 +1,30 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\filename{data/binder-f-L\pad{\size}.csv}
+\def\sizes{12,14,16,18,20,24,28,32,36,48,64}
+\begin{tikzpicture}
+  \begin{axis}[
+    xmin=8.2, xmax=\tcdfive,
+    ymin=0, ymax=1,
+    extra x ticks={\tcdfive},
+    extra x tick labels={$T_c$},
+    xlabel={$T$}, ylabel={$g$},
+    legend pos=south west,
+    legend cell align=left,
+    legend style={font=\footnotesize}
+  ]
+
+    \foreach \size in \sizes {%
+      \addplot+[data, mark size=1] table [
+        x=Temp,
+        y=mean,
+        y error=sem,
+      ] {\filename};
+      \addlegendentryexpanded{$\size$}
+    }
+  \end{axis}
+\end{tikzpicture}
+\end{document}

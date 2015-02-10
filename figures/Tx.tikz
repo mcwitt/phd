@@ -1,0 +1,64 @@
+\begin{tikzpicture}
+
+  \begin{axis}[
+    xlabel={$L^{-2/3}$},
+    ylabel={$T^*(L,2L)$},
+    extra y ticks={\tc},
+    extra y tick style={yticklabel=\empty, grid=major},
+    enlarge x limits=false
+  ]
+
+    % plot data
+
+    \pgfplotstableread{\datafile}\data
+
+    \addplot+[data, only marks] table [
+      x expr=\thisrow{L}^(-2/3),
+      y=Tx_chi_mean,
+      y error=Tx_chi_std,
+    ] {\data};
+    \label{plot:sgsusc}
+
+    \addplot+[data, only marks] table [
+      x expr=\thisrow{L}^(-2/3),
+      y=Tx_G_mean,
+      y error=Tx_G_std,
+    ] {\data};
+    \label{plot:binder}
+
+
+    % read fit params
+
+    \pgfplotstableread{\fitfile}\fitparams
+
+    \storerowval{0}{Tc}{\Tcg}
+    \storerowval{1}{Tc}{\TcX}
+    \storerowval{0}{Tc_err}{\Tcgerr}
+    \storerowval{1}{Tc_err}{\TcXerr}
+    \storerowval{0}{A}{\Ag}
+    \storerowval{1}{A}{\AX}
+    \storerowval{0}{Q}{\Qg}
+    \storerowval{1}{Q}{\QX}
+
+
+    % plot fit lines
+
+    \addplot+[linear fit, domain=0:\xmax] { \TcX + \AX*x };
+    \addplot+[linear fit, domain=0:\xmax] { \Tcg + \Ag*x };
+
+
+    % make table of fit parameters
+
+    \node [draw, anchor=south west] at (rel axis cs: 0.03, 0.03) {
+      \footnotesize
+      \begin{tabular}{@{}lll@{}}
+        & $T^*(\infty)$ & $Q$ \\
+        \ref{plot:sgsusc} $\sgsusc/L^{1/3}$ &
+        $\round{3}{\TcX} \pm \round{3}{\TcXerr}$ & \round{2}{\QX} \\
+        \ref{plot:binder} $g$ &
+        $\round{3}{\Tcg} \pm \round{3}{\Tcgerr}$ & \round{2}{\Qg} \\
+      \end{tabular}
+    };
+
+  \end{axis}
+\end{tikzpicture}

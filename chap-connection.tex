@@ -1,0 +1,485 @@
+\chapter{Connection between dynamics and statics in spin glasses}
+\label{chap:connection}
+
+\section{Introduction}
+\label{sec:connection-intro}
+
+Theoretical calculations in statistical physics often involve \emph{equilibrium
+  averages} over a thermodynamic ensemble, for example the canonical ensemble,
+where it is assumed that the system is in equilibrium with a heat bath at fixed
+temperature. In contrast, experiments and simulations usually measure
+steady-state \emph{time averages}. While such \emph{static} and \emph{dynamic}
+averages are usually equivalent, this equivalence can break down.
+
+One case where this may occur is in the ordered phase of a system that exhibits
+a phase transition with spontaneous symmetry breaking. For example, consider an
+Ising ferromagnet in zero field. As the system is cooled below the transition
+temperature, the symmetry of the paramagnetic phase is broken and subsequent
+observation will find the system in one of two ordered states, ``up" or
+``down," corresponding to the sign of the net magnetization.%
+\footnote{%
+  Here, by ``state" we mean a \emph{thermodynamic} state, corresponding to a
+  probability distribution over the microscopic configurations.
+}
+These ``up" and ``down" states have the property that spatial correlations of
+fluctuations vanish at long distances, \textit{i.e.}
+\begin{equation}
+  \lim_{r_{ij} \to \infty} \left( \av{S_i S_j} - \av{S_i}\av{S_j} \right) = 0.
+  \label{eq:clustering-prop}
+\end{equation}
+\Cref{eq:clustering-prop} is called a ``clustering property" and states that
+satisfy it are called ``pure" states \autocite{newman2003ordering}. The set of
+pure states is ``complete" in the sense that \emph{any} thermodynamic state can
+be expressed as a linear combination of pure states. More precisely,
+correlation functions evaluated in an arbitrary thermodynamic state $\rho$ may
+be decomposed as a convex combination%
+\footnote{%
+  That is, a linear combination where all coefficients are nonnegative and the
+  sum of the coefficients is one.
+}
+of correlation functions, each evaluated in a pure state $\rho_{\alpha}$,
+% TODO: reword
+\begin{equation}
+  \av{S_{i_1} \dots S_{i_n}}_{\rho}
+  = \sum_{\alpha} W_{\alpha} \av{S_{i_1} \dots S_{i_n}}_{\rho_{\alpha}},
+\end{equation}
+where we say that $W_{\alpha}$ is the ``weight" of $\rho_{\alpha}$ in $\rho$.
+If a state $\rho$ does not satisfy \cref{eq:clustering-prop}, more than one of
+the $W_{\alpha}$ will be nonzero and we say that $\rho$ is a ``mixed" state.
+
+Returning now to the ferromagnet, in an experiment we will find either the
+``up" or ``down" state. However, the Boltzmann distribution does not exhibit
+the broken symmetry of the ordered phase and includes equal contributions of
+both states, giving a net magnetization of zero. Thus \cref{eq:clustering-prop}
+is not satisfied and the canonical ensemble corresponds to a \emph{mixed}
+state.
+
+However, in spin glasses, which have disorder and ``frustration," the situation
+is more complicated. Below the spin glass transition temperature $T_c$, a
+macroscopic spin glass is not in thermal equilibrium because relaxation times
+are far longer than any experimental time scale. Rather, in a typical
+experiment the system is ``quenched" from a high temperature to a temperature
+below $T_c$ and the subsequent dynamical evolution of the system is observed.
+The state (or states) of thermal equilibrium are very complicated and are not
+related to any symmetry.
+% contrast with ferromagnet
+As for the ferromagnet we would like to find a \emph{static} calculation which
+will predict the experimental behavior, at least to some extent. Below we show
+\emph{quantitatively} that the theoretical construct called the ``metastate"
+\autocite{newman1997metastate,aizenman1990rounding},
+combined with the technique of ``replica symmetry breaking" (RSB, see
+\cref{sec:intro-rsb}), provides such a description for spin glasses, at least in
+dimensions above the upper critical dimension $d_u$, where the critical
+behavior is described by mean-field theory.
+
+Pure states, those states that satisfy \cref{eq:clustering-prop}, are
+convenient to study for several reasons. As in the case of the ferromagnet with
+its ``up" and ``down" states, finding the pure states provides insight into the
+nature of the broken symmetry. Furthermore, \emph{pure states are observed in
+  experiment}, while mixed states (for example, the canonical ensemble for the
+ferromagnet, which has zero magnetization even below $T_c$) are not. Thus we
+would like to also describe spin glasses in terms of pure states. This can be
+done (in principle) by taking a very large system, applying boundary conditions
+on it, and studying the correlations in a relatively small window far from the
+boundary \autocite{newman2003ordering,read2014short}. This procedure is
+repeated for many different boundary conditions.
+% TODO: explain
+
+The question of whether there are many pure states or just one (a time-reversed
+pair in the absence of a magnetic field) in spin glasses has been very
+controversial.%
+% TODO: ref discussion in intro
+\footnote{%
+  See, for example,
+  \textcite{%
+    parisi1980order,%
+    parisi1983order,%
+    fisher1987absence,%
+    fisher1988equilibrium,%
+    moore2011disappearance%
+  }
+}
+If there are many, one needs to do some sort of statistical average over them,
+which is called a ``metastate," for which different but equivalent formulations
+have been given by \textcite{newman1997metastate} and by
+\textcite{aizenman1990rounding}. In the latter (AW) metastate, one considers
+the scale $M$, intermediate between the window size $W$ and the system size
+$L$. The metastate-averaged state (MAS) is obtained by computing correlation
+functions in a window in which an average is performed not only over the spins
+but also over the bonds in the ``exterior" region between $M$ and $L$.
+The setup is sketched in \cref{fig:metastates}.%
+\footnote{%
+  For more details see
+  \textcite{%
+    aizenman1990rounding,%
+    read2014short,%
+    manssen2015aging%
+  }
+}
+Parisi's exact solution of the infinite-range Sherrington-Kirkpatrick (SK)
+model using RSB predicts many pure states (see \cref{sec:intro-rsb}) in a sense
+that was later clarified by \textcite{newman1997metastate}.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/ns-metastate}
+    \subcaption{NS metastate ($W \ll L$)}
+    \label{fig:ns-metastate}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/aw-metastate}
+    \subcaption{AW metastate ($W \ll M \ll L$)}
+    \label{fig:aw-metastate}
+  \end{subfigure}
+  \caption[
+    The spin-glass metastate as defined by \textcite{newman1997metastate} and
+    by \textcite{aizenman1990rounding}.
+  ]
+  {
+    Sketch of the setups for two different (but presumably equivalent)
+    formulations of the metastate given by \subref{fig:ns-metastate}
+    \textcite{newman1997metastate} and by \subref{fig:aw-metastate}
+    \textcite{aizenman1990rounding}.
+  } \label{fig:metastates}
+\end{figure}
+
+The critical behavior of a realistic spin glass is expected to be the same as
+that of the SK model in dimension $d$ greater than the upper critical
+dimension, $d_u=6$. However, this does not necessarily mean that the RSB
+description of the spin glass phase \emph{below} $T_c$ also applies for $d>6$.%
+\footnote{%
+  See
+  \textcite{%
+    newman1997metastate,%
+    fisher1987absence,%
+    fisher1988equilibrium,%
+    moore2011disappearance%
+  }
+}
+Nonetheless, \textcite{read2014short} has computed the spatial fluctuations in a
+finite-dimensional model below $T_c$, assuming mean-field (Gaussian) fluctuations,
+% TODO: clarify
+and the metastate description from Parisi's RSB solution of the SK model. Spin
+correlations are found to fall off with a power of distance, due to averaging
+over many pure states (which are unrelated by symmetry) in the metastate, \emph{i.e.}
+% TODO: expand/clarify
+\begin{equation}
+  \av{S_i S_j}_{\mathrm{MAS}}^2 \propto r_{ij}^{-\alpha_s}
+  \quad\text{with}\quad
+  \alpha_s = d - 4,
+  \label{eq:corr-decay-static}
+\end{equation}
+where ``s" stands for ``static," ``MAS" stands for metastate-averaged state,
+and sites $i$ and $j$ are in the window far from the boundary. For a detailed
+discussion of how to do the metastate average see \textcite{read2014short}.
+% TODO: should give some more detail here...
+
+We emphasize that the calculation leading to \cref{eq:corr-decay-static}
+is a \emph{static} one.
+% TODO: meaning?
+Is it possible to relate \cref{eq:corr-decay-static} to experiments (or
+numerical simulations), which concern (non-equilibrium) dynamics?
+Many simulations%
+\footnote{%
+  \textcite{%
+    manssen2015aging,%
+    rieger1993nonequilibrium,%
+    marinari1996numerical%
+  }
+}
+have been carried out in which a spin glass is quenched to below $T_c$ and the
+resulting dynamics analyzed. It is found that fluctuations can equilibrate (or
+at least reach a steady state) on length scales smaller than a dynamic
+correlation length $\xi(t)$ which is found, empirically, to grow with a power
+of $t$ like
+\begin{equation}
+  \xi(t) \propto t^{1/z(T)},
+  \label{eq:xi-scaling}
+\end{equation}
+where the non-equilibrium dynamical exponent $z(T)$ varies, roughly, like $1/T$
+and becomes close to the critical dynamical exponent $z_c$ for $T=T_c$,
+\textit{i.e.}
+\begin{equation}
+  1/z(T) \simeq (T/T_c) z_c.
+\end{equation}
+%Recently, though, \textcite{} has argued that $z(T)$ does not precisely equal
+%$z_c$ in the limit $T \to T_c$.
+% TODO: find ref
+
+At distances less than $\xi(t)$ correlations are observed to fall off with a
+power of distance, leading to the following scaling hypothesis,
+\begin{equation}
+  C_4(r_{ij},t)
+  \equiv \dav{\av{S_i(t) S_j(t)}^2}
+  =  r_{ij}^{-\alpha_d} f \del{\frac{r}{\xi(t)}},
+  \label{eq:c4-scaling}
+\end{equation}
+where ``d" stands for ``dynamic." Here the square of the thermal average,
+$\av{\cdots}^2$, is performed by simulation two copies of the system with the
+same interactions, initialized with different random spin configurations.
+Use of two copies provides an unbiased estimate of this thermal average.
+% TODO: explain / ref earlier discussion
+The second average, $\dav{\cdots}$, is over the bonds. We will also average over
+all pairs of sites a given distance $r$ apart.
+
+For $r_{ij} \ll \xi(t)$, $f(x)$ approaches a constant as $x \to 0$, so
+% TODO: why?
+\begin{equation}
+  C_4(r_{ij},t) \propto r_{ij}^{-\alpha_d}
+  \quad\text{($r_{ij} \ll \xi(t)$)}.
+  \label{eq:corr-decay-dynamic}
+\end{equation}
+In the opposite limit, $r_{ij} \gg \xi(t)$, \emph{i.e.} large $x$, $f(x)$
+decreases exponentially for short-range systems.
+% TODO: define "short-range" system
+
+Clearly, the nonequilibrium dynamics is generating a sampling the pure states.
+To our knowledge, \textcite{white2006scenario} were the first to point out the
+similarity of this sampling to the metastate average for statics. They use the
+term ``maturation metastate" to describe the ensemble of states generated
+dynamically on scales less than $\xi(t)$ following a quench, and ``equilibrium
+metastate" for the static metastate discussed earlier. Here we will use the
+terms ``dynamic" and ``static" to describe these two metastates. Subsequently
+\textcite{manssen2015nonequilibrium} emphasized the similarity between the two
+metastates and suggested that they might actually be equivalent, in which case
+$\alpha_s$ in \cref{eq:corr-decay-static} would equal $\alpha_d$ in
+\cref{eq:corr-decay-dynamic}.
+
+The rationale behind this hypothesis is that thermal fluctuations of the spins
+outside the window at a distance $\xi(t)$ and greater, which are not
+equilibrated with respect to spins in the window, effectively generate a random
+noise to the spins in the window which is similar to the random perturbation
+coming from changing the bonds in the outer region according to the AW
+metastate.
+
+For the three-dimensional spin glass, \textcite{banos2010nature,banos2010static}
+have shown that a static calculation in the zero spin overlap sector
+% TODO: explain
+gives a power-law decay for the spin correlations, as in
+\cref{eq:corr-decay-static}, with a value of $\alpha_s$ consistent with that
+obtained from dynamcs following a quench by \textcite{belletti2009depth}. These
+are both numerical results. Here we consider the mean-field regime, $d>6$,
+because there is an exact \emph{analytic} result in RSB theory, $\alpha_s=d-4$,
+with which we can compare our numerical results.
+
+
+\section{Model}
+
+Unfortunately, it is difficult to carry out Monte Carlo simulations of spin
+glasses in in six dimensions (see the discussion in
+\cref{sec:nonextensive-motivation}). Instead, we study the \emph{diluted}
+one-dimensional models with long-range interactions described in
+\cref{sec:nonextensive-models}, which we briefly review here. The
+one-dimensional diluted model is described by the Hamiltonian
+\begin{equation}
+  \ham = -\sum_{i,j} J_{ij} S_i S_j,
+\end{equation}
+where the sites $i\in\cbr{1,2,\dots,N}$ lie on a one-dimensional ring with
+periodic boundary conditions, as shown in \cref{fig:1dlr-chord}. The variables
+$S_i = \pm 1$ are Ising spins, and the interactions $J_{ij}$ are independent
+random variables with a distribution satisfying
+\begin{equation}
+  \dav{J_{ij}}=0,\qquad
+  \dav{J_{ij}^2} \propto R_{ij}^{-2\sigma},
+  \label{eq:J-mean-variance-lr-2}
+\end{equation}
+where $R_{ij}$ is taken to be the chord distance between sites $i$ and $j$, see
+\cref{fig:1dlr-chord}. We vary the parameter $\sigma$ to control the range of
+the interactions.
+
+The \emph{diluted} model corresponds to a particular choice of the distribution
+$P(J_{ij})$ that satisfies \cref{eq:J-mean-variance-lr-2} while allowing for
+efficient simulation, namely
+\begin{equation}
+  P(J_{ij})
+  = \del{1 - p_{ij}} \delta \del{J_{ij}}
+  + p_{ij} \frac{1}{\sqrt{2\pi}} e^{-J_{ij}^2/2}.
+  \label{eq:dilute-dist-2}
+\end{equation}
+See \cref{sec:nonextensive-models} for a detailed discussion of the diluted
+model and an algorithm to sample from \cref{eq:dilute-dist-2}.
+
+As discussed in \cref{sec:nonextensive-motivation}, varying the parameter
+$\sigma$ is argued to be analogous to changing the dimension $d$ of a
+short-range model. In the mean-field regime, $d>d_u=6$ for the short-range
+model, a precise connection can be given between $\sigma$ and an equivalent
+$d$, namely
+\begin{equation}
+  d = \frac{2}{2\sigma - 1}
+  \label{eq:d-sigma}
+\end{equation}
+(see \cref{sec:nonextensive-motivation}), and thus, for the long-range model,
+the mean-field regime is $1/2 < \sigma < 2/3$.
+
+The connection between critical exponents of the short-range and corresponding
+long-range models has been discussed systematically by
+\textcite{banos2012correspondence}, who note that an exponent of the
+short-range model in $d$ dimensions is $d$ times the corresponding exponent of
+the equivalent one-dimensional long-range model.
+% TODO: explain
+Thus, to get the exponent $\alpha_s=d-4$ in the static metastate for the
+long-range model we divide by $d$ and, since we will work in the mean-field
+regime, use \cref{eq:d-sigma} to relate $d$ to $\sigma$. This gives
+\begin{equation}
+  \alpha_s = 3-4\sigma
+  \quad\text{(long-range model).}
+  \label{eq:alpha-rsb-lr}
+\end{equation}
+
+In this work we focus on a single value of $\sigma$ in the mean-field regime,
+$\sigma=5/8$, which corresponds to $d=8$ according to \cref{eq:d-sigma}. Using
+standard finite-size scaling analysis (see \cref{sec:numerical-fss}) we find
+that $T_c=1.85(2)$ for this model with $z_b=6$.
+% TODO: define z_b
+Here we need to work \emph{well} below $T_c$ so that our data is characteristic
+of the ordered phase and does not also incorporate critical fluctuations.
+Thus we take $T = 0.4 T_c = 0.74$ for the simulations.
+
+
+\section{Method}
+
+We quench the system from infinite temperature to $T=0.74$ at time $t=0$ and
+follow the evolution of the system using Monte Carlo simulation with only local
+(\textit{e.g.} \emph{not} replica exchange) updates. We measure spin
+correlations, averaging them for times between $2^{k-1}$ and $2^k$, for integer
+$k$ up to the maximum value. For the largest sizes this was $k=14$. We find
+that finite-size effects are very large and we need to study enormously large
+sizes. We therefore take a range of sizes which also increases geometrically,
+$N=2^{\ell}$ up to $\ell=26$. We also average over about 1000 samples (the
+precise number depending on size).
+% TODO: table of simulation params
+
+
+\section{Results}
+
+\Cref{fig:c4-vs-r-sizes} shows our data for the correlation function $C_4(r,t)$,
+defined in \cref{eq:c4-scaling}, as a function of $r\equiv\abs{i-j}$ at
+$t=2^{14}$ for different sizes. Despite the strong finite-size effects, the data
+seems to have saturated for the largest sizes, at least for the range of distance
+presented.
+\begin{figure}
+  \centering
+  \includestandalone{figures/c4-vs-r-sizes}
+  \caption[
+    Data for the correlation function averaged between $t=2^{13}$ and $2^{14}$
+    for different sizes of the 1-d long-range diluted spin glass with
+    $\sigma=5/8$ at $T=0.4T_c$.
+  ]
+  {
+    Data for the correlation function $C_4(r,t)$, defined in \cref{eq:c4-scaling},
+    as a function of $r$ for the range of sizes studied. The data is averaged
+    between $t=2^{13}$ and $2^{14}$.
+  } \label{fig:c4-vs-r-sizes}
+\end{figure}
+
+Having established that the largest size, $N=2^{26}$, is large enough to
+eliminate finite-size effects for the range of $r$ and $t$ considered, we now
+discuss the data for this size in detail. \Cref{fig:c4-vs-r-times} shows data
+for $C_4(r,t)$ at different times as a function of $r$. It is expected to have
+the scaling form shown in \cref{eq:c4-scaling}. For short-range models, the
+scaling function $f(x)$ decays exponentially at large $x$ because the
+correlation function falls off very rapidly once $r$ is greater than the
+dynamical correlation length. However, in the present model we have
+interactions of arbitrarily long range which give a ``direct" contribution to
+the correlation function at large distances. Since $C_4(r,t)$ involves the
+square of the spin-spin correlation function, and is averaged over the
+interactions, the direct contribution should be proportional to
+$\dav{J_{ij}^2}$, which, according to \cref{eq:J-mean-variance-lr-2}, is
+proportional to $r^{-2\sigma}$ ($=r^{-5/4}$ for $\sigma=5/8$). The data in
+\cref{fig:c4-vs-r-times} follow this behavior for short times and large
+distances, see the dotted line.
+
+By contrast, at small $r$ and large $t$, where $r \ll \xi(t)$, the data for
+different times collapse and are consistent with a decay proportional to
+$r^{-(3-4\sigma)}$ ($=r^{-1/2}$ for $\sigma=5/8$), see the dashed line in
+\cref{fig:c4-vs-r-times}. To better estimate the slope at large $t$ and small
+$r$ we plot in the inset to \cref{fig:c4-scaling} the ``effective" exponent
+$\alpha_{\mathrm{eff}}$, the slope of the data in \cref{fig:c4-vs-r-times}, as
+a function of $r$ for different times. The curves are quadratic fits for
+intermediate $r$ ($7 \leq r \leq 255$). The intercepts of the fits approach
+$-1/2$ for $r \to 0$ at large $t$. Thus, according to
+\cref{eq:corr-decay-dynamic}, we have $\alpha_d=3-4\sigma$ (or at least very
+close to it). However, this is precisely equal to $\alpha_s$, the corresponding
+exponent from the \emph{static} metastate according to RSB theory as shown in
+\cref{eq:alpha-rsb-lr}. Thus we see that, in the mean-field regime, the static
+and dynamic metastates appear to agree and the description appears to be that
+of RSB. The latter is in agreement with several other studies
+\autocite{moore2011disappearance,katzgraber2005probing} and is of course also
+implied by those, such as \textcite{banos2010nature,banos2010static}, which
+argue that RSB holds even below six dimensions.
+\begin{figure}
+  \centering
+  \includestandalone{figures/c4-vs-r-times}
+  \caption[
+    Data for the correlation function at different times of the 1-d long-range
+    diluted spin glass with $\sigma=5/8$ at $T=0.4T_c$.
+  ]
+  {
+    Data for the correlation function for the largest size $N=2^{26}$ as a
+    function of $r$ for different times. A gradual crossover can be seen
+    between two power laws. At long times and short distances $C_4(r,t) \propto
+    1/r^{\alpha_d}$ with $\alpha_d = 3 - 4\sigma$ (dashed line); at short times
+    and long distances $C_4(r,t) \propto 1/r^{-2\sigma}$ (dotted line) which is
+    just the average of the square of the interactions $J_{ij}$.
+  } \label{fig:c4-vs-r-times}
+\end{figure}
+
+The main part of \cref{fig:c4-scaling} shows a scaling plot of our data for the
+largest size according to \cref{eq:c4-scaling,eq:xi-scaling}. The data scale
+well with $z(T)=1.4$ and, including estimated error bars, we have the result
+$z(0.4 T_c)=1.4(2)$ for the dynamical exponent describing the growth of
+nonequilibrium correlations following a quench. For short-range models it is
+found empirically%
+\footnote{%
+  \textcite{%
+    manssen2015aging,%
+    rieger1993nonequilibrium,%
+    % TODO: missing ref
+    marinari1996numerical,%
+    yoshino2002extended%
+  }
+}
+that $1/z(T) \propto T$. If we assume the same here then $z(T_c)=0.56(8)$.
+Furthermore, still for short-range models it is also found that $z(T_c)$,
+obtained from nonequilibrium data, is equal to (or at least close to)
+the equilibrium dynamical exponent $z_c$. We therefore take $z_c=0.56(8)$
+for our long-range model. To translate this into the exponent for the
+equivalent short-range model, we multiply by $d$ ($=8$), as discussed above,
+so our estimate for the critical dynamical exponent of the $d=8$ short-range
+spin glass is $z_c=4.5(6)$ ($d=8$). This model is in the mean-field regime
+($d>6$) for which the dynamical exponent is found to be $z_c=4$
+\autocite{zippelius1984critical}. Our result is consistent with this.
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/c4-scaling}
+  \caption[
+    Scaling plot of data for the dynamical correlation function $C_4(r,t)$ at
+    different times for the 1-d long-range diluted spin glass with
+    $\sigma=0.74$ at $T=0.4T_c$.
+  ]
+  {
+    Scaling plot of the data for the largest size $N=2^{26}$ at $T=0.74$
+    according to \cref{eq:c4-scaling}. The inset shows the effective exponent
+    $\alpha_{\mathrm{eff}}$, the slope of the curves in
+    \cref{fig:c4-vs-r-times}, as a function of $r$. The curves in the inset are
+    quadratic fits to the data for intermediate $r$, $7 \leq r \leq 255$. The
+    intercepts of the fits approach $-0.5$ at long times.
+  }
+  \label{fig:c4-scaling}
+\end{figure}
+
+
+\section{Conclusion}
+
+We have shown quantitatively that the nonequilibrium dynamics following a
+quench of a model which is a proxy for a short-range spin glass in dimension
+$d>6$ is given, in the steady-state regime where the distance is less than the
+nonequilibrium correlation length, by the \emph{analytic} result for the
+\emph{static} metastate calculated according to RSB theory. This suggest that
+(i) RSB theory applies to spin glasses above the upper critical dimension,
+$d_u=6$, and (ii) the dynamic and static metastates are equivalent (at least in
+this region).

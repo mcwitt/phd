@@ -1,0 +1,34 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+\def\sizes{8,12,16,20,28,36}
+\begin{tikzpicture}
+  \begin{semilogyaxis}[
+    width=\figurewidthfull,
+    xmin=8.4, xmax=9.2,
+    ymin=5, ymax=400,
+    xlabel={$T$}, ylabel={$\chi_{10}$},
+    extra x ticks={\tcdfive},
+    extra x tick label={$T_c$},
+    extra x tick style={grid=major, x tick label style={above, yshift=2ex, fill=white}},
+    legend pos=north west,
+    legend cell align=left
+  ]
+    \foreach \size in \sizes {
+      \addplot+[
+        mark size=1
+      ] table [
+        x=Temp,
+        y=mean,
+        y error=sem
+      ]{data/chi-p-k10-wide-L\pad{\size}.csv};
+      \addlegendentryexpanded{$\size$}
+    }
+
+    \node [anchor=north east] at (rel axis cs: 0.97, 0.97) {periodic};
+
+  \end{semilogyaxis}
+\end{tikzpicture}
+\end{document}

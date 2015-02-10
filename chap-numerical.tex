@@ -1,0 +1,846 @@
+\chapter{Numerical methods}
+\label{chap:numerical}
+
+
+%\section{Monte Carlo methods}
+%
+%Monte Carlo methods are among the most important estimation techniques in
+%applied mathematics and physics. The basic idea is to esimate a distribution
+%TODO: Monte Carlo integration example
+
+
+\section{Importance sampling}
+
+The aim of numerical simulations in statistical physics is often to compute the
+probability distribution of some observable $X$ when a system, described by a
+Hamiltonian $\ham$, is in equilibrium with a heat bath at temperature $T \equiv
+1/\beta$,
+\begin{equation}
+  P(x) =
+  \frac{\Tr \delta(\hat{X}-x)\exp\del{-\beta \ham}}
+       {\Tr \exp\del{-\beta \ham}},
+  \label{eq:x-dist}
+\end{equation}
+where $\delta(\hat{X}-x)$ is a projection onto the subspace of states where $X$
+has the particular value $x$. But computing \cref{eq:x-dist} as written, that
+is, by summing over all the states of the system, is infeasible in practice.
+This is because the volume of the phase space over which we must average grows
+at least exponentially in the size of the system (for quantum systems the
+situation is even worse, with the \emph{dimension} of the Hilbert space growing
+exponentially). To have any hope of studying systems with more than just a few
+degrees of freedom, we need an approximate method which doesn't require
+considering all of the possible states.
+% TODO: other techniques exploiting symmetry?
+
+\emph{Importance sampling} exploits the observation that most of the states of
+the system have vanishingly small probability for a given temperature, and thus
+most of the terms in \cref{eq:x-dist} can be neglected. By averaging over only
+the most probable states, which represent a small fraction of the overall phase
+space, we can in practice get an excellent approximation of the equilibrium
+probability distribution.
+
+
+\section{Markov Chain Monte Carlo}
+
+But how do we determine which states are the most probable without first
+enumerating all the possible states and computing the probability of each one?
+A solution is provided by \emph{Markov Chain Monte Carlo} methods, which are
+essentially random walks in phase space where, at each iteration, the system
+transitions to a new state drawn from a probability distribution which depends
+only on the current state of the system. If the system is in a state $l$ at
+time $t$, then the probability of a transition to state $m$ at time $t+1$ is
+written $w_{l \to m}$. The the \emph{change} in the probability that the system
+is in state $l$ after one iteration is given by
+\begin{equation}
+  P_l(t+1) - P_l(t)
+  = \sum_{m:\,m \neq l} \del{
+    P_m(t) \, w_{m \to l} -
+    P_l(t) \, w_{l \to m}
+  },
+  \label{eq:master-eq}
+\end{equation}
+called the ``master equation" in the literature. This can be understood
+intuitively by considering a large number of random walkers traversing the
+phase space according to the transition probabilities $w_{l \to m}$. We then
+interpret $P_l(t)$ as the fraction of walkers at state $l$ at time $t$. Then
+the first term on the right represents the \emph{gain} in probability from
+walkers transitioning \emph{into} $l$, while the second term represents the
+\emph{loss} in probability from walkers transitioning \emph{out of} $l$.
+
+It turns out that, after an initial ``relaxation time," the random walkers will
+sample states from a steady-state distribution $\pi_l$ which depends on the
+transition probabilities $w_{l \to m}$. Given a target distribution $\pi_l$,
+how do we choose the transition probabilities to achieve this? Clearly, a
+\emph{necessary} condition is that the target distribution $\pi_l$ be a fixed
+point of \cref{eq:master-eq}, \emph{i.e.}
+\begin{equation}
+  \sum_{m:\,m \neq l} \del{\pi_m w_{m \to l} - \pi_l w_{l \to m}} = 0.
+  \label{eq:fixed-point}
+\end{equation}
+A stronger condition is obtained by requiring that each term in the sum vanish,
+\emph{i.e.}
+\begin{equation}
+  \pi_m w_{m \to l} = \pi_l w_{l \to m}
+  \label{eq:detailed-balance}
+\end{equation}
+for all $l$, $m$. Although not strictly necessary for convergence, $w_{l \to
+  m}$ is often chosen to satisfy the latter condition, called \emph{detailed
+  balance}. Note that \cref{eq:detailed-balance} does not uniquely determine
+the transition probabilities, but only the ratio $w_{l \to m}/w_{m \to l}$ of
+the probability of a transition to the probability of the reverse transition.
+Of the many ways to satisfy \cref{eq:detailed-balance}, one of the most useful
+is the choice of \textcite{metropolis1953equation},
+\begin{equation}
+  w_{l \to m} = \min\cbr{1,\, \pi_m/\pi_l}
+  \quad\text{(Metropolis).}
+  \label{eq:metropolis-prob}
+\end{equation}
+Another useful choice is the ``heat-bath" probability,
+\begin{equation}
+  w_{l \to m} = \frac{1}{1 + \pi_l/\pi_m}
+  \quad\text{(heat bath),}
+\end{equation}
+which has the nice property of being a smooth function of probability ratio.
+However, with a few exceptions, the ``Metropolis probability" of
+\cref{eq:metropolis-prob} is most frequently used in practice because it leads
+to higher transition probabilities (see \cref{fig:metropolis-vs-heatbath}) and
+hence faster convergence. For Monte Carlo simulations in statistical physics,
+the target distribution is often the Boltzmann distribution, $\pi_l \propto
+\exp\del{-\beta E_l}$. In this special case the Metropolis transition
+probability is given by
+\begin{equation}
+  w_{l \to m} = \min\cbr{1,\,e^{-\beta (E_m - E_l)}}.
+\end{equation}
+\begin{figure}
+  \centering
+  \includestandalone{figures/metro-hb}
+  \caption[
+    Comparison of the Metropolis and heat-bath transition probabilities as a
+    function of the probability ratio of two states in the target distribution.
+  ]
+  {
+    Comparison of the Metropolis and heat-bath transition probabilities as a
+    function of the probability ratio of two states in the stationary
+    distribution, $\pi_m/\pi_l$. Note that use of the Metropolis probability
+    leads to larger transition probabilities and thus faster convergence to the
+    stationary distribution.
+  }
+  \label{fig:metropolis-vs-heatbath}
+\end{figure}
+
+
+\subsection{Constructing a Markov chain}
+
+Clearly the detailed balance condition~\eqref{eq:detailed-balance} is
+insufficient for convergence, as can be seen by considering the trivial case
+$w_{l \to m}=0$. It turns out that convergence also requires \emph{ergodicity},
+which is the property that for any pair of states $(l,m)$ it is possible to
+reach $l$ from $m$ in a finite number of steps.
+
+Note that it is possible for \emph{most} of the $w_{l \to m}$ to be zero while
+maintaining ergodicity. In other words, rather than considering moves from the
+current state to \emph{every other} state at each iteration, we can consider
+just a handful of ``neighboring" states. It is useful to imagine a graph where
+each vertex corresponds to a state of the system and an edge is drawn between
+two vertices if there is a nonzero probability of transition between the
+corresponding states. Then, as long as there is a path between every pair of
+vertices (states), the system is ergodic, and if the transition probabilities
+additionally satisfy \cref{eq:fixed-point}, the Markov process will converge to
+the desired steady-state distribution. Monte Carlo algorithms in statistical
+physics exploit this fact because it is computationally infeasible to consider
+transitions to all possible states at each iteration (actually, this would be
+no more efficient than directly computing \cref{eq:x-dist}) and in any case the
+transition probabilities are vanishingly small for the vast majority of them.
+
+In practice, Monte Carlo algorithms in statistical physics usually split each
+iteration into two parts: first, starting from initial state $l$, the algorithm
+selects or ``proposes" a transition to state $m$ with some probability
+$g_{l \to m}$; the proposed move is then accepted with probability
+$A_{l \to m}$, so that the overall probability of a transition from $l$ to $m$
+is the product $w_{l \to m} = g_{l \to m} A_{l \to m}$
+\autocite{newman1999monte}. To satisfy detailed balance
+\eqref{eq:detailed-balance} we must have
+\begin{equation}
+  \frac{g_{l \to m} A_{l \to m}}{g_{m \to l} A_{m \to l}}
+  = \frac{\pi_m}{\pi_l}
+  = e^{-\beta(E_m - E_l)}.
+  \label{eq:select-accept}
+\end{equation}
+In order for the algorithm to converge, the selection probabilities $g_{l \to
+  m}$ must allow for ergodicity; that is, there must be a path between every
+pair of states such that at each step the selection probability is nonzero. The
+acceptance probabilities $A_{l \to m}$ can then be adjusted to satisfy,
+\emph{e.g.}, detailed balance. This allows us considerable freedom in the
+choice of the selection probabilities; however, this choice is paramount to
+efficiency---the algorithm should propose moves that have reasonably large
+acceptance probabilities, otherwise it will waste many iterations ``stuck" in
+the same state. On the other hand, the proposed moves should take us ``far
+enough" in phase space that we explore the relevant regions efficiently . The
+tradeoff between these somewhat vague notions will be clarified in the
+following two examples of Monte Carlo algorithms for the Ising model.
+
+
+\section{Algorithms for the Ising model}
+
+Recall from \cref{sec:intro-ising} that the Ising model in $d$ dimensions
+consists of $N$ classical spins $S_i$, $i \in \cbr{1,\dots,N}$, which take
+values $S_i = \pm 1$. The spins are put on a hypercubic lattice of linear size
+$L$, where $N=L^d$. The system is described by the Hamiltonian
+\begin{equation}
+  \ham = -J \asum{i,j} S_i S_j - h \sum_i S_i,
+\end{equation}
+where $\asum{i,j}$ denotes a sum over all pairs of neighbors, $J$ is the the
+(exchange) interaction between neighboring spins, and $h$ is an external field.
+
+
+\subsection{Single-spin flip dynamics}
+
+The classic example of a Monte Carlo method in statistical physics is the
+\emph{Metropolis algorithm}, introduced by \textcite{metropolis1953equation}.
+In this algorithm the proposed states differ from the current state by a single
+spin flip (\emph{i.e.} $S_i \to -S_i$) and have uniform probability. That is,
+\begin{equation}
+  g_{l \to m} =
+  \begin{cases}
+    1/N & \text{$l$ and $m$ differ by a spin flip}, \\
+    0   & \text{otherwise}.
+  \end{cases}
+\end{equation}
+Note that, because of the symmetry $g_{l \to m} = g_{m \to l}$, the selection
+probabilities drop out of detailed balance condition \eqref{eq:select-accept};
+consequently the acceptance probabilities satisfy detailed balance,
+\begin{equation}
+  \frac{A_{l \to m}}{A_{m \to l}} = e^{-\beta(E_m - E_l)}.
+\end{equation}
+Suppose $m^{(i)}$ differs from $l$ by a flip of $S_i$. Then the change in energy
+\begin{equation}
+  E_{m^{(i)}} - E_l = 2 \del{J \sum_{j \in \mathcal{N}(i)} S_j + h} S_i,
+\end{equation}
+where the sum is over the neighbors of $i$. Finally, using the Metropolis
+convention~\eqref{eq:metropolis-prob} we obtain the acceptance probabilities
+\begin{equation}
+  A_{l \to m^{(i)}} = \min\cbr{1,\,e^{-\beta(E_{m^{(i)}}-E_l)}}.
+\end{equation}
+Since the allowed moves are given uniform probability independent of the state
+of the system, it makes no difference whether updates are done randomly or
+sequentially; for simplicity we usually update the spins sequentially. A single
+iteration over the $N$ spins is called a \emph{sweep} and is often taken as the
+basic unit of Monte Carlo time. \Cref{alg:metropolis} is a minimal
+implementation of a Metropolis sweep, the core of the algorithm.
+
+\begin{algorithm}
+\caption{Minimal implementation of the Metropolis sweep.}
+\label{alg:metropolis}
+\begin{algorithmic}
+\Procedure{Metropolis-sweep}{$S$}
+  \For{$i \gets 1, N$}
+    \State $h_S \gets J \sum\cbr{S_j: \text{$j$ neighbor of $i$}}$
+    \Comment{sum neighbor spins}
+    \State $\Delta E \gets 2\del{h_S  + h} S_i$
+    \Comment{compute change in energy}
+    \If{$\Delta E < 0$ \textbf{or} $\Call{rand}{} < \exp\del{-\Delta E / T}$}
+      \State $S_i \gets -S_i$
+      \Comment{flip $i$-th spin}
+    \EndIf
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Cluster dynamics}
+\label{sec:numerical-cluster}
+
+Another important class of Monte Carlo algorithms are \emph{cluster
+  algorithms}, which flip not just a single spin at a time but clusters of many
+spins. One of the first algorithms to make use of this idea is that of
+\textcite{swendsen1987nonuniversal}. Recall that in the Metropolis algorithm,
+the selection step is trivial and the physics enters through the acceptance
+probabilities. On the other hand, the Swendsen-Wang (SW) algorithm has a
+nontrivial selection step in which the spins are divided into clusters by a
+method that depends on the temperature and couplings, while the acceptance step
+is relatively simple: each cluster is flipped with probability 1/2.
+
+Cluster algorithms such as SW are especially effective at temperatures near the
+transition temperature, where the correlation length becomes large. Here
+cluster algorithms have a significant advantage over single-flip algorithms
+because they are able to realize long-distance correlations in a single move
+(by flipping large clusters of spins) whereas single-flip algorithms take many
+moves to propagate the effective interaction between two spins separated by a
+large distance. Thus cluster algorithms avoid the slow dynamics associated with
+the phenomenon of \emph{critical slowing down} near a critical point. Farther
+from a critical point, cluster algorithms lose this advantage and in fact may
+become less efficient than single-flip algorithms: at high temperatures cluster
+algorithms essentially reduce to single-flip algorithms (with the additional
+overhead of rejected cluster-growth attempts); at low temperatures, clusters
+become comparable to the size of the system and, considering the up-down
+symmetry of the Ising model, the overall effect is to flip only a few spins at
+each iteration. In the latter case, the efficiency of the cluster algorithm is
+much worse than that of a single-flip algorithm, because each move involves an
+$O(N)$ cluster-growth procedure to essentially flip a few spins.
+
+A variant of the SW algorithm which is simpler to implement but with similar
+good performace near the critical point is due to
+\textcite{wolff1989collective}. In this algorithm, we choose a random ``seed"
+spin and ``grow" a cluster outwards, adding like spins adjacent to the cluster
+with a probability $\padd(T/J)$ which depends only on the (dimensionless)
+temperature. When cluster growth is complete, all of the spins in the cluster
+are flipped.
+
+To derive the value of $\padd$ corresponding to a given temperature, we return
+to the detailed balance condition \eqref{eq:detailed-balance}. Note that it is
+the \emph{ratio} of selection probabilities of the forward and reverse moves
+that is relevant. In general there are many ways to grow the same cluster; for
+example, the seed spin could be any spin in the cluster. Following
+\textcite{newman1999monte}, we consider a \emph{particular} way of growing the
+cluster which takes us from state $l \to m$, that is a particular seed spin and
+sequence of additions to the cluster. Consider also the particular reverse move
+which takes us from $m \to l$ starting from the same seed spin and with the
+same sequence of additions to the cluster.
+
+Now, the change in energy when the cluster is flipped depends only on the
+relative orientations of the spins at its boundary. Suppose that $n_f$ bonds
+are ``broken" by the forward move, meaning that $n_f$ pairs of spins that were
+formerly aligned are anti-aligned after the cluster flip, and $n_r$ bonds are
+broken by the reverse move. Then the change in energy in going from $l \to m$
+is $2J(n_f - n_r)$. To see this, note that broken bonds each contribute $2J$ to
+the energy, and also that the changes of energy of the forward and reverse
+moves must sum to zero. Thus, to satisfy detailed balance, we must have
+\begin{equation}
+  \frac{g_{l \to m} A_{l \to m}}{g_{m \to l} A_{m \to l}}
+  = e^{-2 \beta J(n_f - n_r)}.
+  \label{eq:detailed-balance-cluster}
+\end{equation}
+We now compute the selection probability for forward and reverse moves in terms
+of the parameter $\padd$. Broken bonds represent like spins that were rejected
+for addition to the cluster. Since the probability of each rejection is $1-\padd$,
+the probability of selecting a cluster with $n$ broken bonds is $(1-\padd)^n$.
+Thus, the \emph{ratio} of selection probabilities for the forward and reverse
+moves is $(1-\padd)^{n_f-n_r}$. Finally, we insert this into
+\cref{eq:detailed-balance-cluster} to find the relationship between $\padd$
+and the ratio of acceptance probabilities,
+\begin{equation}
+  (1-\padd)^{n_f-n_r} \frac{A_{l \to m}}{A_{m \to l}}
+  = e^{-2 \beta J(n_f - n_r)}.
+  \label{eq:detailed-balance-cluster-2}
+\end{equation}
+Then comes a remarkable simplification: if we set
+\begin{equation}
+  \padd=1-e^{-2\beta},
+\end{equation}
+\Cref{eq:detailed-balance-cluster-2} is satisfied with $A_{l \to m}/A_{m \to
+  l}=1$. This means that we can simply accept all moves and still satisfy
+detailed balance!
+
+A minimal implementation of the Wolff cluster update is given in
+\cref{alg:wolff,alg:cluster-growth}. This is a recursive implementation which
+uses a \emph{depth-first search} to grow the cluster. The choice of search
+order makes no difference in the overall efficiency of the algorithm
+\autocite{newman1999monte}, but comparison of results obtained using different
+search orders can be a useful check for correctness, and some hybrid approaches
+are more memory-efficient \autocite{martin2004hybrid}.
+
+Note that spins are flipped as the cluster is grown rather than at the end of
+cluster growth. This is equivalent to the procedure described above, but does
+not require an additional size $O(N)$ buffer to keep track of the cluster.
+%Additional implementation details and optimizations for large systems are
+%discussed in \cref{app:wolff}.
+
+\begin{algorithm}
+\caption{Minimal implementation of the Wolff cluster algorithm.}
+\label{alg:wolff}
+\begin{algorithmic}
+\Procedure{Wolff-cluster-update}{$S$}
+  \State $p \gets 1-e^{-2/T}$
+  \Comment{probability to add a spin to the cluster}
+  \State $i \gets \Call{rand-int}{1,\,N}$
+  \Comment{choose random spin to seed the cluster}
+  \State $\sigma \gets S_i$
+  \Comment{save the cluster spin}
+  \State \Call{grow-cluster}{$S,i$}
+  \Comment{grow a cluster starting from the seed}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Recursive cluster-growth procedure for the Wolff algorithm.}
+\label{alg:cluster-growth}
+\begin{algorithmic}
+\Procedure{grow-cluster}{$S,i$}
+  \State $S_i \gets -S_i$
+  \Comment{flip spin}
+  \ForAll{$j \in \text{neighbors of $i$}$}
+    \If{$S_j = \sigma$ \textbf{and} $\Call{rand}{} < p$}
+    \Comment{check if like spin and flip coin\dots}
+      \State \Call{grow-cluster}{$S,j$}
+      \Comment{recurse\dots}
+    \EndIf
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Convergence to equilibrium}
+
+Having seen several practical applications of Markov Chain Monte Carlo
+algorithms in statistical physics, in this section we return to the general
+problem of \emph{convergence}. We have seen how to choose transition
+probabilities $w_{l \to m}$ to guarantee that the target distribution $\pi_l$
+is a fixed point of the master equation, \cref{eq:master-eq}. But so far there
+has been no guarantee that, starting from an arbitary inital distribution, the
+iterations will converge to the desired steady-state distribution. As we stated
+earlier, this will only be the case if the system is ergodic, which is the only
+case we consider here.
+
+It is convenient to define the \emph{transition probability matrix}
+$\vec{\Gamma}$ with off-diagonal elements $\Gamma_{lm} = w_{l \to m}$ and
+diagonal elements $\Gamma_{ll} = 1 - \sum_{m \neq l} w_{l \to m}$ representing
+the probability to stay in state $l$. The rows of $\vec{\Gamma}$ are
+probability distributions and therefore must sum to one,
+\begin{equation}
+  \sum_m \Gamma_{lm} = 1.
+  \label{eq:sum-probs}
+\end{equation}
+Using this notation we can write \cref{eq:master-eq} in a form suggestive of
+matrix multiplication,
+\begin{equation}
+  P_l(t+1) = \sum_m P_m(t) \Gamma_{ml}.
+  \label{eq:iter}
+\end{equation}
+Let $\vec{P}_t$ be the (row) vector with components $P_l(t)$. Then
+$\vec{P}_{t+1} = \vec{P}_t \vec{\Gamma}$, and the steady-state vector
+$\vec{\pi}$ is a left-eigenvector of $\vec{\Gamma}$ with eigenvalue one,
+\begin{equation}
+  \vec{\pi}\vec{\Gamma} = \vec{\pi}.
+\end{equation}
+The assumption of ergodicity is then equivalent to the
+statement that there exists some power $p$ such that $\vec{\Gamma}^p$ has
+strictly positive entries
+\begin{equation}
+  \del{\vec{\Gamma}^p}_{lm} > 0.
+  \label{eq:pos-matrix}
+\end{equation}
+Then $p$ can be interpreted as the minimum number of steps required for a
+random walker to reach state $m$ from state $l$, maximized over all pairs $l$,
+$m$.
+
+One strategy to prove the convergence of \cref{eq:iter} is to show that
+$\vec{\Gamma}^p$ has a one-dimensional eigenspace, spanned by $\vec{\pi}$, with
+eigenvalue one, and all other eigenvalues less than one in magnitude. Then, as
+long as $\vec{P}_0$ has
+% TODO: show that steady-state vector positive?
+some nonzero projection onto $\vec{\pi}$ (which is necessarily the case in
+classical Monte Carlo simulations%
+\footnote{%
+  In classical Monte Carlo simulations, we start in some initial state $m$ so
+  $P_l(0)=\delta_{l\,m}$. By the assumption of ergodicity,
+  \cref{eq:pos-matrix}, the stationary state $\pi$ must have all components
+  nonzero and thus $P(0)$ has a nonzero projection onto $\pi$.
+}),
+the components of $\vec{P}_t$ orthogonal to $\vec{\pi}$ will decay
+exponentially in $t$ and, because right-multiplication by $\vec{\Gamma}$
+conserves probability according to \cref{eq:sum-probs}, $\vec{P}_t \to
+\vec{\pi}$ as $t \to \infty$. We now proceed with the proof.
+
+First, note that the column vector of ones $\vec{1}$ is a right eigenvector of
+$\vec{\Gamma}$ with eigenvalue one. Given an arbitrary vector $\vec{u}$, note
+that \cref{eq:sum-probs,eq:pos-matrix} imply that each component of
+$\vec{\Gamma}^p \vec{u}$ is a convex combination%
+\footnote{%
+  That is, a linear combination in which the coefficients are all positive and
+  sum to one.
+}
+of the components of $\vec{u}$, and thus can be no larger in magnitude than the
+largest component. That is,
+\begin{equation}
+  \abs{\sum_j \del{\vec{\Gamma}^p}_{ij} u_j}
+  \leq \max_k \cbr{\abs{u_k}}
+\end{equation}
+for all $i$. But equality for \emph{any} $i$ implies that the components of
+$\vec{u}$ are all equal, or, in other words, $\vec{u}$ is an element of the
+one-dimensional eigenspace spanned by $\vec{1}$. Therefore
+$\vec{\Gamma}^p \vec{u} = \lambda\vec{u}$ implies that either $\vec{u} \propto \vec{1}$
+or $\abs{\lambda}<1$.
+
+The above argument unfortunately doesn't appear have a clear interpretation in
+terms of random walkers moving between states.
+\textcite{narayan2001convergence} give a direct proof in this language, which
+also provides the intuition that \emph{deviations} from the stationary
+probability of each state eventually meet and annihilate as long as the system
+is ergodic, so that the overall distribution eventually converges to the
+stationary distribution.
+
+\subsection{Estimating the relaxation time}
+\label{sec:numerical-equilibration}
+
+We have argued that Monte Carlo simulations of ergodic systems
+\emph{eventually} converge to a steady state, but in practice we need to
+estimate the number of Monte Carlo steps necessary to achieve convergence. This
+is called the \emph{relaxation time} or \emph{equilibration time} and is
+denoted in the following by $\relaxtime$.
+
+By the above arguments the rate of convergence is related to the magnitude of
+the second-largest eigenvalue $\lambda_2$ of $\vec{\Gamma}$, which controls the
+exponential decay of the components of $\vec{P}_t$ orthogonal to $\vec{\pi}$.
+Thus \emph{in theory} $\relaxtime$ can be estimated by
+% TODO: standardize relaxation/equilibration
+\begin{equation}
+  \relaxtime \sim -\frac{1}{\log{\abs{\lambda_2}}}.
+\end{equation}
+In practice, the number of states in a typical Monte Carlo simulation is far
+too large to calculate $\lambda_2$, and we instead estimate $\relaxtime$ empircally.
+
+A simple but effective way to estimate $\relaxtime$ is to plot thermal averages
+of the quantity of interest, $\av{x}$, against the Monte Carlo time and
+estimate $\relaxtime$ from the onset of a plateau. In one particulary useful
+scheme,
+% TODO: cite
+we start with some intial number of updates $M_0$ without computing any
+averages. We then do an additional $M_0$ updates, computing the average
+$\av{x}_1$. Finally, we compute $\av{x}_n$ by averaging between $t = 2^{n-1}
+M_0$ and $t = 2^n M_0$. In other words, $\av{x}_n$ represents the average taken
+over the last half of the updates. We then plot $\av{x}_n$ as a function of $n$
+(which is just the logarithm of the Monte Carlo time) to estimate $\tau$.
+%TODO: figure
+
+% TODO: standardize {stationary, equilibrium, fixed-point, invariant, target} distribution
+
+%Because spin glasses exhibit slow dynamics at low temperature, we often require
+%a substantial amount of computer time to ensure that the system has reached
+%equilibrium. It is therefore useful to have a systematic criterion to determine
+%the number of Monte Carlo sweeps $\relaxtime$ required to reach
+%equilibrium so that we can minimize wasted compute cycles while still
+%maintaining confidence that our measurements represent equilibrium quantities.
+
+While the simple method of estimating $\relaxtime$ from a plateau is often
+adequate, a more robust approach is possible if we can find an ``indicator"
+quantity that necessarily vanishes in equilibrium, but is nonzero in the
+initial, nonequilibrium state.
+% TODO: sufficient indicators?
+The vanishing of the indicator, in conjunction with a plateau in the quantity
+of interest, provides additional evidence for equilibration. This method has
+proven useful in the study of spin glasses with Gaussian couplings, for which
+such a quantity is known \autocite{katzgraber2003monte}. Below we derive the
+\emph{equilibrium} relationship between measurable quantities on which this
+indicator is based.
+
+
+\subsection{Equilibration test for Gaussian spin glasses}
+\label{sec:equilibration-test-gaussian}
+
+Consider the equilibrium energy per spin averaged over samples,
+\begin{equation}
+  U =
+  -\frac{1}{N} \sum_{\abr{i,j}} \dav{J_{ij} \av{S_i S_j}} \equiv
+  -\frac{1}{N} \sum_{\abr{i,j}} U_{ij},
+\end{equation}
+% TODO: make sure \sum_{<i, j>} is defined
+For Gaussian $J_{ij}$ with mean zero and variance $\sigma_{ij}^2$, we can
+compute the bond average in closed form to obtain an equilibrium relationship
+between measurable quantities. Integrating by parts with respect to $J_{ij}$,
+noting that the boundary term vanishes,
+\begin{equation}
+  U_{ij} =
+  \frac{\sigma_{ij}^2}{\sqrt{2 \pi \sigma_{ij}^2}}
+    \int \dif x \, e^{-x^2/2\sigma_{ij}^2} \, \dod{}{x} C_2(x),
+\end{equation}
+where $C_2(J_{ij}) \equiv \av{S_i S_j}$, and thus
+\begin{equation}
+  U = -\frac{1}{N} \sum_{\abr{i,j}} \sigma_{ij}^2 \dav{\dod{}{J_{ij}} \av{S_i S_j}}.
+\end{equation}
+In equilibrium at temperature $T \equiv 1/\beta$,
+\begin{equation}
+  \av{S_i S_j} = \frac{\Tr S_i S_j e^{-\beta \ham}}{\Tr e^{-\beta \ham}}.
+\end{equation}
+Taking the derivative and using the identity
+$\od{}{J_{ij}} e^{-\beta \ham} = \beta S_i S_j e^{-\beta \ham}$,
+we find
+\begin{equation}
+  T \dod{}{J_{ij}} \av{S_i S_j} =
+  1 - \av{S_i S_j}^2.
+\end{equation}
+Thus we find the \emph{equilibrium} relationship
+\begin{align}
+  U
+  &= - \frac{1}{NT}
+       \sum_{\abr{i,j}}
+       \sigma_{ij}^2 \del{ 1 - \dav{\av{S_i S_j}^2} } \notag \\
+  &= - \frac{\tcmfsq}{2T}
+       \del{1 - \frac{2}{N}
+       \sum_{\abr{i,j}} \frac{\sigma_{ij}^2}{\tcmfsq} \dav{\av{S_i S_j}^2}}
+  \label{eq:equil-1}
+\end{align}
+where in the second line we use the identity
+$\tcmfsq = (2/N) \sum_{\abr{i,j}} \sigma_{ij}^2$.
+The second term in the parentheses,
+\begin{equation}
+  q_l \equiv \frac{2}{N}
+  \sum_{\abr{i,j}} \frac{\sigma_{ij}^2}{\tcmfsq} \dav{\av{S_i S_j}^2},
+\end{equation}
+is a generalized form of the \emph{link overlap}, so named because the average
+$\av{S_i S_j}^2$ measures the tendency for a bond, or ``link", to be
+simultaneously satisfied in independent replicas.
+% TODO: make above statement clearer
+\Cref{eq:equil-1} can be rewritten as
+\begin{equation}
+  U = - \frac{\tcmfsq}{2T} \del{1 - q_l},
+  \label{eq:energy-lo}
+\end{equation}
+or
+\begin{equation}
+  \Delta(U,q_l) \equiv
+  U + \frac{\tcmfsq}{2T} \del{1 - q_l} = 0
+  \quad\text{(equilibrium).}
+  \label{eq:delta}
+\end{equation}
+However, for a \emph{nonequilibrium} state at time $t$ with link overlap
+$q_l(t)$ and energy $U(t)$, the quantity $\Delta(t) \equiv
+\Delta\sbr{U(t),q_l(t)}$ does not necessarily vanish. For example, consider
+putting the system in a random state at $t=0$ by flipping each spin with
+probability $1/2$ (which is how we typically initialize Monte Carlo
+simulations). Then $q_l(t=0) \approx 0$, less than the \emph{equilibrium} value
+$q_l(t \to \infty)$, and furthermore $U(t=0) > U(t \to \infty)$. Thus
+\begin{equation}
+  \Delta(t=0) > 0,
+\end{equation}
+and, from \cref{eq:delta},
+\begin{equation}
+  \Delta(t \to \infty) = 0.
+\end{equation}
+Therefore a useful test for equilibration is to plot $\Delta(t)$ and infer the
+time at which the system reaches equilibrium from the onset of a plateau at
+$\Delta=0$. An example of such an ``equilibration plot" is shown in
+\cref{fig:equil}.
+
+% TODO: comment u < 0 (why? constrained by 0 < q_l < 1)
+% TODO: special cases for short-range, complete, diluted
+% TODO: comment about equilibration of sample averages vs. individual samples
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/equil}
+  \includestandalone{figures/equil-delta}
+  \caption[%
+    Example equilibration plots for a spin glass model with Gaussian couplings.
+  ]
+  {%
+    Example equilibration plots for the 1-d diluted spin glass with
+    $\sigma=0.6$. On the left, the left- and right-hand sides of
+    \cref{eq:energy-lo}, computed from Monte Carlo averages, as a function of
+    sweeps $t$ on a log-linear scale. The plateau of both quantities at a
+    common value is consistent with the onset of equilibrium. On the right, the
+    quantity $\Delta$, defined in \cref{eq:delta}, as a function of $t$ for
+    different sizes on a log-linear scale. Here, the plateau at zero is
+    consistent with the onset of equilibrium.
+  }
+  \label{fig:equil}
+\end{figure}
+
+\section{Parallel tempering}
+\label{sec:numerical-parallel-tempering}
+
+% TODO: motivation - problem of slow dynamics, metastable states
+
+For systems with slow dynamics and at low temperatures, the rate of convergence
+is significantly improved by \emph{parallel tempering} (also known as
+\emph{replica exchange}) Monte Carlo, introduced by
+\textcite{hukushima1996exchange}. The idea is to simultaneously simulate
+several copies (replicas) of the system, each at a different temperature, and,
+in addition to the usual (\emph{e.g.} spin-flip) updates, allow a new type of
+``replica exchange" update which swaps the \emph{entire spin configurations} of
+a pair of replicas.
+
+The advantage of parallel tempering is realized in systems with ``rough" energy
+landscapes, with many local optima separated by energy barriers on many scales.
+Replicas at low temperatures tend to settle into local minima which are
+difficult to escape, leading to slow dynamics. Parallel tempering helps by
+allowing ``stuck" replicas at low temperature to ``jump up" to a higher
+temperature where they are able to escape local minima and more efficiently
+explore the phase space. Once a region of lower energy is found, a replica can
+then ``drop down" to a lower temperature. See \cref{fig:pt-intuition}.
+
+\begin{figure}
+  \centering
+  \includestandalone{figures/pt-intuition}
+  \caption[Replicas at different temperatures exploring a non-convex energy landscape.]
+  {
+    Replicas at different temperatures $T_1 < T_2$ exploring a non-convex
+    energy landscape. In this scenario, the replica at the lower temperature
+    $T_1$ has become trapped in a local minimum. At the next iteration of
+    parallel tempering, the configurations of the two replicas will be swapped
+    with high probability (corresponding to exchanging the positions of ``1"
+    and ``2" in the figure). The replica at temperature $T_1$ will then be able
+    to explore the low-energy region.
+  }
+  \label{fig:pt-intuition}
+\end{figure}
+
+We now derive the transition probabilities for the replica exhange moves
+assuming detailed balance. Suppose we have two replicas in states $l$, $m$ and
+at temperatures $\beta_1$, $\beta_2$ respectively. According to the Boltzmann
+distribution, the the joint probability of this configuration is
+\begin{equation}
+  P(l,\beta_1) P(m,\beta_2) \propto
+  e^{-(\beta_l E_l + \beta_m E_m)}.
+  \label{eq:joint-prob}
+\end{equation}
+The ratio of the probability of this configuration to the probability of the
+configuration obtained by exchanging $l$ and $m$ is then
+\begin{equation}
+  \frac{P(l,\beta_1) P(m,\beta_2)}
+       {P(m,\beta_1) P(l,\beta_2)} =
+  \frac{\exp\del{-\beta_1 E_l - \beta_2 E_m}}
+       {\exp\del{-\beta_1 E_m - \beta_2 E_l}} =
+  e^{-(\beta_1-\beta_2)(E_l-E_m)}.
+\end{equation}
+To define a Markov process which converges to the distribution
+\eqref{eq:joint-prob}, it is sufficient to satisfy the detailed balance
+condition \eqref{eq:detailed-balance} and, using the Metropolis convention, we
+obtain for the transition probability
+\begin{equation}
+  w_{X \to X^{\prime}}
+  = \min\cbr{1, e^{-(\beta_1-\beta_2)(E_l-E_m)}}.
+\end{equation}
+where the configuration
+$X=\cbr{(\beta_1,l),(\beta_2,m)}$ and
+$X^{\prime}=\cbr{(\beta_1,m),(\beta_2,l)}$.
+
+Note that the \emph{average} transition probability of a replica exhange move
+depends on the amount of overlap of the energy distributions of the two
+replicas. In other words, the condition for parallel tempering to be effective
+is $\Delta E / \delta E \lesssim 1$, where $\Delta E$ is the difference between
+the average energies and $\delta E$ is the width of the distributions. This is
+sketched in \cref{fig:pt-energydist}. Differentiating the partition function we
+find $N c_V = (\delta E)^2 / T^2$, where $c_V$ is the heat capacity per spin.
+Combining this with $\Delta E = N c_V \Delta T$, the condition becomes
+\begin{equation}
+  \frac{\Delta T}{T} \lesssim \frac{1}{\sqrt{N c_V}}.
+\end{equation}
+Thus, at least in cases where the specific heat $c_V$ doesn't vary too much
+over the temperature range we wish to study, a geometric series of temperatures
+is an appropriate choice.%
+\footnote{%
+  One must use caution for example in the vicinity of a critical point, where
+  the specific heat may diverge, leading to vanishingly small transition
+  probabilities between pairs of replicas near the critical point.
+}
+In practice, we usually adjust $\Delta T/T$ to obtain acceptance probabilities
+for swaps between each pair of neighboring temperatures of about 20--30\%, near
+optimal values found by \textcite{rathore2005optimal} and
+\textcite{kone2005selection}. Recently \textcite{katzgraber2006feedback} have
+proposed an adaptive method which optimizes the round-trip time for a replica
+to explore the entire temperature space, which avoids bottlenecks in swap
+probabilities that may occur for example if the heat capacity exhibits singular
+behavior within the range of temperatures studied.
+
+% TODO: a single sweep consists of...
+
+
+\begin{figure}
+  \centering
+  \begingroup
+    \pgfplotsset{width=0.8\textwidth, height=0.3\textwidth}
+    \includestandalone{figures/pt-energydist}
+  \endgroup
+  \caption[
+    Overlap of energy distributions of replicas of a system at nearby
+    temperatures.
+  ]
+  {
+    Overlap of energy distributions of replicas of a system at nearby
+    temperatures. For parallel tempering to be effective, temperatures must
+    be chosen such that the difference $\Delta E$ between average energies
+    of neighboring replicas is of the order (or smaller than) the width
+    of the energy distributions $\delta E$.
+  }
+  \label{fig:pt-energydist}
+\end{figure}
+
+
+\section{Finite-size scaling}
+\label{sec:numerical-fss}
+
+Using state-of-the-art Monte Carlo algorithms running on modern hardware we can
+(optimistically) simulate systems of sizes up to roughly $N \sim 10^9$, limited
+by available processing speed and memory. For equilibrium simulations of
+systems glassy systems, this number is much smaller, about $10^4$, as the time
+required to equilibrate the system grows rapidly with size. There is a big gap
+between the sizes we are able to simulate and $N \sim 10^{23}$ observed in
+laboratory experiments! Thus it would be very useful to know in which
+situations finite-size effects become important and how to use results for
+finite systems obtained from simulations to extrapolate the behavior in the
+thermodynamic limit.
+
+Plausibly, finite-size effects become important when the relevant length scale
+of the fluctuations, \emph{i.e.} the correlation length $\xi$, becomes large
+relative to the linear size of the system $L$. The basic assumption of
+\emph{standard} finite-size scaling (FSS) theory is that finite-size
+corrections only involve the ratio of the bulk correlation length $\xi$
+(\emph{i.e.} the correlation length that would be observed in an infinite
+system) to the size $L$. This assumption is correct for systems below the upper
+critical dimension, $d<d_u$. Above the upper critical dimension, $d>d_u$, this
+simple picture is complicated by the presence of a ``dangerous irrelevant
+variable," \autocite{binder1985finite} and we have to proceed more carefully
+using a renormalization group approach. This situation is discussed in detail
+in \cref{chap:fss}. For now we will assume $d<d_u$, so that standard FSS
+applies.
+
+Finite-size effects are particularly important near a critial point, which is
+marked by the divergence of the bulk correlation length $\xi$. Near the critial
+temperature $T_c$, the correlation length scales like $\xi \sim t^{-\nu}$,
+where $t=T-T_c$, so by the basic assumption of FSS, the size dependence enters
+only through the ratio $t^{-\nu}/L$, or, equivalently, through $L^{1/\nu} t$.
+%The latter expression is
+%convenient because temperature appears linearly, allowing us to use the same
+%relationship both above and below $T_c$.
+% TODO: include this? ^
+For a susceptibility which diverges (in the bulk) like $\chi \sim t^{-\gamma}$
+at the critial temperature, we then infer the finite-size scaling form
+\begin{equation}
+  \chi(L,t) \sim L^{\gamma/\nu} \widetilde{\chi}\del{L^{1/\nu} t},
+  \label{eq:standard-fss-susc}
+\end{equation}
+where $\sim$ indicates asymptotic equivalence for large $L$, and
+$\widetilde{\chi}$ is a \emph{scaling function} which depends on $L$ only
+through its argument. The prefactor $L^{\gamma/\nu}$ is justified by the
+assumption that $\chi(\infty,t) \sim t^{-\gamma}$, which requires that
+$\widetilde{\chi}(x) \to x^{-\gamma}$ as $x \to \infty$.
+
+The FSS form is particulary simple for \emph{dimensionless} quantities since
+there can be no prefactor power of $L$. For a dimensionless quantity $g$, the
+FSS form is simply
+\begin{equation}
+  g(L,t) \sim \scalefunc{g}\del{L^{1/\nu} t}
+  \label{eq:dimensionless-fss}
+\end{equation}
+One commonly-studied dimensionless quantity is the ``Binder ratio,"
+defined as a ratio of moments of the order parameter $m$,
+\begin{equation}
+  g = \frac{1}{2}\del{3 - \frac{\av{m^4}}{\av{m^2}^2}}.
+  \label{eq:def-binder}
+\end{equation}
+\Cref{eq:dimensionless-fss} is useful in practice to estimate the the bulk
+transition temperature $T_c$, because the right-hand side is independent of $L$
+only at $T=T_c$ (\emph{i.e.} $t=0$). Thus we can estimate $T_c$ from the
+temperature at which data for different sizes intersect. However, note that
+\cref{eq:dimensionless-fss} is only asymptotically correct---in practice
+corrections to scaling are significant and data for different sizes do not all
+intersect at a single temperature. However, if the form of the leading
+correction to scaling is known, for example as in
+\cref{sec:nonextensive-method}, we can extrapolate to estimate the bulk $T_c$,
+see \cref{eq:Tx-corrected}.
+
+% TODO: corrections to scaling
+Scaling functions $\scalefunc{X}$, $\scalefunc{g}$ predicted to be universal (up
+to non-universal factors multiplying argument and $L^{\gamma y_t}$.
+% TODO: edit^
+
+\section{Fitting and error estimation}
+
+\subsection{Bootstrap resampling}
+\label{sec:numerical-bootstrap}
+
+\autocite{young2015everything}
+
