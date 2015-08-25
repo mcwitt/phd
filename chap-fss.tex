@@ -49,29 +49,27 @@ the correlation length $\xi_L$ have the form
   \xi_L &= L \scalefunc{\xi}\del{t L^{y_t}, h L^{y_h}, u L^{y_u}},
 \end{align}
 where $t\equiv(T-T_c)/T_c$ is the reduced temperature, $h$ is the magnetic
-field, and $u$ is the quartic coupling of the Landau theory (see \cref{sec:intro-landau}).
-is an irrelevant variable, corresponding$y_u<0$. For $d < d_u$, we obtain
-% TODO: how?
+field, and $u$ is the quartic coupling of the Landau theory; $y_t$, $y_h$, and
+$y_u$ are the corresponding renormalization-group exponents.
+For $d < d_u$, $u$ is a relevant variable ($y_u > 0$, see \cref{sec:intro-landau})
+and for $h=0$ we obtain the scaling forms
 \begin{subequations}
 \begin{align}
-  \chi(L,t) &= L^{\gamma y_t} \scalefunc{\chi}\del{t L^{y_t}},
+  \chi(L,t) &= L^{\gamma y_t} \scalefunc{\chi}\del{t L^{y_t}}
   \label{eq:fss-standard-susc} \\
   g(L,t) &= \scalefunc{\chi}\del{t L^{y_t}},
 \end{align}
 \label{eq:fss-standard}
 \end{subequations}
-% TODO: define/ref Binder ratio
-where
-\begin{equation*}
-  y_t = 1/\nu.
-\end{equation*}
+where $y_t=1/\nu$, for the susceptibility and Binder ratio [defined in
+\cref{eq:binder}] respectively.
 
-For $d > d_u$ !!EXPLAIN WHAT HAPPENS!!
-% TODO
-The reason for the complication is the presence of a ``dangerous irrelevant"
-variable which causes scaling functions to have additional singularities.
-% TODO: dangerous irrelevant variable is quartic coupling, dangerous because
-% scaling functions develop singularity as u -> 0
+For $d > d_u$, $u$ is irrelevant ($y_u<0$), but the corresponding derivation is
+complicated by the fact that the scaling function $\scalefunc{f}(x,y,z)$ is
+singular in the limit $z \to 0$, \textit{i.e.}, $u$ is a \emph{dangerous
+  irrelevant variable}. Therefore we can't simply substitute $z=0$ in the
+scaling function, and must instead evaluate the limit $z \to 0$, assuming a
+particular form of the singularity.
 
 
 \subsection{Periodic boundary conditions}

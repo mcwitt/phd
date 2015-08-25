@@ -28,7 +28,7 @@ This is because the volume of the phase space over which we must average grows
 at least exponentially in the size of the system (for quantum systems the
 situation is even worse, with the \emph{dimension} of the Hilbert space growing
 exponentially). To have any hope of studying systems with more than just a few
-degrees of freedom, we need an approximate method which doesn't require
+degrees of freedom, we need an approximate method that doesn't require
 considering all of the possible states.
 % TODO: other techniques exploiting symmetry?
 
@@ -185,12 +185,13 @@ following two examples of Monte Carlo algorithms for the Ising model.
 Recall from \cref{sec:intro-ising} that the Ising model in $d$ dimensions
 consists of $N$ classical spins $S_i$, $i \in \cbr{1,\dots,N}$, which take
 values $S_i = \pm 1$. The spins are put on a hypercubic lattice of linear size
-$L$, where $N=L^d$. The system is described by the Hamiltonian
+$L$ so that the number of spins $N=L^d$. The system is described by the
+Hamiltonian
 \begin{equation}
-  \ham = -J \asum{i,j} S_i S_j - h \sum_i S_i,
+  \ham = -J \asum{i,j} S_i S_j - H \sum_i S_i,
 \end{equation}
 where $\asum{i,j}$ denotes a sum over all pairs of neighbors, $J$ is the the
-(exchange) interaction between neighboring spins, and $h$ is an external field.
+(exchange) interaction between neighboring spins, and $H$ is an external field.
 
 
 \subsection{Single-spin flip dynamics}
@@ -212,9 +213,10 @@ consequently the acceptance probabilities satisfy detailed balance,
 \begin{equation}
   \frac{A_{l \to m}}{A_{m \to l}} = e^{-\beta(E_m - E_l)}.
 \end{equation}
-Suppose $m^{(i)}$ differs from $l$ by a flip of $S_i$. Then the change in energy
+Suppose $m^{(i)}$ differs from $l$ by a flip of $S_i$. Then the change in
+energy is
 \begin{equation}
-  E_{m^{(i)}} - E_l = 2 \del{J \sum_{j \in \mathcal{N}(i)} S_j + h} S_i,
+  E_{m^{(i)}} - E_l = 2 \del{J \sum_{j \in \mathcal{N}(i)} S_j + H} S_i,
 \end{equation}
 where the sum is over the neighbors of $i$. Finally, using the Metropolis
 convention~\eqref{eq:metropolis-prob} we obtain the acceptance probabilities
@@ -234,9 +236,9 @@ implementation of a Metropolis sweep, the core of the algorithm.
 \begin{algorithmic}
 \Procedure{Metropolis-sweep}{$S$}
   \For{$i \gets 1, N$}
-    \State $h_S \gets J \sum\cbr{S_j: \text{$j$ neighbor of $i$}}$
+    \State $H_S \gets J \sum\cbr{S_j: \text{$j$ neighbor of $i$}}$
     \Comment{sum neighbor spins}
-    \State $\Delta E \gets 2\del{h_S  + h} S_i$
+    \State $\Delta E \gets 2\del{H_S  + H} S_i$
     \Comment{compute change in energy}
     \If{$\Delta E < 0$ \textbf{or} $\Call{rand}{} < \exp\del{-\Delta E / T}$}
       \State $S_i \gets -S_i$
@@ -464,8 +466,8 @@ one-dimensional eigenspace spanned by $\vec{1}$. Therefore
 $\vec{\Gamma}^p \vec{u} = \lambda\vec{u}$ implies that either $\vec{u} \propto \vec{1}$
 or $\abs{\lambda}<1$.
 
-The above argument unfortunately doesn't appear have a clear interpretation in
-terms of random walkers moving between states.
+The above argument unfortunately doesn't appear to have a clear interpretation
+in terms of random walkers moving between states.
 \textcite{narayan2001convergence} give a direct proof in this language, which
 also provides the intuition that \emph{deviations} from the stationary
 probability of each state eventually meet and annihilate as long as the system
@@ -497,7 +499,7 @@ of the quantity of interest, $\av{x}$, against the Monte Carlo time and
 estimate $\relaxtime$ from the onset of a plateau. In one particulary useful
 scheme,
 % TODO: cite
-we start with some intial number of updates $M_0$ without computing any
+we start with some initial number of updates $M_0$ without computing any
 averages. We then do an additional $M_0$ updates, computing the average
 $\av{x}_1$. Finally, we compute $\av{x}_n$ by averaging between $t = 2^{n-1}
 M_0$ and $t = 2^n M_0$. In other words, $\av{x}_n$ represents the average taken
@@ -677,31 +679,30 @@ then ``drop down" to a lower temperature. See \cref{fig:pt-intuition}.
   \label{fig:pt-intuition}
 \end{figure}
 
-We now derive the transition probabilities for the replica exhange moves
+We now derive the transition probabilities for the replica exchange moves
 assuming detailed balance. Suppose we have two replicas in states $l$, $m$ and
 at temperatures $\beta_1$, $\beta_2$ respectively. According to the Boltzmann
-distribution, the the joint probability of this configuration is
+distribution, the joint probability of this configuration is
 \begin{equation}
   P(l,\beta_1) P(m,\beta_2) \propto
-  e^{-(\beta_l E_l + \beta_m E_m)}.
+  e^{-\beta_1 E_l - \beta_2 E_m}.
   \label{eq:joint-prob}
 \end{equation}
-The ratio of the probability of this configuration to the probability of the
-configuration obtained by exchanging $l$ and $m$ is then
+Exchanging $l$ and $m$, we obtain for the ratio of joint probabilities
 \begin{equation}
-  \frac{P(l,\beta_1) P(m,\beta_2)}
-       {P(m,\beta_1) P(l,\beta_2)} =
-  \frac{\exp\del{-\beta_1 E_l - \beta_2 E_m}}
-       {\exp\del{-\beta_1 E_m - \beta_2 E_l}} =
-  e^{-(\beta_1-\beta_2)(E_l-E_m)}.
+  \frac{P(m,\beta_1) P(l,\beta_2)}
+       {P(l,\beta_1) P(m,\beta_2)} =
+  \frac{\exp\del{-\beta_1 E_m - \beta_2 E_l}}
+       {\exp\del{-\beta_1 E_l - \beta_2 E_m}} =
+  e^{(\beta_1-\beta_2)(E_l-E_m)}.
 \end{equation}
-To define a Markov process which converges to the distribution
-\eqref{eq:joint-prob}, it is sufficient to satisfy the detailed balance
-condition \eqref{eq:detailed-balance} and, using the Metropolis convention, we
+To define a Markov process which converges to a distribution satisfying
+\cref{eq:joint-prob}, it is sufficient to satisfy the detailed balance
+condition and, using the Metropolis convention of \cref{eq:metropolis-prob}, we
 obtain for the transition probability
 \begin{equation}
   w_{X \to X^{\prime}}
-  = \min\cbr{1, e^{-(\beta_1-\beta_2)(E_l-E_m)}}.
+  = \min\cbr{1, e^{(\beta_1-\beta_2)(E_l-E_m)}}.
 \end{equation}
 where the configuration
 $X=\cbr{(\beta_1,l),(\beta_2,m)}$ and
@@ -773,6 +774,19 @@ situations finite-size effects become important and how to use results for
 finite systems obtained from simulations to extrapolate the behavior in the
 thermodynamic limit.
 
+A very important result of the theory of phase transitions is that \emph{phase
+  transitions can only occur in the thermodynamic limit}, \textit{i.e.} for
+infinite systems. This is because the non-analytic behavior at a critical point
+observed in infinite (or near-infinite, macroscopic) systems, for example the
+divergence of the susceptibility as $\chi \propto (T-T_c)^{-\gamma}$, cannot
+arise from a partition function which is a sum of a finite number of (analytic)
+terms. In finite systems what is actually observed is a ``rounding" effect,
+whereby the measured critical exponents initially approach the their true
+asymptotic values as $T \to T_c$, but then enter a ``crossover" regime close to
+$T_c$, where the behavior of the quantity which is singular in the
+thermodynamic limit smoothly transitions to the asymptotic behavior below
+$T_c$.
+
 Plausibly, finite-size effects become important when the relevant length scale
 of the fluctuations, \emph{i.e.} the correlation length $\xi$, becomes large
 relative to the linear size of the system $L$. The basic assumption of
@@ -784,8 +798,7 @@ critical dimension, $d<d_u$. Above the upper critical dimension, $d>d_u$, this
 simple picture is complicated by the presence of a ``dangerous irrelevant
 variable," \autocite{binder1985finite} and we have to proceed more carefully
 using a renormalization group approach. This situation is discussed in detail
-in \cref{chap:fss}. For now we will assume $d<d_u$, so that standard FSS
-applies.
+in \cref{chap:fss}. Here we will assume $d<d_u$, so that standard FSS applies.
 
 Finite-size effects are particularly important near a critial point, which is
 marked by the divergence of the bulk correlation length $\xi$. Near the critial
@@ -802,7 +815,7 @@ at the critial temperature, we then infer the finite-size scaling form
   \chi(L,t) \sim L^{\gamma/\nu} \widetilde{\chi}\del{L^{1/\nu} t},
   \label{eq:standard-fss-susc}
 \end{equation}
-where $\sim$ indicates asymptotic equivalence for large $L$, and
+where $\sim$ indicates asymptotic equality for large $L$, and
 $\widetilde{\chi}$ is a \emph{scaling function} which depends on $L$ only
 through its argument. The prefactor $L^{\gamma/\nu}$ is justified by the
 assumption that $\chi(\infty,t) \sim t^{-\gamma}$, which requires that
@@ -832,15 +845,15 @@ correction to scaling is known, for example as in
 \cref{sec:nonextensive-method}, we can extrapolate to estimate the bulk $T_c$,
 see \cref{eq:Tx-corrected}.
 
-% TODO: corrections to scaling
-Scaling functions $\scalefunc{X}$, $\scalefunc{g}$ predicted to be universal (up
-to non-universal factors multiplying argument and $L^{\gamma y_t}$.
-% TODO: edit^
+Remarkably, the scaling functions $\scalefunc{X}$, $\scalefunc{g}$ predicted to
+be universal (up to non-universal factors multiplying argument and $L^{\gamma
+  y_t}$. This follows from the renormalization-group derivation of the scaling
+relationships.
 
-\section{Fitting and error estimation}
-
-\subsection{Bootstrap resampling}
-\label{sec:numerical-bootstrap}
-
-\autocite{young2015everything}
+%\section{Fitting and error estimation}
+%
+%\subsection{Bootstrap resampling}
+%\label{sec:numerical-bootstrap}
+%
+%\autocite{young2015everything}
 

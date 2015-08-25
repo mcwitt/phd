@@ -181,10 +181,11 @@ Again adopting the convention $\tcmf=1$, the analog of
 \end{equation}
 
 In the mean-field regime ($\sigma<4/3$) we can make a precise connection
-between the power $\sigma$ of the 1-d long-range (LR) model and the
-dimensionality $d$ of the short-range (SR) model by equating the singular parts
-of the free energy density for the two models \autocite{larson2010numerical}.
-The singular part of the free energy density scales with $L$ like
+between the power $\sigma$ of the one-dimensional long-range (1D LR) model and
+the dimensionality $d$ of the short-range (SR) model by equating the singular
+parts of the free energy density for the two models
+\autocite{larson2010numerical}. The singular part of the free energy density
+scales with $L$ like
 \begin{equation}
   \frac{1}{L^d} \widetilde{f} \del{L^{y_T} t,\, L^{y_H} h,\, L^{y_u} u}
 \end{equation}
@@ -208,12 +209,12 @@ given by
   \begin{split}
     y_T^{\mathrm{LR}} &= 2\sigma - 1 \\
     y_H^{\mathrm{LR}} &= \sigma \\
-    y_u^{\mathrm{LR}} &= 3\sigma - 2,
+    y_u^{\mathrm{LR}} &= 3\sigma - 2
   \end{split}
 \end{equation*}
-\autocite{harris1976critical,kotliar1983one}
-we obtain the following relationship between the power $\sigma$ of the 1-d
-model and the corresponding effective dimension,
+\autocite{harris1976critical,kotliar1983one}, we obtain the following
+relationship between the power $\sigma$ of the 1D LR model and the
+corresponding effective dimension,
 \begin{equation}
   d_{\mathrm{eff}} = \frac{2}{2\sigma - 1},
 \end{equation}
@@ -252,12 +253,14 @@ consistently for each pair of exponents.
   \centering
   \includestandalone{figures/1dlr-chord}
   \caption[
-    Representation of the 1-d Ising spin glass on a ring.
+    Representation of the one-dimensional long-range Ising spin glass
+    with periodic boundary conditions.
   ]
   {
-    Representation of the (undiluted) 1-d spin glass with $r_{ij}$ defined as
-    the chord distance when the spins are arranged on a ring. The edge widths
-    are proportional to the variance of the $J_{ij}$ with $\sigma=0.375$.
+    Representation of the (undiluted) one-dimensional long-range spin glass
+    with $r_{ij}$ defined as the chord distance when the spins are arranged on
+    a ring. The edge widths are proportional to the variance of the $J_{ij}$
+    with $\sigma=0.375$.
   } \label{fig:1dlr-chord}
 \end{figure}
 
@@ -401,7 +404,8 @@ at each temperature.
   \centering
   \pgfplotstabletypeset[nonextensive params]{data/params-c.csv}
   \caption[%
-    Simulation parameters for 1-d long-range models with undiluted bonds.
+    Simulation parameters for one-dimensional long-range models with undiluted
+    bonds.
   ]
   {%
     Simulation parameters for the undiluted models. $N_{\mathrm{samp}}$ is the
@@ -417,7 +421,8 @@ at each temperature.
   \centering
   \pgfplotstabletypeset[nonextensive params]{data/params-d.csv}
   \caption[%
-    Simulation parameters for 1-d long-range models with diluted bonds.
+    Simulation parameters for one-dimensional long-range models with diluted
+    bonds.
   ]
   {Simulation parameters for the diluted models.}
   \label{tab:nonextensive-params-d}
@@ -556,7 +561,10 @@ scaled susceptibility.
     \includestandalone{figures/binder-c-s25}
     \subcaption{$\sigma=0.25$}
   \end{subfigure}
-  \caption[Data for the Binder ratio for the 1-d undiluted spin glass.]{
+  \caption[
+    Data for the Binder ratio for the one-dimensional undiluted spin glass.
+  ]
+  {
     Data for the Binder ratio for the undiluted model. The exact value of the
     transition temperature for the SK model, $T_c=1$, is marked with a vertical
     line.
@@ -578,8 +586,9 @@ scaled susceptibility.
   \end{subfigure}
   \caption[
     Data for the Binder ratio and the scaled spin-glass susceptibility for the
-    1-d undiluted spin glass with $\sigma=0$ and $\sigma=0.25$.
-  ]{
+    one-dimensional undiluted spin glass with $\sigma=0$ and $\sigma=0.25$.
+  ]
+  {
     Data for the scaled spin-glass susceptibility for the undiluted model. The
     exact value of the transition temperature for the SK model, $T_c=1$, is
     marked with a vertical line.
@@ -623,8 +632,8 @@ nonextensive region are identical to the SK model.
     \subcaption{$\sigma=0.25$}
   \end{subfigure}
   \caption[
-    Results for the intersection temperatures for the 1-d undilted model
-    with $\sigma=0$ (SK model) and $\sigma=0.25$.
+    Results for the intersection temperatures for the one-dimensional undilted
+    model with $\sigma=0$ (SK model) and $\sigma=0.25$.
   ]
   {
     Results for the intersection temperatures for the undiluted model.
@@ -655,8 +664,8 @@ predicted value of $T_c$ consistent with the exact value for the VB model for
     \includestandalone{figures/binder-d-s25}
     \subcaption{$\sigma=0.25$}
   \end{subfigure}
-  \caption [
-    Data for the Binder ratio for the 1-d undiluted spin glass.
+  \caption[
+    Data for the Binder ratio for the one-dimensional undiluted spin glass.
   ]
   {
     Data for the Binder ratio for the diluted model. The Viana-Bray model
@@ -680,7 +689,7 @@ predicted value of $T_c$ consistent with the exact value for the VB model for
   \end{subfigure}
   \caption[
     Data for the Binder ratio and the scaled spin-glass susceptibility for the
-    1-d diluted spin glass with $\sigma=0$ and $\sigma=0.25$.
+    one-dimensional diluted spin glass with $\sigma=0$ and $\sigma=0.25$.
   ]
   {
     Data for the scaled spin-glass susceptibility for the diluted model. The
@@ -703,8 +712,8 @@ predicted value of $T_c$ consistent with the exact value for the VB model for
     \subcaption{$\sigma=0.25$}
   \end{subfigure}
   \caption[
-    Results for the intersection temperatures for the 1-d diluted model with
-    $\sigma=0$ (VB model) and $\sigma=0.25$.
+    Results for the intersection temperatures for the one-dimensional diluted
+    model with $\sigma=0$ (VB model) and $\sigma=0.25$.
   ]
   {
     Results for the intersection temperatures for the diluted model.
