@@ -1,0 +1,22 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    xlabel={$q$},
+    ylabel={$P_{\JJ}(q)$},
+    xmin=-1, xmax=1,
+    extra x ticks={-0.2,0.2},
+    extra y ticks={1},
+    extra tick style={grid=major},
+    extra x tick labels={},
+    extra y tick labels={},
+    every axis plot/.append style={no marks,smooth,thick}
+  ]
+    \addplot table {data/sample-s78-l10-T55-1.csv};
+    \addplot table {data/sample-s78-l10-T55-2.csv};
+    \addplot table {data/sample-s78-l10-T55-3.csv};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

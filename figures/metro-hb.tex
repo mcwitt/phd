@@ -13,7 +13,7 @@
     every axis plot/.append style={thick}
   ]
 
-    \addplot [color=red] coordinates { (0.1, 0.1) (1, 1) (10,1) };
+    \addplot [densely dashed,color=red] coordinates { (0.1, 0.1) (1, 1) (10,1) };
     \addplot [color=blue,domain=0.1:10] { x/(1+x) };
 
   \end{loglogaxis}

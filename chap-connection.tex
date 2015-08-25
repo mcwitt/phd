@@ -73,17 +73,20 @@ dimensions above the upper critical dimension $d_u$, where the critical
 behavior is described by mean-field theory.
 
 Pure states, those states that satisfy \cref{eq:clustering-prop}, are
-convenient to study for several reasons. As in the case of the ferromagnet with
-its ``up" and ``down" states, finding the pure states provides insight into the
-nature of the broken symmetry. Furthermore, \emph{pure states are observed in
-  experiment}, while mixed states (for example, the canonical ensemble for the
-ferromagnet, which has zero magnetization even below $T_c$) are not. Thus we
-would like to also describe spin glasses in terms of pure states. This can be
-done (in principle) by taking a very large system, applying boundary conditions
-on it, and studying the correlations in a relatively small window far from the
-boundary \autocite{newman2003ordering,read2014short}. This procedure is
-repeated for many different boundary conditions.
-% TODO: explain
+convenient objects of study for several reasons. As in the case of the
+ferromagnet with its ``up" and ``down" states, finding the pure states of the
+ordered phase of a system provides insight into the nature of the broken
+symmetry. Furthermore, \emph{pure states are observed in experiment}, while
+mixed states (for example, the canonical ensemble for the ferromagnet, which
+has zero magnetization even below $T_c$) are not. For these reasons we would
+like to also describe spin glasses in terms of pure states. This can be done
+(in principle) by taking a very large system, applying boundary conditions on
+it, and studying the correlations in a relatively small window of size $W$
+(with $W \ll L$) far from the boundary
+\autocite{newman2003ordering,read2014short}. The assumption is that the
+correlations within the window will be described by a single pure state; in a
+many-states picture, different states may be observed by varying boundary
+conditions at the (distant) boundary.
 
 The question of whether there are many pure states or just one (a time-reversed
 pair in the absence of a magnetic field) in spin glasses has been very
@@ -102,12 +105,14 @@ controversial.%
 If there are many, one needs to do some sort of statistical average over them,
 which is called a ``metastate," for which different but equivalent formulations
 have been given by \textcite{newman1997metastate} and by
-\textcite{aizenman1990rounding}. In the latter (AW) metastate, one considers
-the scale $M$, intermediate between the window size $W$ and the system size
-$L$. The metastate-averaged state (MAS) is obtained by computing correlation
-functions in a window in which an average is performed not only over the spins
-but also over the bonds in the ``exterior" region between $M$ and $L$.
-The setup is sketched in \cref{fig:metastates}.%
+\textcite{aizenman1990rounding}. The former (NS) metastate corresponds to the
+distribution of states generated in a small window $W$ distant from the
+boundary by varying the boundary conditions, as described above. In the latter
+(AW) metastate, one considers the scale $M$, intermediate between the window
+size $W$ and the system size $L$. The metastate-averaged state (MAS) is
+obtained by computing correlation functions in a window in which an average is
+performed not only over the spins but also over the bonds in the ``exterior"
+region between $M$ and $L$. The setup is sketched in \cref{fig:metastates}.%
 \footnote{%
   For more details see
   \textcite{%
@@ -296,11 +301,13 @@ efficient simulation, namely
 \begin{equation}
   P(J_{ij})
   = \del{1 - p_{ij}} \delta \del{J_{ij}}
-  + p_{ij} \frac{1}{\sqrt{2\pi}} e^{-J_{ij}^2/2}.
+  + p_{ij} \frac{1}{\sqrt{2\pi}} e^{-J_{ij}^2/2},
   \label{eq:dilute-dist-2}
 \end{equation}
-See \cref{sec:nonextensive-models} for a detailed discussion of the diluted
-model and an algorithm to sample from \cref{eq:dilute-dist-2}.
+where $p_{ij} \propto R_{ij}^{-\sigma}$ at large distance and the constant of
+proportionality is chosen to fix the mean number of neighbors $z_b$ ($=6$ in
+this work). See \cref{sec:nonextensive-models} for a detailed discussion of the
+diluted model and an algorithm to sample from \cref{eq:dilute-dist-2}.
 
 As discussed in \cref{sec:nonextensive-motivation}, varying the parameter
 $\sigma$ is argued to be analogous to changing the dimension $d$ of a

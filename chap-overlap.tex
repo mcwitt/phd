@@ -437,6 +437,37 @@ the quantity $\Delta(q_0,\kappa)$ will sharply distinguish the RSB and droplet
 scenarios if one can study large enough sizes. We will study the size
 dependence of $\Delta$ numerically for all of our models in
 \cref{sec:overlap-results-delta}.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/sample-overlaps-Tmin}
+    \subcaption{}\label{fig:sample-overlaps-Tmin}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includestandalone{figures/sample-overlap}
+    \subcaption{}\label{fig:sample-overlap}
+  \end{subfigure}
+  \caption
+  [
+    Plots of the overlap distribution $P_{\JJ}(q)$ for individual disorder
+    samples.
+  ]
+  {
+    Plots of the overlap distribution $P_{\JJ}(q)$ for a individual disorder
+    samples. Panel~\subref{fig:sample-overlaps-Tmin} shows the overlap
+    distribution obtained for three different samples for the 1D LR model with
+    $\sigma=0.784$ at the lowest temperature simulated, $T=0.55$. According to
+    \cref{eq:delta-sample} with parameters $q_0=0.2$, $\kappa=1$ (indicated by
+    vertical lines and a horizontal line respectively), two of the three
+    samples contribute to $\Delta(q_0,\kappa)$.
+    Panel~\subref{fig:sample-overlap} shows the overlap distribution $P(q)$
+    versus temperature for a single disorder sample for the same model, showing
+    the emergence of multiple pairs of peaks below the transition temperature
+    $T_c \approx 1.35$.
+  }
+\end{figure}
 
 As mentioned above, most previous work evaluated the \emph{average} probability
 distribution $P(q)$, but recently

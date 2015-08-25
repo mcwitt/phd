@@ -1,0 +1,16 @@
+\documentclass[tikz]{standalone}
+\usepackage{thesis}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    xlabel={$q$},
+    ylabel={$T$},
+    zlabel={$P_{\JJ}(q)$},
+    mesh/rows=40,
+    smooth
+  ] 
+    \addplot3[surf] file {data/sample-s78-l10.dat};
+  \end{axis}
+\end{tikzpicture}
+\end{document}
