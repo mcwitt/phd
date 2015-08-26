@@ -119,7 +119,7 @@ region between $M$ and $L$. The setup is sketched in \cref{fig:metastates}.%
     aizenman1990rounding,%
     read2014short,%
     manssen2015aging%
-  }
+  }.
 }
 Parisi's exact solution of the infinite-range Sherrington-Kirkpatrick (SK)
 model using RSB predicts many pure states (see \cref{sec:intro-rsb}) in a sense
@@ -162,7 +162,7 @@ description of the spin glass phase \emph{below} $T_c$ also applies for $d>6$.%
     fisher1987absence,%
     fisher1988equilibrium,%
     moore2011disappearance%
-  }
+  }.
 }
 Nonetheless, \textcite{read2014short} has computed the spatial fluctuations in a
 finite-dimensional model below $T_c$, assuming mean-field (Gaussian) fluctuations,
@@ -172,8 +172,7 @@ correlations are found to fall off with a power of distance, due to averaging
 over many pure states (which are unrelated by symmetry) in the metastate, \emph{i.e.}
 % TODO: expand/clarify
 \begin{equation}
-  \av{S_i S_j}_{\mathrm{MAS}}^2 \propto r_{ij}^{-\alpha_s}
-  \quad\text{with}\quad
+  \av{S_i S_j}_{\mathrm{MAS}}^2 \propto r_{ij}^{-\alpha_s}\qquad
   \alpha_s = d - 4,
   \label{eq:corr-decay-static}
 \end{equation}
@@ -189,6 +188,7 @@ Is it possible to relate \cref{eq:corr-decay-static} to experiments (or
 numerical simulations), which concern (non-equilibrium) dynamics?
 Many simulations%
 \footnote{%
+  \textit{e.g.}
   \textcite{%
     manssen2015aging,%
     rieger1993nonequilibrium,%
@@ -197,7 +197,7 @@ Many simulations%
 }
 have been carried out in which a spin glass is quenched to below $T_c$ and the
 resulting dynamics analyzed. It is found that fluctuations can equilibrate (or
-at least reach a steady state) on length scales smaller than a dynamic
+at least reach a steady state) on length scales smaller than a dynamical
 correlation length $\xi(t)$ which is found, empirically, to grow with a power
 of $t$ like
 \begin{equation}
@@ -372,8 +372,8 @@ presented.
   \includestandalone{figures/c4-vs-r-sizes}
   \caption[
     Data for the correlation function averaged between $t=2^{13}$ and $2^{14}$
-    for different sizes of the 1-d long-range diluted spin glass with
-    $\sigma=5/8$ at $T=0.4T_c$.
+    for different sizes of the one-dimensional long-range diluted spin glass
+    with $\sigma=5/8$ at $T=0.4T_c$.
   ]
   {
     Data for the correlation function $C_4(r,t)$, defined in \cref{eq:c4-scaling},
@@ -421,8 +421,8 @@ argue that RSB holds even below six dimensions.
   \centering
   \includestandalone{figures/c4-vs-r-times}
   \caption[
-    Data for the correlation function at different times of the 1-d long-range
-    diluted spin glass with $\sigma=5/8$ at $T=0.4T_c$.
+    Data for the correlation function at different times of the one-dimensional
+    long-range diluted spin glass with $\sigma=5/8$ at $T=0.4T_c$.
   ]
   {
     Data for the correlation function for the largest size $N=2^{26}$ as a
@@ -441,13 +441,14 @@ $z(0.4 T_c)=1.4(2)$ for the dynamical exponent describing the growth of
 nonequilibrium correlations following a quench. For short-range models it is
 found empirically%
 \footnote{%
+  See
   \textcite{%
     manssen2015aging,%
     rieger1993nonequilibrium,%
     % TODO: missing ref
     marinari1996numerical,%
     yoshino2002extended%
-  }
+  }.
 }
 that $1/z(T) \propto T$. If we assume the same here then $z(T_c)=0.56(8)$.
 Furthermore, still for short-range models it is also found that $z(T_c)$,
@@ -465,7 +466,7 @@ spin glass is $z_c=4.5(6)$ ($d=8$). This model is in the mean-field regime
   \includestandalone{figures/c4-scaling}
   \caption[
     Scaling plot of data for the dynamical correlation function $C_4(r,t)$ at
-    different times for the 1-d long-range diluted spin glass with
+    different times for the one-dimensional long-range diluted spin glass with
     $\sigma=0.74$ at $T=0.4T_c$.
   ]
   {

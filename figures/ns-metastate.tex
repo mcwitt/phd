@@ -6,9 +6,9 @@
   region/.style={rectangle,draw,minimum width=#1,minimum height=#1}
 ]
   \node (l) [region=5.0cm] {};
-  \node (w) [region=1.5cm,fill=blue!20,align=center] {meas.\\corr.};
+  \node (w) [region=1.5cm,fill=blue!20,align=center] {$\av{S_i S_j}^2$};
   \node at (l.south) [anchor=north] {$L$};
   \node at (w.south) [anchor=north] {$W$};
-  \node at (l.north) [anchor=north] {vary BCs};
+  \node at (l.north) [coordinate,pin=below:vary BCs] {};
 \end{tikzpicture}
 \end{document}

@@ -4,18 +4,17 @@
 \section{Introduction}
 
 Despite much debate, there is still no consensus on the nature of the
-spin-glass state. According to the ``replica symmetry breaking" (RSB) picture
+spin-glass phase. According to the ``replica symmetry breaking" (RSB) picture
 of Parisi discussed in \cref{sec:intro-rsb}, there are many ``pure states," a
 nontrivial order parameter distribution, and a line of transitions in a
-magnetic field, the de Almeida-Thouless (AT) line. By contrast, according to
-the droplet theory, there is only a symmetry-related pair of pure states in
-zero field (one state in a nonzero field), and thus the order parameter
+magnetic field, the de Almeida-Thouless (AT) line. In contrast, according to
+the droplet theory, there is only a single symmetry-related pair of pure states
+in zero field (one state in a nonzero field), and thus the order parameter
 distribution is trivial in the thermodynamic limit and there is no AT line. The
 nature of the spin glass phase has been investigated in a series of papers by
 Newman and Stein (see, for example, \textcite{stein2013spin} and references
 therein), and recently by \textcite{read2014short}.
 \textcite{marinari2000replica} discuss the RSB point of view.
-% TODO: clarify last sentence
 
 The sample-averaged order parameter distribution, defined in
 \cref{eq:sample-pofq,eq:pofq} below, is predicted to be nonzero in the vicinity
@@ -46,9 +45,9 @@ Consequently, there has recently been interest%
   }
 }
 in studying other quantities related to $P(q)$ but where more attention is paid
-to the overlap distribution of \emph{individual} samples, $\sample{P}(q)$,
-rather than just the sample average. Accurately determining $\sample{P}(q)$ for
-each sample is more demanding numerically than just computing the average,
+to the overlap distribution of \emph{individual} samples, $P_{\JJ}(q)$, rather
+than just the sample average. Accurately determining $P_{\JJ}(q)$ for each
+sample is more demanding numerically than just computing the average,
 % TODO: explain why
 but computer power has advanced to the point where this is now feasible.
 
@@ -386,45 +385,44 @@ For a single sample $\mathcal{J}\equiv\cbr{J_{ij}}$, the spin overlap
 distribution is given by
 
 \begin{equation}
-  \sample{P}(q) = \av{\delta\del{q - \frac{1}{N}\sum_{i=1}^N S_i^{(1)} S_i^{(2)}}},
+  P_{\JJ}(q) = \av{\delta\del{q - \frac{1}{N}\sum_{i=1}^N S_i^{(1)} S_i^{(2)}}},
   \label{eq:sample-pofq}
 \end{equation}
 where ``(1)" and ``(2)" refer to two independent copies of the system with the
 same interactions, and $\av{\cdots}$ denotes a thermal (\emph{i.e.} Monte
-Carlo) average for a single sample. In most previous work, $\sample{P}(q)$
+Carlo) average for a single sample. In most previous work, $P_{\JJ}(q)$
 is simply averaged over disorder samples to obtain $P(q)$ defined by
 \begin{equation}
-  P(q) = \dav{\sample{P}(q)}
+  P(q) = \dav{P_{\JJ}(q)}
   \label{eq:pofq}
 \end{equation}
 
 In order to gain additional information that might distinguish the RSB and
 droplet pictures, several investigators have recently introduced other
-observables related to the statistics of $\sample{P}(q)$.
+observables related to the statistics of $P_{\JJ}(q)$.
 \textcite{yucesoy2012evidence} proposed a measure that is sensitive to peaks in
-the overlap distributions of \emph{individual samples}, $\sample{P}(q)$. A
-sample is counted as ``peaked" if $\sample{P}(q)$ exceeds a threshold value
-$\kappa$ in the domain $\abs{q} < q_0$. The quantity $\Delta(q_0,\kappa)$ is
-then defined as the fraction of peaked samples. More precisely, for each sample
-let
+the overlap distributions of \emph{individual samples}, $P_{\JJ}(q)$. A sample
+is counted as ``peaked" if $P_{\JJ}(q)$ exceeds a threshold value $\kappa$ in
+the domain $\abs{q} < q_0$. The quantity $\Delta(q_0,\kappa)$ is then defined
+as the fraction of peaked samples. More precisely, for each sample let
 \begin{equation}
-  \sample{\Delta}(q_0,\kappa) =
+  \Delta_{\JJ}(q_0,\kappa) =
   \begin{cases}
-    1 & \text{if $\sample{P}(q)>\kappa$ for some $q$ where $\abs{q}<q_0$}, \\
+    1 & \text{if $P_{\JJ}(q)>\kappa$ for some $q$ where $\abs{q}<q_0$}, \\
     0 & \text{otherwise.}
   \end{cases}
   \label{eq:delta-sample}
 \end{equation}
 We then define $\Delta(q_0,\kappa)$ to be the sample average,
 \begin{equation}
-  \Delta(q_0,\kappa) = \dav{\sample{\Delta}(q_0,\kappa)}.
+  \Delta(q_0,\kappa) = \dav{\Delta_{\JJ}(q_0,\kappa)}.
   \label{eq:delta-average}
 \end{equation}
 Note that $\Delta(q_0,\kappa)$ is a nondecreasing function of $q_0$ and a
 nonincreasing function of $\kappa$. A more important property of
 $\Delta(q_0,\kappa)$ is that its behavior for $N \to \infty$ distinguishes
 between the RSB and droplet pictures as follows. All of the scenarios for the
-low-temperature behavior of spin-glass models predict that $\sample{P}(q)$ is a
+low-temperature behavior of spin-glass models predict that $P_{\JJ}(q)$ is a
 superposition of $\delta$ functions as $N \to \infty$. The difference between
 scenarios lies in the number and positions of these $\delta$ functions, see
 \cref{fig:pq-droplet-rsb}. According to the RSB picture, there is a countable
@@ -473,15 +471,15 @@ As mentioned above, most previous work evaluated the \emph{average} probability
 distribution $P(q)$, but recently
 \textcite{middleton2013extracting,monthus2013typical}
 have proposed measures yielding a \emph{typical} value of the sample
-distribution $\sample{P}(q)$ with the hope that these measures would provide a
+distribution $P_{\JJ}(q)$ with the hope that these measures would provide a
 clearer differentiation between the RSB and droplet pictures than the average
 $P(q)$.
 
 \textcite{middleton2013extracting} studied $I^{\mathrm{med}}(q)$, the
 \emph{median} of the \emph{cumulative} overlap distribution of a single sample
-$\sample{I}(q)$, where $\sample{I}(q)$ is defined by
+$I_{\JJ}(q)$, where $I_{\JJ}(q)$ is defined by
 \begin{equation}
-  \sample{I}(q) = \int_{-q}^q \dif q^{\prime} \sample{P}(q^{\prime}).
+  I_{\JJ}(q) = \int_{-q}^q \dif q^{\prime} P_{\JJ}(q^{\prime}).
 \end{equation}
 We also denote by $I^{\mathrm{av}}(q)$ the sample-averaged cumulative
 distribution, which is given by
@@ -490,7 +488,7 @@ distribution, which is given by
   \label{eq:Iav}
 \end{equation}
 Compared to the average, the median is insensitive to the effect of samples
-with unusually large values of $\sample{I}(q)$.
+with unusually large values of $I_{\JJ}(q)$.
 
 For the SK model $P(q)$ tends to a constant as $q \to 0$, and so
 $I^{\mathrm{av}}(q) \propto q$ for small $q$. We can obtain a rough idea of how
@@ -499,9 +497,9 @@ results of \textcite{mezard1984nature}. First of all, to obtain a notation
 which is more compact and is extensively used in other work, we write $x(q)
 \equiv I^{\mathrm{av}}(q)$. \textcite{mezard1984nature} argue that, at small
 $q$ where $x(q)$ is also small, the probability of a certain integrated value
-$\sample{I}$ is given by
+$I_{\JJ}$ is given by
 \begin{equation}
-  p(\sample{I}) \propto x \sample{I}^{x-1}.
+  p(I_{\JJ}) \propto x I_{\JJ}^{x-1}.
   \label{eq:pofI}
 \end{equation}
 From \cref{eq:pofI} we estimate the median in terms of the average as
@@ -526,12 +524,10 @@ been proposed by \textcite{monthus2013typical}. They suggest calculating a
 ``typical" overlap distribution defined by the exponential of the average of
 the log, \emph{i.e.}
 \begin{equation}
-  P^{\mathrm{typ}}(q) = \exp\dav{\ln\sample{P}(q)}.
+  P^{\mathrm{typ}}(q) = \exp\dav{\ln P_{\JJ}(q)}.
   \label{eq:pofq-typical}
 \end{equation}
 We will study this quantity numerically in \cref{sec:overlap-results-typical}.
-
-% TODO: density?
 
 
 \section{Results}
@@ -548,7 +544,7 @@ There are also errors in the data for each sample due to the finite length of
 the data collection. For the EA and SK models, we estimated these errors by
 measuring $\Delta^+(q_0,\kappa)$ and $\Delta^-(q_0,\kappa)$, defined as in
 \cref{eq:delta-sample,eq:delta-average}, but from the $q>0$ and $q<0$
-components of $\sample{P}(q)$, respectively. These are expected to be
+components of $P_{\JJ}(q)$, respectively. These are expected to be
 reasonably independent and their differences provide an estimate of the error
 due to finite run lengths. For all sizes, the average absolute difference
 between these quantities,
@@ -592,7 +588,7 @@ is less than the statistical error.
 One can draw several qualitative conclusions from these plots. It is apparent
 that $\Delta(q_0,\kappa)$ is an increasing function of $N$ for small $N$. As
 the system size increases, we expect $\Delta(q_0,\kappa)$ to increase because
-all the features of $\sample{P}(q)$ sharpen. For the SK model, which is
+all the features of $P_{\JJ}(q)$ sharpen. For the SK model, which is
 described by the RSB picture, the number of features and their height should
 both increase and $\Delta(q_0,\kappa)$ should be a strongly increasing function
 of $N$. Indeed, this behavior is seen except for $\kappa=0.5$, which is a
@@ -672,17 +668,18 @@ models.
     one-dimensional long-range and Sherrington-Kirkpatrick spin-glass models.
   ]
   {
-    Mean and median over samples of the cumulative distribution $\sample{I}(q)$
+    Mean and median over samples of the cumulative distribution $I_{\JJ}(q)$
     for the 1D LR models and the SK model. In all cases the temperature is
     close to $0.4 T_c$. For both the SK and the 1D models, the median shows a
     relatively strong size dependence compared with the mean, this difference
     being the least pronounced for $\sigma=0.896$. The ``theory" curve for the
     SK data\ [\cref{eq:median-small-q}] is expected to be valid for small $q$
-    only. The theory expression can be mulitplied by an (unknown) constant
+    only. The theory expression can be multiplied by an (unknown) constant
     which has been set to unity.
     % TODO: understand
-    All panels have the same horizontal and vertical scales. Only a representative
-    set of points is shown but the curves go through all the points.
+    All panels have the same horizontal and vertical scales. Only a
+    representative set of points is shown but the curves go through all the
+    points.
 
   }
   \label{fig:cumulative-stats-1dlr}
@@ -769,7 +766,7 @@ problematic because the finite number of observations implies that the result
 can be precisely zero if the average is comparable to or smaller then
 $\epsilon$, the inverse of the number of measurements. Such results make the
 typical value undefined according to \cref{eq:pofq-typical}. One can regularize
-this problem by replacing zero values of $\sample{P}(q)$ with the small value
+this problem by replacing zero values of $P_{\JJ}(q)$ with the small value
 $\epsilon/k$ for a reasonable range of $k$, with the hope that the result would
 not be too sensitive to the choice of $k$. Unfortunately, there is a strong
 dependence on $k$, as seen in \cref{fig:pofq-typical-sk}, where
@@ -799,9 +796,9 @@ We have studied the overlap distribution for several Ising spin-glass models
 using recently-proposed observables. We consider 1D long-range models, 3D and
 4D short-range (Edwards-Anderson) models, and the infinite-range
 (Sherrington-Kirkpatrick) model. The three observables are all obtained from
-the single-sample overlap distribution $\sample{P}(q)$. They are the fraction
-of peaked samples $\Delta(q_0,\kappa)$, the median of the cumulative
-distribution $I^{\mathrm{med}}(q)$, and the typical value of the distribution
+the single-sample overlap distribution $P_{\JJ}(q)$. They are the fraction of
+peaked samples $\Delta(q_0,\kappa)$, the median of the cumulative distribution
+$I^{\mathrm{med}}(q)$, and the typical value of the distribution
 $P^{\mathrm{typ}}(q)$. These observables were proposed to help distinguish
 between the replica symmetry breaking picture and two-state pictures such as
 the droplet model. While none of these unambiguously differentiates between
@@ -815,9 +812,9 @@ not show an increase in $\Delta$ for the largest sizes while the mean-field
 models are sharply increasing for the largest sizes. The increase in $\Delta$
 for the mean-field model is exactly what we expect from the RSB picture. The
 results for the 3D-like models are ambiguous because eventually $\Delta$ must
-go either to zero or one. It is possible that tfor much larger sizes $\Delta$
-will begin to increase, indicating RSB behavior, but simulating such large systems
-at very low temperatures is infeasible at present.
+go either to zero or one. It is possible that for much larger sizes $\Delta$
+will begin to increase, indicating RSB behavior, but simulating such large
+systems at very low temperatures is infeasible at present.
 
 The other proposed measures do not appear to be useful in numerical simulations
 for distinguishing scenarios. The typical value of the overlap distribution,

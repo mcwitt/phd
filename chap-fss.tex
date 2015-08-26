@@ -322,15 +322,14 @@ they have standard FSS.
 \section{Model}
 \label{sec:fss-model}
 
-We consider an Ising model in $d=5$ dimensions with Hamiltonian
+We consider an Ising model in $d=5$ dimensions in zero field, described by the
+Hamiltonian
 \begin{equation}
-  \ham = -\asum{i,j} J_{ij} S_i S_j,
+  \ham = -\frac{1}{2} \sum_{ij} J_{ij} S_i S_j,
 \end{equation}
-where the sum is over all pairs of nearest neighbors and the spins $S_i$ take
-values $\pm 1$.
-% TODO: refer to intro on Ising model here?
-Previous simulations have determined the transition temperature very precisely,
-finding
+where the $J_{ij}=1$ if $i$ and $j$ are nearest neighbors and zero otherwise,
+and the spins $S_i$ take values $\pm 1$. Previous simulations have determined
+the transition temperature very precisely, finding
 \begin{equation}
   T_c = 8.77846(3)
   \label{eq:Tc-d5}
