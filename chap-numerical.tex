@@ -1,13 +1,7 @@
 \chapter{Numerical methods}
 \label{chap:numerical}
 
-
-%\section{Monte Carlo methods}
-%
-%Monte Carlo methods are among the most important estimation techniques in
-%applied mathematics and physics. The basic idea is to esimate a distribution
 %TODO: Monte Carlo integration example
-
 
 \section{Importance sampling}
 
@@ -188,10 +182,10 @@ values $S_i = \pm 1$. The spins are put on a hypercubic lattice of linear size
 $L$ so that the number of spins $N=L^d$. The system is described by the
 Hamiltonian
 \begin{equation}
-  \ham = -J \asum{i,j} S_i S_j - H \sum_i S_i,
+  \ham = -\frac{1}{2} \sum_{ij} J_{ij} S_i S_j - \sum_i H_i S_i,
 \end{equation}
-where $\asum{i,j}$ denotes a sum over all pairs of neighbors, $J$ is the the
-(exchange) interaction between neighboring spins, and $H$ is an external field.
+where $J_{ij}=J$ if $i$ and $j$ are nearest neighbors and zero otherwise, and
+$H_i$ is the external field.
 
 
 \subsection{Single-spin flip dynamics}
@@ -213,15 +207,15 @@ consequently the acceptance probabilities satisfy detailed balance,
 \begin{equation}
   \frac{A_{l \to m}}{A_{m \to l}} = e^{-\beta(E_m - E_l)}.
 \end{equation}
-Suppose $m^{(i)}$ differs from $l$ by a flip of $S_i$. Then the change in
-energy is
+Suppose $m[i]$ differs from $l$ by a flip of $S_i$. Then the change in energy
+is
 \begin{equation}
-  E_{m^{(i)}} - E_l = 2 \del{J \sum_{j \in \mathcal{N}(i)} S_j + H} S_i,
+  E_{m[i]} - E_l = 2 \del{J \sum_{j \in \mathcal{N}[i]} S_j + H} S_i,
 \end{equation}
 where the sum is over the neighbors of $i$. Finally, using the Metropolis
 convention~\eqref{eq:metropolis-prob} we obtain the acceptance probabilities
 \begin{equation}
-  A_{l \to m^{(i)}} = \min\cbr{1,\,e^{-\beta(E_{m^{(i)}}-E_l)}}.
+  A_{l \to m[i]} = \min\cbr{1,\,e^{-\beta(E_{m[i]}-E_l)}}.
 \end{equation}
 Since the allowed moves are given uniform probability independent of the state
 of the system, it makes no difference whether updates are done randomly or
@@ -455,7 +449,7 @@ $\vec{\Gamma}^p \vec{u}$ is a convex combination%
   sum to one.
 }
 of the components of $\vec{u}$, and thus can be no larger in magnitude than the
-largest component. That is,
+largest component of $\vec{u}$. That is,
 \begin{equation}
   \abs{\sum_j \del{\vec{\Gamma}^p}_{ij} u_j}
   \leq \max_k \cbr{\abs{u_k}}
@@ -535,8 +529,8 @@ indicator is based.
 Consider the equilibrium energy per spin averaged over samples,
 \begin{equation}
   U =
-  -\frac{1}{N} \sum_{\abr{i,j}} \dav{J_{ij} \av{S_i S_j}} \equiv
-  -\frac{1}{N} \sum_{\abr{i,j}} U_{ij},
+  -\frac{1}{2N} \sum_{ij} \dav{J_{ij} \av{S_i S_j}} \equiv
+  -\frac{1}{2N} \sum_{ij} U_{ij},
 \end{equation}
 % TODO: make sure \sum_{<i, j>} is defined
 For Gaussian $J_{ij}$ with mean zero and variance $\sigma_{ij}^2$, we can
@@ -550,7 +544,7 @@ noting that the boundary term vanishes,
 \end{equation}
 where $C_2(J_{ij}) \equiv \av{S_i S_j}$, and thus
 \begin{equation}
-  U = -\frac{1}{N} \sum_{\abr{i,j}} \sigma_{ij}^2 \dav{\dod{}{J_{ij}} \av{S_i S_j}}.
+  U = -\frac{1}{2N} \sum_{ij} \sigma_{ij}^2 \dav{\dod{}{J_{ij}} \av{S_i S_j}}.
 \end{equation}
 In equilibrium at temperature $T \equiv 1/\beta$,
 \begin{equation}
@@ -566,20 +560,24 @@ we find
 Thus we find the \emph{equilibrium} relationship
 \begin{align}
   U
-  &= - \frac{1}{NT}
-       \sum_{\abr{i,j}}
-       \sigma_{ij}^2 \del{ 1 - \dav{\av{S_i S_j}^2} } \notag \\
+  &= - \frac{1}{2 N T}
+       \sum_{ij}
+       \sigma_{ij}^2 \del{1-\dav{\av{S_i S_j}^2}}\nonumber\\
   &= - \frac{\tcmfsq}{2T}
-       \del{1 - \frac{2}{N}
-       \sum_{\abr{i,j}} \frac{\sigma_{ij}^2}{\tcmfsq} \dav{\av{S_i S_j}^2}}
+       \del{
+         1 -
+         \frac{1}{N} \sum_{ij}
+         \frac{\sigma_{ij}^2}{\tcmfsq}
+         \dav{\av{S_i S_j}^2}
+       }
   \label{eq:equil-1}
 \end{align}
 where in the second line we use the identity
-$\tcmfsq = (2/N) \sum_{\abr{i,j}} \sigma_{ij}^2$.
+$\tcmfsq = (1/N) \sum_{ij} \sigma_{ij}^2$.
 The second term in the parentheses,
 \begin{equation}
-  q_l \equiv \frac{2}{N}
-  \sum_{\abr{i,j}} \frac{\sigma_{ij}^2}{\tcmfsq} \dav{\av{S_i S_j}^2},
+  q_l \equiv
+  \frac{1}{N} \sum_{ij} \frac{\sigma_{ij}^2}{\tcmfsq} \dav{\av{S_i S_j}^2},
 \end{equation}
 is a generalized form of the \emph{link overlap}, so named because the average
 $\av{S_i S_j}^2$ measures the tendency for a bond, or ``link", to be
@@ -848,10 +846,274 @@ be universal (up to non-universal factors multiplying argument and $L^{\gamma
   y_t}$. This follows from the renormalization-group derivation of the scaling
 relationships.
 
-%\section{Fitting and error estimation}
-%
-%\subsection{Bootstrap resampling}
-%\label{sec:numerical-bootstrap}
-%
-%\autocite{young2015everything}
+
+\section{Statistical error analysis}
+
+\newcommand{\sav}[1]{\overline{#1}}
+
+In this section we briefly review some of the most important statistical
+methods used in the research. The derivations presented here closely follow
+\textcite{young2015everything}, to which we refer the reader for an in-depth
+discussion.
+
+In experimental physics and in numerical simulations, we typically have a set
+of $N$ independent measurements $\cbr{x_i}$ of some quantity $X$. We assume the
+data are sampled from the same (unknown) underlying distribution with
+probability density $p(x)$, and our goal is to estimate the mean of the
+underlying distribution,
+\begin{equation}
+  \mu \equiv \int \dif x \, x \, p(x),
+\end{equation}
+and determine the statistical error in the estimate. For the purpose of
+discussing \emph{bias} and \emph{statistical error} it is useful to imagine
+performing many identical experiments, each time obtaining a new set of $N$
+measurements $\cbr{x_i}$. The average of $x_i$ over an infinite number of
+experiments, which we denote $\av{x_i}$, is equal to the true mean,
+\textit{i.e.} $\av{x_i}=\mu$. The assumption of independence means that
+$\av{x_i x_j}=\av{x_i}\av{x_j}$ if $i \neq j$.
+
+An \emph{unbiased} estimator of the true mean $\mu$ is the \emph{sample mean},
+\begin{equation}
+  \sav{x} \equiv \frac{1}{N} \sum_{i=1}^N x_i.
+\end{equation}
+By unbiased we mean that the average over many identical experiments of the
+sample mean $\sav{x}$ converges to true mean $\av{x}$, because
+\begin{equation}
+  \av{\sav{x}} = \frac{1}{N} \sum_{i=1}^N \av{x_i} = \mu.
+\end{equation}
+The variance of the sample mean is
+\begin{align}
+  \sigma_{\sav{x}}^2
+  &\equiv \av{\sav{x}^2} - \av{\sav{x}}^2\nonumber\\
+  &=\frac{1}{N^2} \sum_{ij} \del{\av{x_i x_j} - \av{x_i}\av{x_j}}\nonumber\\
+  &=\frac{1}{N^2} \sum_i \del{\av{x_i^2}-\av{x_i}^2}\nonumber\\
+  &\equiv\frac{\sigma^2}{N}.
+  \label{eq:sav-var}
+\end{align}
+Thus, to give an statistical error in our estimation of the true mean $\mu$ by
+the sample mean $\sav{x}$, we also need to estimate $\sigma^2$, a parameter of
+the underlying distribution. We expect this to be related to the \emph{sample
+  variance},
+\begin{equation}
+  s^2 \equiv \frac{1}{N} \sum_{i=1}^N \del{x_i - \sav{x}}^2,
+\end{equation}
+which can also be written as $s^2 = (1/N) \sum_i x_i^2 - (1/N^2) \sum_{ij} x_i
+x_j$. To find the relationship between the sample variance $s^2$ and the
+variance of the underlying distribution $\sigma^2$, we evaluate
+\begin{align}
+  \av{s^2}
+  &= \frac{1}{N} \sum_i \av{x_i^2} -
+     \frac{1}{N^2} \sum_{ij} \av{x_i x_j}\nonumber\\
+  &= \av{x^2} - \del{\frac{1}{N} \av{x^2} + \frac{N-1}{N} \av{x}^2}\nonumber\\
+  &= \frac{N-1}{N} \del{\av{x^2} - \av{x}^2}\nonumber\\
+  &= \del{\frac{N-1}{N}} \sigma^2,
+  \label{eq:svar-var}
+\end{align}
+where in the second line we split the double summation into a sum of $N$ terms
+with $i=j$ and $N(N-1)$ terms with $i \neq j$, and use the assumed independence
+of the data. Thus we find that $N s^2/(N-1)$ is an unbiased estimator of
+$\sigma^2$. Combining \cref{eq:sav-var,eq:svar-var}, our final result for the
+estimate of the true mean $\mu$ from the data is
+\begin{equation}
+  \mu \sim \sav{x}, \qquad
+  \sigma_{\sav{x}} \sim \sqrt{\frac{s^2}{N-1}},
+  \label{eq:mean-est}
+\end{equation}
+where, in this section, ``$\sim$" means ``is an unbiased estimator of."
+
+
+\subsection{Manual error propagation}
+
+Often we would like to estimate the value of a function $f$ evaluated at the
+mean $\mu$. In general, $f(\sav{x})$ is \emph{not} an unbiased estimator of
+$f(\mu)$, unless $f$ is linear. In fact,
+\begin{equation}
+  \av{f(\sav{x})} =
+  f(\mu) +
+  \frac{1}{2} f^{\prime\prime}(\mu)\av{\delta^2} +
+  \cdots
+  \label{eq:f-mean-expand}
+\end{equation}
+where $\delta \equiv \sav{x}-\mu$ and we have used that $\av{\delta}=0$, but
+$\av{\delta^2}$ and higher moments do not generally vanish. In fact,
+$\av{\delta^2} = \sigma_{\sav{x}}^2$ and thus, using \cref{eq:mean-est}, we can
+eliminate the leading bias by estimating
+\begin{equation}
+  f(\mu) \approx
+  f(\sav{x}) - \frac{s^2}{2(N-1)} f^{\prime\prime}(\sav{x}).
+  \label{eq:elim-bias}
+\end{equation}
+The statistical error in our estimate follows from the variance,
+\begin{equation}
+  \av{f(\sav{x})^2} - \av{f(\sav{x})}^2 =
+  [f^{\prime}(\mu)]^2 \sigma_{\sav{x}}^2 + \cdots
+\end{equation}
+and hence
+\begin{equation}
+  \sigma_{f(\sav{x})} \approx \del{\frac{s^2}{N-1}}^{1/2} f^{\prime}(\sav{x}).
+\end{equation}
+The correction term in \cref{eq:elim-bias} is usually unnecessary in practice
+because the bias falls off like $1/N$ asymptotically, so for reasonably large
+$N$ it is insignificant compared to the statistical error, which is seen to
+fall off like $1/\sqrt{N}$. If $N$ is sufficiently large, as is usually the
+case, we can ignore the bias and estimate $f(\mu)$ and the associated
+statistical error by
+\begin{equation}
+  f(\mu) \approx f(\sav{x}),\qquad
+  \sigma_{f(\sav{x})} \approx \del{\frac{s^2}{N-1}}^{1/2} f^{\prime}(\sav{x}).
+  \label{eq:est-error-manual}
+\end{equation}
+This result generalizes straightforwardly to functions of multiple averages.
+For example, consider a function $f(x,y)$ and suppose we want to estimate
+$f(\mu_x,\mu_y)$, where $\mu_x=\av{x_i}$ and $\mu_y=\av{y_i}$.
+As before, bias arises from the quadratic terms in the expansion of $f$
+about the mean values,
+\begin{equation}
+  \av{f(\sav{x},\sav{y})} =
+  f(\mu_x,\mu_y) +
+  \frac{1}{2} f_{x x}^{\mu} \av{\delta_x^2} +
+  f_{x y}^{\mu} \av{\delta_x \delta_y} +
+  \frac{1}{2} f_{y y}^{\mu} \av{\delta_y^2} + \cdots
+\end{equation}
+where \textit{e.g.} $f_{x x}^{\mu}$ is shorthand for the second derivative
+$\partial_x^2 f(x,y)$ evaluated at $\mu_x$, $\mu_y$. The average in the cross
+term, $\av{\delta_x \delta_y}$, is equal to the \emph{covariance} of the sample
+means, $\sigma_{\sav{x} \sav{y}}^2$. Analogously to \cref{eq:sav-var}, we find
+$\sigma_{\sav{x} \sav{y}}=\sigma_{x y}/N$. The covariance $\sigma_{x y}$ is
+related to the \emph{sample covariance}, defined by
+\begin{equation}
+  s^2_{x y} = \frac{1}{N}\sum_{i=1}^N (x_i - \sav{x})(y_i - \sav{y}).
+\end{equation}
+Analogously to \cref{eq:svar-var} we find
+\begin{equation}
+  \av{s^2_{x y}} = \del{\frac{N-1}{N}} \sigma^2_{x y}.
+\end{equation}
+Finally, we can eliminate the leading bias by estimating $f(\mu_x,\mu_y)$ as
+\begin{equation}
+  f(\mu_x,\mu_y) \approx
+  f(\sav{x},\sav{y}) - \frac{1}{2(N-1)}\del{
+  s^2_{x x} f_{x x}^{\mu} -
+  2 s^2_{x y} f_{x y}^{\mu} -
+  s^2_{y y} f_{y y}^{\mu}
+  }.
+\end{equation}
+As before, the leading statistical error arises from the first derivatives,
+and we find
+\begin{equation}
+  \sigma_{f(\sav{x},\sav{y})}^2 =
+  \frac{1}{N-1}\del{s_x^2 f_x^{\mu} + s_y^2 f_y^{\mu}}.
+\end{equation}
+
+
+\subsection{Resampling methods}
+\label{sec:numerical-resampling}
+
+In practice, the function $f$ can be complicated, making manual computation of
+the derivatives required for error propagation a tedious and error-prone
+process. In some cases we may not be able to compute the necessary derivatives
+analytically, and must resort to numerical approximation, for example when the
+function we are evaluating involves a complex nonlinear fit. Therefore we would
+like to have an ``automatic'' numerical procedure that can be used to compute
+an unbiased estimate of $f(\mu)$ and associated statistical error, which does
+not require computing the derivatives directly. Here we briefly summarize two
+such methods, called \emph{resampling methods}, which were used extensively in
+the research presented in this thesis. The basic idea is to generate from the
+original $N$ data points $\cbr{x_i}$ a number of \emph{resampled} data sets
+$\cbr{x_i^{\alpha}}$ similar to those that would be obtained by performing the
+experiment many times. We can then use averages computed from these resampled
+data sets to form an unbiased estimate of $f(\mu)$ and obtain a statistical
+error in the estimate. For a detailed discussion we refer the reader to
+\textcite{young2015everything}.
+
+
+\subsubsection{Jackknife}
+
+Using the \emph{jackknife} method, we generate $N$ resampled data sets
+$\cbr{x_i^{\alpha}}$, $\alpha \in \cbr{1 \dots N}$ simply by leaving out a
+single point of the original data set in each one.
+That is,
+$\cbr{x_j^{\alpha}} \equiv \cbr{x_1,x_2 \dots x_{j-1},x_{j+1} \dots x_N}$.
+We call the averages of the
+resampled data sets \emph{jackknife averages}, given by
+\begin{equation}
+  \sav{x^{\alpha}} \equiv \frac{1}{N-1} \sum_{i \neq \alpha} x_i,
+\end{equation}
+which is just the average over the original data set leaving out data point
+$x_{\alpha}$. We then estimate $f(\mu)$ by the average
+\begin{equation}
+  \sav{f} \equiv \frac{1}{N} \sum_{\alpha} f(\sav{x^{\alpha}}).
+  \label{eq:f-est-jk}
+\end{equation}
+Note that $(1/N) \sum_{\alpha=1}^N \sav{x^{\alpha}} = \sav{x}$.
+If $f$ is linear, then
+$\sav{f}=(1/N)f\del{\sum_{\alpha} \sav{x^{\alpha}}}=f(\sav{x})$.
+However, if $f$ is not linear, then $\sav{f} \neq f(\sav{x})$ and
+both are biased estimates of $f(\mu)$. From \cref{eq:f-mean-expand}
+we note that $\av{f(\sav{x})}$ has an expansion of the form
+\begin{equation}
+  \av{f(\sav{x})} = f(\mu) - \frac{A}{N} - \frac{B}{N^2} - \cdots
+\end{equation}
+Following \textcite{young2015everything} we note that, since the jackknife
+data sets $x^{\alpha}$ have the same distribution as the original data set
+(after all, they \emph{are} the original data set with one point left out),
+the coefficients $A$ and $B$ are the same in the expansion of
+$\av{\sav{f}}$, only $N$ is replaced with $N-1$. Thus we can eliminate the
+leading $\mathcal{O}(1/N)$ bias by estimating
+\begin{equation}
+  f(\mu) \approx N f(\sav{x}) - (N-1) \sav{f}.
+\end{equation}
+We define the variance of the jackknife estimates by
+\begin{equation}
+  s_f^2 \equiv \sav{f^2} - \sav{f}^2.
+  \label{eq:f-var-jk}
+\end{equation}
+With some algebra, it can be shown that, to leading order in $N$,
+\begin{equation}
+  \sigma_{\sav{f}}^2 \approx (N-1) s_f^2.
+  \label{eq:f-err-jk}
+\end{equation}
+Thus we obtain an estimate of $f(\mu)$ and statistical error equivalent to
+\cref{eq:est-error-manual} without the need to compute partial derivatives.
+Relative to other resampling methods, such as bootstrap, jackknife is simple
+and efficient. However, roundoff error can be a problem with large data sets,
+where the jackknife averages will be very close together. In particular, the
+computation of the standard deviation, which involves subtracting large,
+almost-equal numbers when $N$ is large, is susceptible to roundoff error.
+
+In the work presented here we have mainly used jackknife to obtain error bars
+for estimates of ratios of various moments. The most frequently-occurring
+example is the Binder ratio
+\begin{equation}
+  g \equiv \frac{1}{2} \del{3 - \frac{\av{x^4}}{\av{x^2}^2}},
+\end{equation}
+for which we compute an estimate and error bar from
+\cref{eq:f-est-jk,eq:f-err-jk}.
+
+
+\subsubsection{Bootstrap}
+
+Using the bootstrap method, we generate $M$ resampled data sets
+$\cbr{x_i^{\alpha}}$, each with $N$ points, by random selection with
+replacement from the original data set. Here we state the results which are
+useful for estimating $f(\mu)$ and the statistical error from the bootstrap
+data sets. For the derivations we refer the reader to
+\textcite{young2015everything}. As for the jackknife method, the bootstrap
+estimate of $f(\mu)$ is given by \cref{eq:f-est-jk}, with $\sav{x^{\alpha}}$
+here denoting the averages of the \emph{bootstrap} data sets. The statistical
+error in this estimate is given by
+\begin{equation}
+  \sigma_{\sav{f}} = \sqrt{\frac{N}{N-1}}\,s_f
+\end{equation}
+where $s_f$ is defined as in \cref{eq:f-var-jk} but with the averages done over
+the bootstrap data sets. When $N$ is large, the square-root factor can be
+neglected, so that the bootstrap estimate of the error is just the standard
+deviation of the bootstrap estimates $f(\sav{x^{\alpha}})$.
+
+The chief advantage of the bootstrap method compared with jackknife is that it
+samples the full range of the distribution of $f(\sav{x})$. It is thus useful
+to produce error bars on fits when (a) the statistical errors are non-Gaussian
+or (b) we fit a nonlinear model and the variance of the distribution is
+sufficiently large that an effective linear model is not applicable
+\textcite{young2015everything}.
+
 
