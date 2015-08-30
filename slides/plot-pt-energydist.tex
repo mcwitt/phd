@@ -1,0 +1,41 @@
+\begin{tikzpicture}
+  \footnotesize
+  \def\energies{{1,1.4,1.96,2.74}}
+  \begin{axis}[
+    label at end,
+    width=\columnwidth,
+    height=0.4\columnwidth,
+    xlabel={$E$},ylabel={$P(E)$},
+    xtick={1,1.4,1.96,2.74},
+    xticklabel=\empty,
+    ytick=\empty,
+    axis lines=left,
+    axis on top,
+    enlarge y limits=upper,
+    clip=false,
+    no marks,
+    samples=100,
+    domain=0.5:3.8,
+    smooth,
+    every axis plot/.append style={fill opacity=0.2}
+  ]
+    \foreach [count=\i] \clr in {red,red!50!orange,orange,orange!50!yellow} {
+      \pgfmathsetmacro\en{\energies[\i-1]}
+      \edef\temp{%
+        \noexpand\addplot+[\clr, fill=\clr] {gauss(x, \en, 0.1*\en)};
+        \noexpand\node[above] at (\en, {gauss(\en,\en,0.1*\en)}) {$T_{\i}$};
+      }
+      \temp
+    }
+    \pgfmathsetmacro\ena{\energies[1]}
+    \pgfmathsetmacro\enb{\energies[2]}
+    \draw [latex-latex]
+      (axis cs: \ena, -0.25) --
+        node [below] {$\Delta E$}
+      (axis cs: \enb, -0.25);
+    \draw [latex-latex]
+      (axis cs: 0.9*\enb, {gauss(0.9*\enb,\enb,0.1*\enb)}) --
+        node [below] {$\delta E$}
+      (axis cs: 1.1*\enb, {gauss(1.1*\enb,\enb,0.1*\enb)});
+  \end{axis}
+\end{tikzpicture}

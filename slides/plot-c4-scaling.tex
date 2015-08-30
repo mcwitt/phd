@@ -1,0 +1,45 @@
+\begin{tikzpicture}
+  \def\sigmafrac{5/8}
+  \def\zT{1.4}
+  \def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+  \def\filename{data/c4-vs-r-t\pad{\logtime}.csv}
+  \def\logtimes{4,6,8,10,12,14}
+  \pgfmathsetmacro\sigmaval{\sigmafrac}
+  \pgfmathdeclarefunction{xi}{1}{\pgfmathparse{#1^(1/\zT)}}
+  \pgfplotsset{every axis/.append style={mark options={fill opacity=0.4}}}
+
+  \begin{loglogaxis}[
+    name=plot,
+    width=\columnwidth,
+    height=\columnwidth,
+    xmin=10^-3,xmax=2000,
+    ymin=10^-3,ymax=0.3,
+    xlabel={$R/\xi(t)\,\left(=R/t^{1/z(T)}\right)$},
+    ylabel={$R^{3-4\sigma} C_4(R,t)$},
+    font=\footnotesize,
+    xlabel near ticks,ylabel near ticks,
+    legend pos=south west,
+    legend cell align=left
+  ]
+    \foreach \logtime in \logtimes {%
+      \addplot+[only marks, with y errors] table[
+        x expr=\thisrow{r}/xi(2^\logtime),
+        y expr=\thisrow{r}^(3-4*\sigmaval)*\thisrow{C4_mean},
+        y error expr=\thisrow{r}^(3-4*\sigmaval)*\thisrow{C4_sem}
+      ]{\filename};
+      \addlegendentryexpanded{$t=2^{\logtime}$}
+    }
+  \end{loglogaxis}
+  \matrix[
+    matrix of nodes,
+    inner sep=2pt,
+    outer sep=1ex,
+    column sep=1ex,
+    font=\footnotesize,anchor=south
+  ]
+    at (plot.north) {
+    $\sigma=5/8$ &
+    $N=2^{26}$ &
+    \alert{$z(T)=1.4$} \\
+  };
+\end{tikzpicture}

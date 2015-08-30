@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+  \begin{loglogaxis}[
+    name=plot,
+    width=\columnwidth,
+    height=\columnwidth,
+    font=\scriptsize,
+    mark size=1.5pt,
+    xmin=1,xmax=10^5,ymin=10^-5,
+    xlabel={$R$},
+    ylabel={$C_4(R,t)$},
+    with y errors,
+    mark options={fill opacity=0.4},
+    legend pos=south west,
+    legend style={font=\tiny},
+    legend image code/.code={
+      \draw[mark repeat=2,mark phase=2]
+      plot coordinates {
+        (0cm,0cm)
+        (0.15cm,0cm)        %% default is (0.3cm,0cm)
+        (0.3cm,0cm)         %% default is (0.6cm,0cm)
+      };
+    }
+  ]
+    \foreach \n in {10,14,18,22,26} {
+      \addplot table[x=r,y=mean,y error=sem] {data/c4-vs-r-n\n.csv};
+      \addlegendentryexpanded{$N=2^{\n}$}
+    }
+    \node [draw,anchor=north east] at (rel axis cs: 0.97,0.97){%
+      $\begin{aligned}
+        \sigma &= 5/8 \\
+        t &= 2^{14}
+      \end{aligned}$};
+  \end{loglogaxis}
+\end{tikzpicture}

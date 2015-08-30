@@ -1,0 +1,49 @@
+\begin{tikzpicture}
+  \def\sigmafrac{5/8}
+  \def\zT{1.4}
+  \def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+  \def\filename{data/c4-vs-r-t\pad{\logtime}.csv}
+  \def\logtimes{4,6,8,10,12,14}
+
+  \pgfmathsetmacro\sigmaval{\sigmafrac}
+  \pgfmathdeclarefunction{xi}{1}{\pgfmathparse{#1^(1/\zT)}}
+
+  \begin{semilogxaxis}[
+    width=0.7\textwidth,
+    xmin=1,xmax=255,
+    ymin=-1,ymax=-0.45,
+    xlabel=$R$,
+    ylabel=$\alpha_{\text{eff}}$,
+    ytick={-1.0,-0.9,...,-0.4},
+    font=\footnotesize,
+    legend pos=outer north east
+  ]
+    \foreach \logtime in \logtimes {%
+
+      \addplot+[mark=none,smooth,forget plot,raw gnuplot] gnuplot {
+        set datafile separator ",";
+        set logscale x;
+        set samples 20;
+        f(x) = a + b*x + c*x**2;
+        fit f(x) '\filename' every ::4 using (log($3)):6:7 via a,b,c;
+        plot [x=1:255] f(log(x));
+      };
+      \addplot+[
+        only marks,
+        with y errors,
+      ] table [
+        x=r,
+        y=alpha_mean,
+        y error=alpha_sem
+      ] {\filename};
+      \addlegendentryexpanded{$t=2^{\logtime}$}
+    }
+    \addplot [dashed,domain=1:255,samples=2] {-0.5};
+    \node [draw,anchor=south west] at (rel axis cs: 0.03,0.03){%
+      $\begin{aligned}
+        \sigma &= 5/8 \\
+        N &= 2^{26} \\
+        z &= 1.4
+      \end{aligned}$};
+  \end{semilogxaxis}
+\end{tikzpicture}
