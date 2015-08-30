@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+  \pgfmathsetmacro{\x}{0.6}
+  \pgfmathsetmacro{\y}{0.9}
+  \pgfmathsetmacro{\a}{0.1}
+  \pgfmathsetmacro{\b}{0.6}
+  \begin{axis}[
+    sketch plots,label at end,
+    width=\columnwidth,
+    height=0.6\columnwidth,
+    xmin=-1,xmax=1,
+    ymin=0,ymax=1,
+    xtick={-\x,\x},
+    xticklabels={$-\qea$,$+\qea$},
+    xtick align=outside,
+    ytick=\empty,
+    xlabel={$q$}, ylabel={$P(q)$},
+    enlarge y limits=false,
+    every axis plot post/.append style={red}
+  ]
+    \addplot+[ycomb,forget plot] coordinates {(-\x,\y) (\x,\y)};
+    \addplot+[domain=-\x:\x] {\a + \b*x^2};
+  \end{axis}
+\end{tikzpicture}

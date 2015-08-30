@@ -1,0 +1,31 @@
+\begin{tikzpicture}
+  \def\sig{25}
+  \def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+  \def\filename{data/binder-c-s\sig-l\pad{\logsize}.csv}
+  \def\logsizes{6,7,8,9,10,11,12}
+  \def\xmin{0.8}
+  \def\xmax{1.2}
+  \def\ymin{0}
+  \def\ymax{0.6}
+  \def\tc{1}
+  \begin{axis}[
+    width=0.7\textwidth,
+    xmin=\xmin,xmax=\xmax,ymin=\ymin,ymax=\ymax,
+    xlabel={$T$},
+    ylabel={$g$},
+    extra x ticks={\tc},
+    extra x tick style={xticklabel=\empty, grid=major},
+    legend pos=outer north east,
+    legend cell align=left,
+    legend style={font=\footnotesize},
+  ]
+    \foreach \logsize in \logsizes {%
+      \addplot+[with y errors] table [
+        x=T,
+        y=mean,
+        y error=sem
+      ] {\filename};
+      \addlegendentryexpanded{$L=2^{\logsize}$}
+    }
+  \end{axis}
+\end{tikzpicture}

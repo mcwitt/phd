@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+  \pgfmathdeclarefunction{f1}{1}{\pgfmathparse{0.23*#1^(-0.5 )}}
+  \pgfmathdeclarefunction{f2}{1}{\pgfmathparse{2.8 *#1^(-1.25)}}
+  \def\pad#1{\ifnum#1<10 0#1\else#1\fi}
+  \def\filename{data/c4-vs-r-t\pad{\logtime}.csv}
+  \def\logtimes{4,6,8,10,12,14}
+
+  \begin{loglogaxis}[
+    width=0.7\textwidth,
+    xmin=1,xmax=10^5,
+    ymin=10^-5,ymax=1,
+    xlabel={$R$},
+    ylabel={$C_4(R,t)$},
+    font=\footnotesize,
+    legend pos=south west,
+    legend cell align=left,
+  ]
+
+    \foreach \logtime in \logtimes {%
+      \addplot+[only marks, with y errors] table[
+        x=r,
+        y=C4_mean,
+        y error=C4_sem
+      ] {\filename};
+      \addlegendentryexpanded{$t=2^{\logtime}$}
+    }
+
+    \addplot [domain=1:10^5, samples=2] {f1(x)}
+      node [above, pos=0.7, sloped] {$-(3-4\sigma)$};
+    \addplot [densely dashed, domain=1:10^5, samples=2] {f2(x)}
+      node [above, pos=0.2, sloped] {$-2\sigma$};
+
+    \node [draw, anchor=north east] at (rel axis cs: 0.97,0.97){%
+      $\begin{aligned}
+        \sigma &= 5/8 \\
+        N &= 2^{26}
+      \end{aligned}$};
+  \end{loglogaxis}
+\end{tikzpicture}

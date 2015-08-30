@@ -1032,9 +1032,9 @@ Using the \emph{jackknife} method, we generate $N$ resampled data sets
 $\cbr{x_i^{\alpha}}$, $\alpha \in \cbr{1 \dots N}$ simply by leaving out a
 single point of the original data set in each one.
 That is,
-$\cbr{x_j^{\alpha}} \equiv \cbr{x_1,x_2 \dots x_{j-1},x_{j+1} \dots x_N}$.
+$\cbr{x_i^{\alpha}} \equiv \cbr{x_j:j \in \cbr{1\dots N}, i\neq j}$
 We call the averages of the
-resampled data sets \emph{jackknife averages}, given by
+resampled data sets \emph{jackknife averages},
 \begin{equation}
   \sav{x^{\alpha}} \equiv \frac{1}{N-1} \sum_{i \neq \alpha} x_i,
 \end{equation}

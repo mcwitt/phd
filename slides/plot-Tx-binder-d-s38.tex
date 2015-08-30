@@ -1,0 +1,52 @@
+\begin{tikzpicture}
+  \def\Tcg{2.060}
+  \def\TcX{2.054}
+  \def\Tcgerr{2.060(5)}
+  \def\TcXerr{2.054(2)}
+  \def\Ag{-5.28}
+  \def\AX{-1.30}
+  \begin{axis}[
+    name=plot,
+    width=0.7\textwidth,
+    xlabel={$L^{-2/3}$},
+    ylabel={$T^*(L,2L)$},
+    extra y ticks=2.056,
+    extra y tick style={yticklabel=\empty,grid=major},
+    enlarge x limits=false
+  ]
+    % plot data
+    \pgfplotstableread{data/Tx-d-s38.csv}\data
+
+    \addplot+[with y errors,only marks] table [
+      x expr=\thisrow{L}^(-2/3),
+      y=Tx_chi_mean,
+      y error=Tx_chi_std,
+    ] {\data};
+    \label{plot:chi-c-s25}
+
+    \addplot+[with y errors,only marks] table [
+      x expr=\thisrow{L}^(-2/3),
+      y=Tx_G_mean,
+      y error=Tx_G_std,
+    ] {\data};
+    \label{plot:binder-c-s25}
+
+    % plot fit lines
+    \addplot+[mark=none,samples=2,domain=0:0.03] { \TcX + \AX*x };
+    \addplot+[mark=none,samples=2,domain=0:0.03] { \Tcg + \Ag*x };
+
+    % make table of fit parameters
+  \end{axis}
+  \matrix[
+    matrix of nodes,
+    anchor=south west,
+    outer sep=5pt,
+    row sep=0,
+    nodes={anchor=west},
+    font=\footnotesize
+  ] at at (plot.south west) {
+      & $T^*(\infty)$ \\
+      \ref{plot:chi-c-s25} $\chi_{\text{SG}}/L^{1/3}$ & $\TcXerr$ \\
+      \ref{plot:binder-c-s25} $g$ & $\Tcgerr$ \\
+  };
+\end{tikzpicture}
