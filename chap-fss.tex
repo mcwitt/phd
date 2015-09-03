@@ -418,7 +418,7 @@ $T_c$ and will therefore be subject to the standard FSS in
 \cref{eq:susc-kn-scaling}.
 
 
-\section{The quotient method}
+\section{Quotient method}
 \label{sec:fss-quotient}
 
 The discussion in \cref{sec:fss-intro} assumed that the sizes are
@@ -536,12 +536,14 @@ $\vec{\Sigma}^+$.%
   whose eigenvalues are not (close to) zero and inverting the resulting matrix.
 }
 The effective number of independent data points is then the rank of the
-covariance matrix (the number of non-zero eigenvalues).
+covariance matrix (the number of nonzero eigenvalues).
 
 
 \section{Results: periodic boundary conditions}
 \label{sec:fss-results-pbc}
 
+We perform Monte Carlo simulations of the model with periodic boundary
+conditions for sizes $L=8,10,12,16,20,24,28,32,36$.
 
 \subsection{$k=0$ fluctuations}
 
@@ -697,6 +699,10 @@ small values of $k L$.
 \section{Results: free boundary conditions}
 \label{sec:fss-results-fbc}
 
+We perform Monte Carlo simulations of the model with free boundary
+conditions for sizes $L=8,10,12,14,16,18,20,24,28,32,36,48,$ and 64.
+The data for the largest two sizes, $L=48$ and 64, is only for $k=0$.
+
 Because corrections to scaling are larger for free boundary conditions than for
 periodic boundary conditions, in this section we make extensive use of the
 quotient method described in \cref{sec:fss-quotient} to incorporate the
@@ -726,9 +732,9 @@ An overview of our results for the Binder ratio is shown in
   {
     Overview of data for \subref{fig:data-f-binder} the Binder ratio $g$ and
     \subref{fig:data-f-susc} the susceptibility $\chi$, for free boundary
-    conditions. Note the large shift to lower temperatures for the smaller
-    sizes and lack of any apparent intersections of the data for different
-    sizes in \subref{fig:data-f-binder}.
+    conditions, for the different sizes studied. Note the large shift to lower
+    temperatures for the smaller sizes and lack of any apparent intersections
+    of the data for different sizes in \subref{fig:data-f-binder}.
   } \label{fig:data-f}
 \end{figure}
 We do not find any intersections, and the data are shifted considerably to
@@ -760,8 +766,8 @@ The quality of the data is very good and we are able to fit all four
 parameters, $\lambda$, $\omega$, and the two amplitudes $C_s$. We find the
 values
 \begin{equation}
-  \lambda = 2.003(3),\quad
-  \omega = 1.01(3).
+  \lambda = 2.004(4),\quad
+  \omega = 1.00(4).
 \end{equation}
 The value for the shift exponent is in precise agreement with the value
 $\lambda=2$ proposed analytically by \textcite{rudnick1985effect} and found
@@ -784,12 +790,15 @@ we find that the data are insufficient to determine the three parameters, but
 if we assume the RG value for the correction exponent, $\omega=1$, then we get
 a good fit that extrapolates to
 \begin{equation}
-  y_t^* = 2.50(3),
+  y_t^* = 2.45(1),
   \label{eq:fss-above-yt-fit}
 \end{equation}
 % TODO: update with result of new analysis
-see \cref{fig:qwidth}, in precise agreement with the prediction $d/2$, see
-\cref{eq:fss-above-yt}.
+see \cref{fig:qwidth}, close to the prediction $d/2$, see
+\cref{eq:fss-above-yt}. Considering the relatively small statistical error in
+this estimate, the result is not quite consistent with $d/2$. However,
+especially in view of the further evidence for $y_t^*=d/2$, discussed below, we
+believe this discrepancy to be due to subleading corrections to scaling.
 \begin{figure}
   \centering
   \includestandalone{figures/qwidth}
@@ -807,9 +816,7 @@ see \cref{fig:qwidth}, in precise agreement with the prediction $d/2$, see
 \end{figure}
 We note that the quoted error bar \emph{assumes} that the data can be described
 by \cref{eq:fss-above-yt-fit}; in other words, that \emph{subleading}
-corrections do not affect the fitted data significantly. If this is the case,
-we have established the values of the shift and rounding exponents in
-\cref{eq:fss-above-shift-binder}.
+corrections do not affect the fitted data significantly.
 
 Now we consider the scaling of $\chi$ in \cref{eq:fss-above-shift-susc}. The
 data for $\chi$ are shown in \cref{fig:data-f-susc}. From this we estimate the
@@ -864,27 +871,22 @@ results are plotted in
     According to \cref{eq:rounding-k0-Tc}, the quotients should extrapolate
     to the value of $y_t$ ($=2$). There are five fitting parameters:
     $y_t$ and the amplitudes of the linear and quadratic corrections for
-    each $s$ value. The quality of fit is good, $Q=0.43$.
+    each $s$ value. The quality of fit is good, $Q=0.23$.
     % TODO: update with latest value
   }
   \label{fig:qchiTc}
 \end{figure}
 There are clearly subleading corrections to scaling, so we use a quadratic fit.
-The result, $y_t=1.97(6)$,
-% TODO: update
-agrees well with the expected value of 2. We note that the corrections to
-scaling are quite large, which is not surprising since the values of $\chi$ at
-$T_c$ are small, and thus are more influenced by corrections to scaling than
-the data at $T_L$, where $\chi$ is larger.
-% TODO: why?
-We also tried a linear fit omitting the smallest size for each value of $s$,
-finding 1.89(2) with $Q=0.3$, which differs by more than the error bar from the
-value 2. Nonetheless, the quadratic fit shows that, although we have not
-determined the exponent with which $\chi$ diverges at $T_c$ with great
-accuracy, our result is at least \emph{consistent} with the value of 2 expected
-according to \cref{eq:rounding-k0-Tc}. An $L^2$ divergence in the
-susceptibility has also been found recently by \textcite{lundow2014finite}, who
-were able to study larger sizes than those studied here, up to $L=160$.
+The result, $y_t=1.97(1)$, is close to the expected value of 2. We note that
+the corrections to scaling are quite large, which is not surprising since the
+values of $\chi$ at $T_c$ are small, and thus are more influenced by
+corrections to scaling than the data at $T_L$, where $\chi$ is larger.
+Nonetheless, the quadratic fit shows that, although we have not determined the
+exponent with which $\chi$ diverges at $T_c$ with great accuracy, our result is
+at least \emph{consistent} with the value of 2 expected according to
+\cref{eq:rounding-k0-Tc}. An $L^2$ divergence in the susceptibility has also
+been found recently by \textcite{lundow2014finite}, who were able to study
+larger sizes than those studied here, up to $L=160$.
 % TODO: how is L=160 possible?
 
 \Cref{fig:chi-f-scaling} shows a scaling plot of $\chi(T)/\chi(T_L)$ against
