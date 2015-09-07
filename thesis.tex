@@ -13,6 +13,7 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{thesis} % common preamble for main document and standalone figures
+\usepackage{ucsctweaks}
 
 \usepackage[mode=buildnew]{standalone}  % compile figures separately (fast, good for editing)
 %\usepackage[mode=tex]{standalone}       % compile figures inline (slow, use only for final version)
@@ -30,94 +31,50 @@
 
 \begin{document}
 
-\title{Nature of the spin glass phase in models with long-range interactions}
-\author{Matthew Wittmann}
-\degreesemester{Fall}
+\title{Nature of the spin-glass phase in models with long-range interactions}
+\author{Matthew C. Wittmann}
+\degreemonth{September}
+%\degreesemester{Fall}
 \degreeyear{2015}
 \degree{Doctor of Philosophy}
-\chair{Dr. A. Peter Young}
-\othermembers{%
-  Dr. B. Sriram Shastry \\
-  Dr. Joshua Deutsch
-}
+\chair{Professor A. Peter Young}
+\committeememberone{Professor B. Sriram Shastry}
+\committeemembertwo{Professor Joshua M. Deutsch}
+%\othermembers{%
+%  Dr. B. Sriram Shastry \\
+%  Dr. Joshua Deutsch
+%}
 \numberofmembers{3}
 \field{Physics}
 \campus{Santa Cruz}
+\deanlineone{Tyrus Miller}
+\deanlinetwo{Vice Provost and Dean of Graduate Studies}
+\deanlinethree{}
 
 \maketitle
-\approvalpage
-\copyrightpage
+%\approvalpage
+%\copyrightpage
+\newpage\mbox{}\thispagestyle{empty}\newpage
 
 \begin{frontmatter}
-\DoubleSpacing
-\include{abstract}
-\clearpage
-\tableofcontents
-\clearpage
-\listoffigures
-\clearpage
+\tableofcontents\clearpage
+\listoffigures\clearpage
 \listoftables
-\clearpage
+\include{abstract}
+\include{acknowledgements}
 
 \begin{dedication}
+\thispagestyle{empty}
+\DoubleSpacing
+\begin{vplace}[0.7]
 \begin{center}
-  To my parents,
+  To my parents,\\
   for their endless love and support.
 \end{center}
+\end{vplace}
 \end{dedication}
 
-\begin{acknowledgements}
-  First and foremost I would like to thank my advisor, Peter Young, for his
-  patience, support, and for his dedication to presenting and explaining ideas
-  clearly in teaching and writing, which has been an inspiration to me. I would
-  also like to thank him for the many opportunities he has provided me to
-  enrich my education, including summer courses in Germany and France and a
-  stay at the Max Planck Institute in Dresden. Additionally I would like to
-  thank the remaining members of the reading committee, Sriram Shastry and Josh
-  Deutsch, for their guidance and useful discussions both inside and outside
-  the classroom.
-
-  I have benfitted immensely from the mentorship of Itay Hen, who taught me
-  much of what I know about the topics of quantum Monte Carlo and quantum
-  adiabatic algorithms, and has advised me on several research projects in the
-  latter, all while juggling his own responsibilities as a postdoc and rising
-  researcher in the field.
-
-  I have had the opportunity to collaborate with several excellent researchers;
-  I would like to thank Helmut Katzgraber, Jonathan Machta, and Burcu Yucesoy
-  for many useful discussions and for their contributions to the work which is
-  reprinted in \cref{chap:overlap}. Helmut deserves special thanks for donating
-  a large chunk of his computer time for the simulations.
-
-  A big thanks goes out to my fellow graduate students and friends in the
-  department who have made my time in Santa Cruz enjoyable and unforgettable. A
-  special thanks goes to the musicians, backpackers, and cyclists with whom I
-  have shared many adventures.
-
-  Finally, I would like to thank my best friend and partner Tia Plautz for her
-  moral support and encouragement during the preparation of this thesis, and
-  all of the unforgettable memories made during our time in Santa Cruz and
-  abroad. I'm looking forward to seeing the world together!
-
-  The text of this dissertation includes reprints of the following material,
-  previously published or submitted for publication:
-  \begin{itemize}
-    \item\fullcite{wittmann2012spin}
-    \item\fullcite{wittmann2014finite}
-    \item\fullcite{wittmann2015connection}
-  \end{itemize}
-  The co-author listed in these publications directed and supervised the
-  research which forms the basis for the dissertation. The text of this
-  dissertation also includes excerpts from the following collaboration,
-  \begin{itemize}
-    \item\fullcite{wittmann2014low},
-  \end{itemize}
-  where I contributed simulation data for the one-dimensional long-range
-  models, analysis of the data for all models, and wrote some of the text.
-\end{acknowledgements}
 \end{frontmatter}
-
-\pagestyle{headings}
 
 \DoubleSpacing
 

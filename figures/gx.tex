@@ -4,8 +4,8 @@
 \begin{document}
 \begin{tikzpicture}
   \begin{axis}[
-    xmin=0, xmax=0.4,
-    ymin=0.4, ymax=0.48,
+    xmin=0,xmax=0.4,
+    ymin=0.4,ymax=0.48,
     xlabel={$L^{-1/2}$},
     ylabel={$g(T_c)$},
     extra y ticks={0.406},
@@ -13,7 +13,7 @@
     legend pos=north west,
     legend cell align=left
   ]
-    \addplot+[data, only marks] table [
+    \addplot+[data,only marks] table [
       x expr=\thisrow{L}^(-1/2),
       y=mean,
       y error=std
