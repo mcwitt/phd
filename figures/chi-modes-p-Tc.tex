@@ -6,8 +6,9 @@
 \begin{tikzpicture}
   \pgfmathsetmacro{\sqrttwo}{sqrt(2)}
   \begin{loglogaxis}[
-    xmin=0.8, xmax=2.2,
-    ymin=0.04, ymax=0.3,
+    width=\figurewidthfull,
+    xmin=0.8,xmax=2.2,
+    ymin=0.04,ymax=0.3,
     xtick={1,\sqrttwo,2},
     xticklabels={1,$\sqrt{2}$,2},
     ytickten={-1},
@@ -23,7 +24,7 @@
         y expr=\thisrow{mean}/\thisrow{L}^2,
         y error expr=\thisrow{sem}/\thisrow{L}^2
       ]{data/chi-modes-p-Tc-L\pad{\size}.csv};
-      \addlegendentryexpanded{$\size$}
+      \addlegendentryexpanded{$L=\size$}
     }
 
     \addplot [dashed, domain=0.8:2.2, samples=2] {0.21/x^2};
