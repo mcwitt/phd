@@ -1,0 +1,146 @@
+% Override commands of ucbthesis to meet UCSC formatting requirements
+
+\def\degreemonth#1{\def\@degreemonth{#1}}
+\def\committeememberone#1{\def\@committeememberone{#1}}
+\def\committeemembertwo#1{\def\@committeemembertwo{#1}}
+\def\deanlineone#1{\def\@deanlineone{#1}}
+\def\deanlinetwo#1{\def\@deanlinetwo{#1}}
+
+%% MARGINS %%
+\setlrmarginsandblock{1.5in}{1.25in}{*}
+\setulmarginsandblock{1.25in}{1.25in}{*}
+
+
+%% PAGE NUMBERS %%
+\makepagestyle{thesis}
+\makeevenfoot{thesis}{}{\thepage}{}
+\makeoddfoot{thesis}{}{\thepage}{}
+\pagestyle{thesis}
+\aliaspagestyle{book}{thesis}
+\aliaspagestyle{part}{thesis}
+\aliaspagestyle{chapter}{thesis}
+\aliaspagestyle{title}{thesis}
+
+%% TITLE %%
+\def\maketitle{
+{\ssp
+\begin{alwayssingle}
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    {\setcounter{page}{1}\renewcommand{\thepage}{\roman{page}}}
+    \thispagestyle{empty}
+	
+	% extend down to the page number area (UCSC), which is 1.25in 
+	% from the bottom
+	\enlargethispage{\footskip}
+
+%    \null\vfil
+  \begin{center}
+    \fmfont
+    UNIVERSITY OF CALIFORNIA \par
+    \smallskip
+    {\expandafter\uppercase\expandafter{\@campus}} \par
+    \bigskip
+    {\bfseries {\expandafter\uppercase\expandafter{\@title}} \par}
+    \medskip
+    A dissertation submitted in partial satisfaction of the \par
+    requirements for the degree of \par
+    \bigskip
+    {\expandafter\uppercase\expandafter{\@degree}} \par
+    \bigskip
+    in \par
+    \bigskip
+    {\expandafter\uppercase\expandafter{\@field}} \par
+    \bigskip
+    by \par
+    \bigskip
+    {\bfseries \@author} \par
+    \bigskip
+    {\@degreemonth} {\@degreeyear} \par
+  \end{center}
+\setcounter{footnote}{0}
+
+\vfill
+\begin{center}
+\fmfont
+\hfill \parbox{3in}{The Dissertation of {\@author}\\ is approved:} \\
+\bigskip \bigskip
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@chair, Chair }\\
+\bigskip \medskip
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@committeememberone}\\
+\bigskip \smallskip
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@committeemembertwo}\\
+\bigskip \smallskip
+\ifnum \@numberofmembers > 3
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@committeememberthree}\\
+\bigskip \smallskip
+\fi
+\ifnum \@numberofmembers > 4
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@committeememberfour}\\
+\bigskip \smallskip
+\fi
+\ifnum \@numberofmembers > 5
+\hfill\rule{2.6in}{0.5pt}\\
+\hfill\makebox[2.6in][l]{\@committeememberfive}\\
+\bigskip \smallskip
+\fi
+\end{center}
+\noindent\noindent
+\rule{2.85in}{0.5pt}\\
+\fmfont
+\makebox[3in][l]{\@deanlineone}\\
+\makebox[3in][l]{\@deanlinetwo}\\
+\makebox[3in][l]{\@deanlinethree}\\
+\end{alwayssingle}
+}}
+
+%% ABSTRACT %%
+\def\abstract{
+\begin{alwayssingle}
+\addcontentsline{toc}{chapter}{\abstractname}
+\begin{center}
+{\fmfont
+{\bfseries \abstractname}\par
+\vspace{.5in}
+\@title\par
+\vspace{.1in}
+by\par
+\vspace{.1in}
+\@author
+\end{center}}
+
+\def\endabstract{\par\vfil\null\end{alwayssingle}
+}
+
+%% ACKNOWLEDGEMENTS %%
+\def\acknowledgements {
+  \begin{alwayssingle}
+    \begin{center}
+    {\large \bfseries \acknowledgename}
+    \addcontentsline{toc}{chapter}{\acknowledgename}
+    \end{center}
+}
+\def\endacknowledgements{
+  \end{alwayssingle}
+}
+
+%% COPYRIGHT PAGE %%
+\def\copyrightpage{
+\begin{alwayssingle}
+\thispagestyle{empty}
+\begin{center}
+{\fmfont
+\ \ \ \ 
+\vfill
+Copyright \copyright\ by\par
+\@author \par
+\@degreeyear \par}
+\vfill
+\ \ \ \ \ 
+\end{center}
+\end{alwayssingle}}
